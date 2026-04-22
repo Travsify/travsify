@@ -33,103 +33,143 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuGroups = [
     {
+      label: 'OPERATIONS',
       items: [
-        { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-        { name: 'Bookings', path: '/dashboard/bookings', icon: <ScrollText size={20} /> },
-        { name: 'Wallet', path: '/dashboard/wallets', icon: <Wallet size={20} /> },
-        { name: 'API keys', path: '/dashboard/developers', icon: <Key size={20} /> },
-        { name: 'KYC', path: '/dashboard/kyc', icon: <ShieldCheck size={20} /> },
-        { name: 'Developers', path: '/dashboard/docs', icon: <Code2 size={20} /> },
+        { name: 'Control Center', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+        { name: 'Global Terminal', path: '/dashboard/terminal', icon: <Search size={18} /> },
+        { name: 'Orders & Bookings', path: '/dashboard/bookings', icon: <ScrollText size={18} /> },
+      ]
+    },
+    {
+      label: 'TRAVEL VERTICALS',
+      items: [
+        { name: 'Flights (NDC)', path: '/dashboard/flights', icon: <Plane size={18} /> },
+        { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
+        { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
+        { name: 'e-Visas', path: '/dashboard/visas', icon: <Globe size={18} /> },
+        { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
+      ]
+    },
+    {
+      label: 'FINANCE & SETTLEMENT',
+      items: [
+        { name: 'Settlement Wallet', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Financial Ledger', path: '/dashboard/ledger', icon: <Database size={18} /> },
+      ]
+    },
+    {
+      label: 'DEVELOPER SUITE',
+      items: [
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
+        { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Zap size={18} /> },
+        { name: 'API Logs', path: '/dashboard/logs', icon: <Activity size={18} /> },
+        { name: 'Documentation', path: '/dashboard/docs', icon: <Code2 size={18} /> },
+      ]
+    },
+    {
+      label: 'COMPLIANCE & SETTINGS',
+      items: [
+        { name: 'KYC Verification', path: '/dashboard/kyc', icon: <ShieldCheck size={18} /> },
+        { name: 'Organization', path: '/dashboard/settings', icon: <Settings size={18} /> },
+        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     }
   ];
 
   return (
-    <div className="min-h-screen bg-white flex font-sans text-slate-900">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white flex flex-col fixed h-full z-50 border-r border-slate-100">
-        <div className="p-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
-            <Share2 size={20} />
+    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
+      {/* Sidebar - Travexia Dark Navy */}
+      <aside className="w-64 bg-[#0A1629] flex flex-col fixed h-full z-50 shadow-2xl">
+        <div className="p-6 mb-4 flex items-center gap-3">
+          <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
+            <Globe size={18} />
           </div>
-          <span className="text-xl font-black tracking-tight text-slate-900">Skylink<span className="text-blue-500">.</span></span>
+          <div className="flex flex-col">
+            <span className="text-lg font-black tracking-tight text-white leading-none">Travexia</span>
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">API Platform</span>
+          </div>
         </div>
         
-        <nav className="flex-1 px-4 py-4 space-y-1">
-          {menuGroups[0].items.map((item) => {
-            const isActive = pathname === item.path;
-            return (
-              <Link 
-                key={item.path} 
-                href={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-[14px] transition-all ${
-                  isActive 
-                    ? 'bg-blue-50 text-blue-600' 
-                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <span className={isActive ? 'text-blue-600' : 'text-slate-300'}>
-                  {item.icon}
-                </span>
-                {item.name}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-3 py-2 space-y-6 overflow-y-auto custom-scrollbar">
+          {menuGroups.map((group) => (
+            <div key={group.label} className="space-y-1">
+              <h3 className="px-3 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">{group.label}</h3>
+              {group.items.map((item) => {
+                const isActive = pathname === item.path;
+                return (
+                  <Link 
+                    key={item.path} 
+                    href={item.path}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] transition-all group ${
+                      isActive 
+                        ? 'bg-[#FF6B00] text-white' 
+                        : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <span className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-white transition-colors'}>
+                      {item.icon}
+                    </span>
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
-        <div className="p-6 m-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-orange-500 rounded-full" />
-            <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Sandbox mode</span>
+        <div className="p-4 m-3 bg-white/5 rounded-xl border border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white">
+              <Activity size={18} />
+            </div>
+            <div>
+              <p className="text-[11px] font-black text-white">Need Help?</p>
+              <p className="text-[10px] text-slate-500 font-medium">Visit support center</p>
+            </div>
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed font-medium mb-3">Complete KYC to enable live bookings.</p>
-          <Link href="/dashboard/kyc" className="text-[11px] font-black text-blue-600 hover:underline">Start verification →</Link>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 ml-64 min-h-screen">
-        {/* Top Header */}
-        <header className="h-20 bg-white border-b border-slate-100 sticky top-0 z-40 flex items-center justify-between px-10">
-          <div className="flex-1 max-w-2xl relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search bookings, PNRs, transactions..." 
-              className="w-full pl-12 pr-6 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/10 transition-all outline-none"
-            />
+        {/* Top Header - Travexia White */}
+        <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-8">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black text-slate-900 tracking-tight">Control Center</h1>
+            <p className="text-[11px] text-slate-400 font-medium">Real-time overview of your business</p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full">
-              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
-              <span className="text-[11px] font-bold text-slate-600">test mode</span>
-              <ChevronRight size={12} className="text-slate-400 rotate-90" />
-            </div>
-            <button className="p-2 text-slate-400 hover:text-slate-900">
-              <Bell size={20} />
-            </button>
-            <div className="flex items-center gap-3 ml-4 cursor-pointer group">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-black text-xs">TR</div>
-              <div>
-                <p className="text-xs font-black text-slate-900 leading-none">Travsify Global Inclusive Llc</p>
-                <p className="text-[10px] text-slate-400 font-bold mt-1">info@vedio.com</p>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <select className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 outline-none">
+                <option>NGN</option>
+                <option>USD</option>
+              </select>
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600">
+                <Calendar size={14} className="text-slate-400" />
+                <span>May 20 - May 27, 2024</span>
               </div>
-              <ChevronRight size={14} className="text-slate-300 rotate-90 ml-1" />
             </div>
-            <button 
-              onClick={logout}
-              className="ml-4 p-2 text-slate-400 hover:text-rose-600"
-            >
-              <LogOut size={20} />
-            </button>
+            
+            <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
+              <button className="relative p-2 text-slate-400 hover:text-slate-900">
+                <Bell size={20} />
+                <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-500 rounded-full border-2 border-white text-[8px] font-black text-white flex items-center justify-center">3</div>
+              </button>
+              <div className="flex items-center gap-3 cursor-pointer group">
+                <div className="text-right">
+                  <p className="text-xs font-black text-slate-900 leading-none">Demo Travels Ltd.</p>
+                  <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase">Admin</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-sm">DT</div>
+                <ChevronRight size={14} className="text-slate-300 rotate-90" />
+              </div>
+            </div>
           </div>
         </header>
 
-        <div className="p-10">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+        <div className="p-8">
+          {children}
         </div>
       </main>
     </div>
