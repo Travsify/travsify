@@ -73,7 +73,7 @@ export class GatewayController {
     @Query('nationality') nationality: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.atlysService.getVisaRequirements(destination, nationality, tenant.insuranceMarkup);
+    return this.atlysService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup);
   }
 
   @Get('search/transfers')

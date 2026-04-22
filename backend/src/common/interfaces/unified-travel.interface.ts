@@ -43,6 +43,7 @@ export interface UnifiedInsurance {
   planName: string;
   coverageDetails: any;
   price: UnifiedPrice;
+  bookingUrl: string;
 }
 
 export interface UnifiedVisa {

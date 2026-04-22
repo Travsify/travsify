@@ -9,9 +9,9 @@ export class AdminController {
   constructor(private readonly tenantService: TenantService) {}
 
   @Post('tenants')
-  async createTenant(@Body() data: Partial<Tenant>) {
+  async create(@Body() data: Partial<Tenant>) {
     this.logger.log(`Admin: Creating new tenant ${data.name}`);
-    return this.tenantService.createTenant(data);
+    return this.tenantService.create(data);
   }
 
   @Get('analytics/summary')
