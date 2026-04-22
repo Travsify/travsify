@@ -26,28 +26,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuGroups = [
     {
-      title: 'Main Hub',
+      title: 'Navigation',
       items: [
-        { name: 'Command Center', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-        { name: 'Settlement Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+        { name: 'My Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
       ]
     },
     {
-      title: 'Global Inventory',
+      title: 'Services',
       items: [
-        { name: 'Book Flights', path: '/dashboard/bookings', icon: <Plane size={18} /> },
-        { name: 'Book Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
-        { name: 'Airport Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'eVisa Services', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
-        { name: 'Travel Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
+        { name: 'Flights', path: '/dashboard/bookings', icon: <Plane size={18} /> },
+        { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
+        { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
+        { name: 'Visas', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
+        { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
       ]
     },
     {
-      title: 'Developer & Security',
+      title: 'Account',
       items: [
-        { name: 'API Infrastructure', path: '/dashboard/developers', icon: <Key size={18} /> },
-        { name: 'Identity (KYC)', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
-        { name: 'System Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
+        { name: 'Verify Business', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
+        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     },
     ...(user?.role === 'admin' ? [{

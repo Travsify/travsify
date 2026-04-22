@@ -92,50 +92,72 @@ export default function OverviewPage() {
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       {/* ─── SYSTEM STATUS BAR ─── */}
-      <div className="flex items-center justify-between px-8 py-3 bg-[#0a0f1e]/80 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl">
-        <div className="flex items-center gap-8">
-          <StatusIndicator label="Network" status="Optimal" color="text-emerald-500" />
-          <StatusIndicator label="Gateway" status="v4.2.0-Live" color="text-orange-500" />
-          <StatusIndicator label="Security" status="Shield Active" color="text-blue-400" />
-        </div>
-        <div className="hidden md:flex items-center gap-6">
+      <div className="flex items-center justify-between px-8 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+        <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Terminal Active</span>
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-xs font-bold text-slate-600">System Online</span>
           </div>
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{new Date().toLocaleTimeString()} UTC</span>
+          <div className="h-4 w-px bg-slate-200" />
+          <span className="text-xs font-medium text-slate-500">Last updated: {new Date().toLocaleTimeString()}</span>
+        </div>
+        <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+          <ShieldCheck size={14} />
+          <span className="text-[10px] font-black uppercase tracking-widest">Verified Account</span>
+        </div>
+      </div>
+
+      {/* ─── SEARCH BAR ─── */}
+      <div className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-xl shadow-slate-200/20">
+        <h3 className="text-lg font-black text-slate-900 mb-6 tracking-tight">Search and Book Instantly</h3>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+            <Globe size={20} />
+          </div>
+          <input 
+            type="text" 
+            placeholder="Search flights, hotels, visas, or transfers..." 
+            className="w-full pl-16 pr-6 py-6 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-lg font-medium transition-all outline-none placeholder:text-slate-400 shadow-inner"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                window.location.href = `/demo?search=${(e.target as HTMLInputElement).value}`;
+              }
+            }}
+          />
+          <div className="absolute inset-y-0 right-4 flex items-center">
+            <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-sm hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/20">
+              Search
+            </button>
+          </div>
+        </div>
+        <div className="flex gap-4 mt-6">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Quick actions:</span>
+          <Link href="/demo?tab=flights" className="text-xs font-bold text-blue-600 hover:underline">Find Flights</Link>
+          <Link href="/demo?tab=hotels" className="text-xs font-bold text-blue-600 hover:underline">Book Hotels</Link>
+          <Link href="/demo?tab=visa" className="text-xs font-bold text-blue-600 hover:underline">Apply Visa</Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* ─── LEFT: MAIN IDENTITY & ASSETS ─── */}
         <div className="lg:col-span-3 space-y-6">
-          {/* Identity Header */}
-          <div className="relative group overflow-hidden bg-gradient-to-br from-[#0f172a] to-[#020617] border border-white/5 p-10 rounded-[32px] flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-2xl transition-all hover:border-orange-500/20 premium-border">
-            <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-700 pointer-events-none">
-              <Code2 size={180} />
-            </div>
-            <div className="space-y-3 relative z-10">
+          {/* Business Header */}
+          <div className="relative group overflow-hidden bg-white border border-slate-200 p-10 rounded-[32px] flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-2xl transition-all hover:border-blue-500/20">
+            <div className="space-y-4 relative z-10">
               <div className="flex items-center gap-2">
-                <span className="lo-density-text bg-orange-500/10 text-orange-500 px-3 py-1 rounded-lg border border-orange-500/20">Enterprise Console</span>
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Node ID: SLATE-{user?.id?.slice(0, 8).toUpperCase()}</span>
+                <span className="text-[10px] font-black bg-blue-600 text-white px-3 py-1 rounded-lg uppercase tracking-widest shadow-lg shadow-blue-600/20">Active Business</span>
               </div>
-              <h2 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                Executive: <span className="text-orange-500">{user?.businessName}</span>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+                Welcome back, <span className="text-blue-600">{user?.businessName}</span>
               </h2>
-              <p className="text-[12px] text-slate-400 font-medium max-w-md leading-relaxed">
-                High-density travel distribution node. Live access to global NDC inventory and multi-currency settlement rails.
+              <p className="text-[14px] text-slate-500 font-medium max-w-md leading-relaxed">
+                Manage your travel bookings, track your wallet balance, and grow your travel business from one simple dashboard.
               </p>
             </div>
             <div className="flex gap-4 relative z-10">
-              <Link href="/dashboard/developers" className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl font-black text-[11px] transition-all flex items-center gap-2 uppercase tracking-widest">
-                <Terminal size={14} className="text-orange-500" />
-                Metrics
-              </Link>
-              <Link href="/dashboard/bookings" className="px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl font-black text-[11px] transition-all flex items-center gap-2 shadow-xl shadow-orange-600/30 active:scale-95 uppercase tracking-widest">
-                <Plus size={14} />
-                Deploy Inventory
+              <Link href="/dashboard/wallets" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[13px] transition-all flex items-center gap-2 shadow-xl shadow-slate-900/10 hover:bg-blue-600 active:scale-95 uppercase tracking-widest">
+                <Wallet size={16} />
+                Manage Wallets
               </Link>
             </div>
           </div>
