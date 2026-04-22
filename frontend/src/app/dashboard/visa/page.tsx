@@ -29,20 +29,20 @@ export default function VisaPage() {
   return (
     <div className="relative space-y-10 pb-20 animate-fade-up">
       {/* Background Decor */}
-      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[120px] -z-10" />
+      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-orange-100 shadow-sm">
             <Zap size={12} className="fill-orange-600" />
-            Sherpa Intelligence Active
+            Shepper Intelligence Active
           </div>
           <h2 className="text-4xl font-black tracking-tight text-slate-900 mb-2 leading-none">
             Global <span className="text-blue-600">eVisa</span> Engine
           </h2>
           <p className="text-slate-500 font-bold text-lg">
-            Automated visa processing and travel requirement intelligence for 150+ destinations.
+            Automated visa processing and travel requirement intelligence from Shepper.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export default function VisaPage() {
 
       {/* Hero Search Card */}
       <div className="bg-[#0f172a] rounded-[48px] p-12 text-white relative overflow-hidden group shadow-2xl shadow-black/20">
-        <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity">
+        <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
           <Globe size={180} />
         </div>
         <div className="relative z-10 max-w-3xl">
@@ -77,15 +77,13 @@ export default function VisaPage() {
                   className="w-full pl-16 pr-8 py-5 bg-white/5 border border-white/10 rounded-3xl text-sm font-bold focus:ring-4 focus:ring-blue-500/20 transition-all outline-none"
                />
              </div>
-             <a 
-               href={SHERPA_URL} 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-3xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20"
+             <Link 
+               href="/demo?tab=visa" 
+               className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-3xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20 active:scale-95"
              >
                Check Requirements
                <ArrowRight size={20} />
-             </a>
+             </Link>
           </div>
         </div>
       </div>
@@ -96,7 +94,7 @@ export default function VisaPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {visaTypes.map((visa) => (
               <div key={visa.id} className="group bg-white p-10 rounded-[40px] border border-slate-200/60 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700 -z-10" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700 -z-10 pointer-events-none" />
                 
                 <div className="flex justify-between items-start mb-10">
                   <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
@@ -125,15 +123,13 @@ export default function VisaPage() {
                   </div>
                 </div>
 
-                <a 
-                  href={SHERPA_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-4.5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] hover:bg-blue-600 transition-all flex items-center justify-center gap-3 group/btn"
+                <Link 
+                  href="/demo?tab=visa"
+                  className="w-full py-4.5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] hover:bg-blue-600 transition-all flex items-center justify-center gap-3 group/btn active:scale-95"
                 >
                   Start Application
                   <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </div>
             ))}
           </div>
@@ -143,7 +139,7 @@ export default function VisaPage() {
           {/* Security Banner */}
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-10 text-white shadow-xl shadow-blue-600/20">
              <ShieldCheck size={40} className="mb-6 text-blue-200" />
-             <h4 className="text-xl font-black mb-4 tracking-tight leading-tight">Secured by Sherpa</h4>
+             <h4 className="text-xl font-black mb-4 tracking-tight leading-tight">Secured by Shepper</h4>
              <p className="text-blue-100/70 text-[13px] font-bold leading-relaxed">
                All applications are processed through the world's leading travel requirement intelligence network.
              </p>

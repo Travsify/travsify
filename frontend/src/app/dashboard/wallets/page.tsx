@@ -135,11 +135,17 @@ export default function WalletPage() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-4">
-                <button className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
+                <button 
+                  onClick={() => alert('Top-up gateway is being initialized. Please contact your account manager for manual settlement.')}
+                  className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
+                >
                   <Plus size={18} />
                   Top Up Wallet
                 </button>
-                <button className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm border border-white/10 transition-all backdrop-blur-md">
+                <button 
+                  onClick={() => alert('Withdrawal gateway is currently in maintenance. ETA: 2 hours.')}
+                  className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm border border-white/10 transition-all backdrop-blur-md active:scale-[0.98]"
+                >
                   <ArrowUpRight size={18} />
                   Withdraw
                 </button>

@@ -28,26 +28,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     {
       title: 'Main Hub',
       items: [
-        { name: 'Dashboard Home', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-        { name: 'My Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Command Center', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+        { name: 'Settlement Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
       ]
     },
     {
-      title: 'Travel Services',
+      title: 'Global Inventory',
       items: [
         { name: 'Book Flights', path: '/dashboard/bookings', icon: <Plane size={18} /> },
         { name: 'Book Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
         { name: 'Airport Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'Apply for Visas', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
+        { name: 'eVisa Services', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
         { name: 'Travel Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
       ]
     },
     {
-      title: 'Account & Settings',
+      title: 'Developer & Security',
       items: [
-        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
-        { name: 'System Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
+        { name: 'API Infrastructure', path: '/dashboard/developers', icon: <Key size={18} /> },
         { name: 'Identity (KYC)', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
+        { name: 'System Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     },
     ...(user?.role === 'admin' ? [{

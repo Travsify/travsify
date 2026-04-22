@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, Logger } from '@nestjs/common';
 import { NdcService } from '../ndc/ndc.service';
 import { LiteApiService } from './services/liteapi.service';
-import { AtlysService } from './services/atlys.service';
+import { ShepperService } from './services/shepper.service';
 import { GetYourGuideService } from './services/getyourguide.service';
 import { MozioService } from './services/mozio.service';
 import { SafetyWingService } from './services/safetywing.service';
@@ -13,7 +13,7 @@ export class DemoController {
   constructor(
     private readonly ndcService: NdcService,
     private readonly liteApiService: LiteApiService,
-    private readonly atlysService: AtlysService,
+    private readonly shepperService: ShepperService,
     private readonly getYourGuideService: GetYourGuideService,
     private readonly mozioService: MozioService,
     private readonly safetyWingService: SafetyWingService,
@@ -31,7 +31,7 @@ export class DemoController {
     };
   }
 
-  // ─── ✈️ Flights (xml.agency NDC) ─────────────────────────
+  // ─── ✈️ Flights (SME.ng NDC) ─────────────────────────
   @Post('flights/search')
   async searchFlights(@Body() criteria: any) {
     this.logger.log(`Flight search request: ${JSON.stringify(criteria)}`);
@@ -72,14 +72,14 @@ export class DemoController {
     return this.liteApiService.getHotelDetails(hotelId);
   }
 
-  // ─── 🛂 Visa / eVisa (Atlys) ─────────────────────────────
+  // ─── 🛂 Visa / eVisa (Shepper) ─────────────────────────────
   @Get('visa/requirements')
   async getVisaRequirements(
     @Query('nationality') nationality: string,
     @Query('destination') destination: string,
   ) {
     this.logger.log(`Visa check: ${nationality} → ${destination}`);
-    return this.atlysService.getVisaRequirements({
+    return this.shepperService.getVisaRequirements({
       nationality: nationality || 'NG',
       destination: destination || 'GB',
     });
@@ -87,7 +87,7 @@ export class DemoController {
 
   @Get('visa/status/:applicationId')
   async getVisaStatus(@Query('applicationId') applicationId: string) {
-    return this.atlysService.getVisaApplicationStatus(applicationId);
+    return this.shepperService.getVisaApplicationStatus(applicationId);
   }
 
   // ─── 🎭 Experiences & Tours (GetYourGuide) ───────────────

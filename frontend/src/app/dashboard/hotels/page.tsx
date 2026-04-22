@@ -13,6 +13,7 @@ import {
   Coffee,
   Waves
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HotelsPage() {
   const hotels = [
@@ -65,9 +66,9 @@ export default function HotelsPage() {
               className="pl-11 pr-6 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-medium w-64 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-sm"
             />
           </div>
-          <button className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
+          <Link href="/demo?tab=hotels" className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
             Search Hotels
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -94,10 +95,10 @@ export default function HotelsPage() {
             <p className="text-sm font-bold text-slate-900">2 Adults, 1 Room</p>
           </div>
         </div>
-        <button className="bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+        <Link href="/demo?tab=hotels" className="bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2 active:scale-95">
           <Filter size={18} />
           Advanced Filters
-        </button>
+        </Link>
       </div>
 
       {/* Hotel Results Grid */}
@@ -132,9 +133,9 @@ export default function HotelsPage() {
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Starting from</p>
                   <p className="text-2xl font-black text-blue-600 tracking-tight">{hotel.price}<span className="text-sm text-slate-400 font-bold ml-1">/ night</span></p>
                 </div>
-                <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-900 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                <Link href={`/demo?tab=hotels&id=${hotel.id}`} className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-900 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                   <ArrowRight size={20} />
-                </button>
+                </Link>
               </div>
             </div>
           </div>

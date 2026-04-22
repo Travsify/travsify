@@ -16,7 +16,12 @@ import {
   Search,
   Copy,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Plane,
+  Hotel,
+  ShieldCheck,
+  ScrollText,
+  Car
 } from 'lucide-react';
 
 export default function DocsPage() {
@@ -47,9 +52,11 @@ export default function DocsPage() {
             </NavSection>
 
             <NavSection title="API Reference">
-              <NavItem active={activeSection === 'flights'} onClick={() => setActiveSection('flights')} label="Flights" icon={<Code size={16} />} />
-              <NavItem active={activeSection === 'hotels'} onClick={() => setActiveSection('hotels')} label="Hotels" icon={<Code size={16} />} />
-              <NavItem active={activeSection === 'wallets'} onClick={() => setActiveSection('wallets')} label="Wallets" icon={<Code size={16} />} />
+              <NavItem active={activeSection === 'flights'} onClick={() => setActiveSection('flights')} label="Flights" icon={<Plane size={16} />} />
+              <NavItem active={activeSection === 'hotels'} onClick={() => setActiveSection('hotels')} label="Hotels" icon={<Hotel size={16} />} />
+              <NavItem active={activeSection === 'visa'} onClick={() => setActiveSection('visa')} label="e-Visas" icon={<ScrollText size={16} />} />
+              <NavItem active={activeSection === 'transfers'} onClick={() => setActiveSection('transfers')} label="Transfers" icon={<Car size={16} />} />
+              <NavItem active={activeSection === 'insurance'} onClick={() => setActiveSection('insurance')} label="Insurance" icon={<ShieldCheck size={16} />} />
             </NavSection>
 
             <NavSection title="Guides">
@@ -87,13 +94,13 @@ export default function DocsPage() {
                 <div>
                   <h1 className="text-4xl font-black tracking-tight mb-6">API Introduction</h1>
                   <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                    Welcome to the Travsify API documentation. Our API is organized around REST. Our API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs.
+                    Welcome to the Travsify API documentation. Our API provides a unified interface for flights (SME.ng), hotels (LiteAPI), visas (Shepper), and insurance (SafetyWing).
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FeatureBox title="Unified Interface" desc="Access flights, hotels, and more through a single schema." icon={<Cpu className="text-blue-600" />} />
-                  <FeatureBox title="Real-time Data" desc="Direct NDC and GDS connections for sub-second latency." icon={<Zap className="text-orange-600" />} />
+                  <FeatureBox title="Unified Interface" desc="Access all travel verticals through a single, consistent schema." icon={<Cpu className="text-blue-600" />} />
+                  <FeatureBox title="Global Coverage" desc="Direct connections to NDC, GDS, and local providers worldwide." icon={<Globe className="text-orange-600" />} />
                 </div>
 
                 <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group">
@@ -116,8 +123,34 @@ export default function DocsPage() {
                     <br/>
                     <span className="text-slate-500"># → Response</span>
                     <br/>
-                    <span className="text-emerald-400">{`{ \"status\": \"operational\", \"timestamp\": \"2026-04-19T...\" }`}</span>
+                    <span className="text-emerald-400">{`{ \"status\": \"operational\", \"services\": [\"flights\", \"hotels\", \"visa\", \"transfers\", \"insurance\"] }`}</span>
                   </div>
+                </div>
+              </section>
+            )}
+
+            {activeSection === 'flights' && (
+              <section className="space-y-10">
+                <h1 className="text-4xl font-black tracking-tight mb-6">Flights API (SME.ng NDC)</h1>
+                <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                  Search and book flights globally using our direct NDC connection powered by SME.ng.
+                </p>
+                <div className="bg-slate-900 rounded-3xl p-8 text-white">
+                  <p className="text-blue-400 font-mono mb-4">GET /v1/search/flights</p>
+                  <pre className="text-sm text-slate-400">{`?origin=LOS&destination=LHR&date=2026-05-01`}</pre>
+                </div>
+              </section>
+            )}
+
+            {activeSection === 'insurance' && (
+              <section className="space-y-10">
+                <h1 className="text-4xl font-black tracking-tight mb-6">Insurance API (SafetyWing)</h1>
+                <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                  Get instant quotes and issue nomad insurance policies via our SafetyWing integration.
+                </p>
+                <div className="bg-slate-900 rounded-3xl p-8 text-white">
+                  <p className="text-blue-400 font-mono mb-4">GET /v1/search/insurance</p>
+                  <pre className="text-sm text-slate-400">{`?destination=Worldwide&age=30`}</pre>
                 </div>
               </section>
             )}
@@ -127,7 +160,7 @@ export default function DocsPage() {
                 <div>
                   <h1 className="text-4xl font-black tracking-tight mb-6">Authentication</h1>
                   <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                    The Travsify API uses API keys to authenticate requests. You can view and manage your API keys in the Travsify Dashboard.
+                    The Travsify API uses API keys to authenticate requests. Manage keys in the Travsify Dashboard.
                   </p>
                 </div>
 
@@ -135,22 +168,14 @@ export default function DocsPage() {
                   <Shield className="text-orange-600 shrink-0" size={24} />
                   <div>
                     <h4 className="text-sm font-black text-orange-900 mb-1">Protect your keys</h4>
-                    <p className="text-sm text-orange-700 font-medium">Your API keys carry many privileges, so be sure to keep them secure! Do not share your secret API keys in publicly accessible areas such as GitHub, client-side code, and so forth.</p>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold">Header Format</h3>
-                  <p className="text-slate-600 font-medium leading-relaxed">All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.</p>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 font-mono text-sm">
-                    Authorization: Bearer <span className="text-blue-600">sk_live_••••••••</span>
+                    <p className="text-sm text-orange-700 font-medium">Your API keys carry many privileges, so be sure to keep them secure!</p>
                   </div>
                 </div>
               </section>
             )}
 
             {/* Placeholder for other sections */}
-            {!['introduction', 'authentication'].includes(activeSection) && (
+            {!['introduction', 'authentication', 'flights', 'insurance'].includes(activeSection) && (
               <div className="py-40 text-center flex flex-col items-center">
                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
                   <Code size={40} className="text-slate-200" />

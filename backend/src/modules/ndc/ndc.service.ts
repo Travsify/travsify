@@ -169,7 +169,7 @@ export class NdcService {
       return {
         id: fd.OfferCode,
         vertical: TravelVertical.FLIGHT,
-        provider: 'XML.Agency',
+        provider: 'SME.ng',
         source: data.SearchGuid,
         segments: this.mapSegments(fd.Offers?.OfferInfo?.Segments?.OfferSegment || []),
         price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
@@ -194,7 +194,7 @@ export class NdcService {
       {
         id: 'tx-f1',
         vertical: TravelVertical.FLIGHT,
-        provider: 'XML.Agency',
+        provider: 'SME.ng',
         source: 'demo-guid',
         segments: [
           { flightNumber: 'TX101', airline: 'Virgin Atlantic', departure: criteria.origin, arrival: criteria.destination, departureTime: criteria.departureDate }

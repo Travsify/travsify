@@ -26,6 +26,7 @@ export class SafetyWingService {
       coverageDetails: {
         medicalLimit: '$250,000',
         deductible: '$250',
+        repatriation: 'Included',
       },
       price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
       bookingUrl: `https://safetywing.com/nomad-insurance?referenceID=${this.partnerId}`,

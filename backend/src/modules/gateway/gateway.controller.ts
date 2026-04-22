@@ -3,7 +3,7 @@ import { NdcService } from '../ndc/ndc.service';
 import { LiteApiService } from '../demo/services/liteapi.service';
 import { TenantService } from '../tenant/tenant.service';
 import { CheckoutService } from './checkout.service';
-import { AtlysService } from '../demo/services/atlys.service';
+import { ShepperService } from '../demo/services/shepper.service';
 import { MozioService } from '../demo/services/mozio.service';
 import { GetYourGuideService } from '../demo/services/getyourguide.service';
 import { SafetyWingService } from '../demo/services/safetywing.service';
@@ -17,7 +17,7 @@ export class GatewayController {
     private readonly ndcService: NdcService,
     private readonly liteApiService: LiteApiService,
     private readonly checkoutService: CheckoutService,
-    private readonly atlysService: AtlysService,
+    private readonly shepperService: ShepperService,
     private readonly mozioService: MozioService,
     private readonly gygService: GetYourGuideService,
     private readonly safetyWingService: SafetyWingService,
@@ -73,7 +73,7 @@ export class GatewayController {
     @Query('nationality') nationality: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.atlysService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup);
+    return this.shepperService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup);
   }
 
   @Get('search/transfers')
@@ -98,5 +98,28 @@ export class GatewayController {
   async searchInsurance(@Headers('x-api-key') apiKey: string) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
     return this.safetyWingService.getInsuranceQuotes(tenant.insuranceMarkup);
+  }
+
+  @Get('search/all')
+  async unifiedSearch(@Headers('x-api-key') apiKey: string, @Query('location') location: string) {
+    const tenant = await this.tenantService.validateApiKey(apiKey);
+    const [flights, hotels, tours, transfers, insurance] = await Promise.all([
+      this.ndcService.airShopping({ origin: 'LOS', destination: location || 'LHR', departureDate: '2026-05-01', adults: 1 }, tenant.flightMarkup),
+      this.liteApiService.searchHotels({ city: location || 'London', checkin: '2026-05-01', checkout: '2026-05-05', adults: 1 }, tenant.hotelMarkup),
+      this.gygService.getTours(location || 'London', tenant.hotelMarkup),
+      this.mozioService.getTransferOptions(location || 'London', tenant.hotelMarkup),
+      this.safetyWingService.getInsuranceQuotes(tenant.insuranceMarkup),
+    ]);
+
+    return {
+      location: location || 'Global',
+      results: {
+        flights,
+        hotels,
+        tours,
+        transfers,
+        insurance,
+      }
+    };
   }
 }

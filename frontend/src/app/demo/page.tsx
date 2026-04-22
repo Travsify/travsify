@@ -37,6 +37,14 @@ export default function DemoPage() {
     departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab') as any;
+    if (tab && ['flights', 'hotels', 'insurance', 'transfers', 'visa'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, []);
+
   const handleSearch = async () => {
     setLoading(true);
     setResults(null);

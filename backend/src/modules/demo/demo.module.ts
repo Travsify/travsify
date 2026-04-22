@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DemoController } from './demo.controller';
 import { NdcModule } from '../ndc/ndc.module';
 import { LiteApiService } from './services/liteapi.service';
-import { AtlysService } from './services/atlys.service';
+import { ShepperService } from './services/shepper.service';
 import { GetYourGuideService } from './services/getyourguide.service';
 import { MozioService } from './services/mozio.service';
 import { SafetyWingService } from './services/safetywing.service';
@@ -14,7 +14,7 @@ import { StripeService } from './services/stripe.service';
   controllers: [DemoController],
   providers: [
     LiteApiService,
-    AtlysService,
+    ShepperService,
     GetYourGuideService,
     MozioService,
     SafetyWingService,
@@ -23,7 +23,7 @@ import { StripeService } from './services/stripe.service';
   ],
   exports: [
     LiteApiService,
-    AtlysService,
+    ShepperService,
     GetYourGuideService,
     MozioService,
     SafetyWingService,

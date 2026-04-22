@@ -17,10 +17,13 @@ import {
   Activity,
   ChevronRight,
   Database,
-  Globe
+  Globe,
+  ExternalLink,
+  MessageSquare
 } from 'lucide-react';
 
 import { API_URL } from '@/utils/api';
+import Link from 'next/link';
 
 export default function DevelopersPage() {
   const { user } = useAuth();
@@ -84,7 +87,7 @@ export default function DevelopersPage() {
     <div className="space-y-10 pb-20">
       {/* Global Ecosystem Header */}
       <div className="bg-slate-900 rounded-[32px] border border-white/5 p-12 relative overflow-hidden shadow-2xl">
-         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-600/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-600/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -124,7 +127,7 @@ export default function DevelopersPage() {
               <button 
                 onClick={rotateKey}
                 disabled={rotating}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-400 hover:text-orange-600 rounded-xl text-[11px] font-black uppercase tracking-widest border border-slate-100 transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-400 hover:text-orange-600 rounded-xl text-[11px] font-black uppercase tracking-widest border border-slate-100 transition-all active:scale-95"
               >
                 {rotating ? <Loader2 size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
                 Generate New Key
@@ -138,7 +141,7 @@ export default function DevelopersPage() {
                 <span className="flex-1 truncate tracking-[0.2em]">{tenant?.apiKey || '••••••••••••••••••••••••••••••'}</span>
                 <button 
                   onClick={() => copyToClipboard(tenant?.apiKey)}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white active:scale-90"
                 >
                   {copied ? <CheckCircle2 size={20} className="text-emerald-400" /> : <Copy size={20} />}
                 </button>
@@ -155,7 +158,7 @@ export default function DevelopersPage() {
 
           {/* Quick Integration Section */}
           <div className="bg-slate-900 rounded-[32px] border border-white/5 p-10 shadow-2xl relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/5 blur-[100px] rounded-full translate-x-1/2" />
+             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/5 blur-[100px] rounded-full translate-x-1/2 pointer-events-none" />
              <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-3">
                    <Code2 className="text-blue-400" size={24} />
@@ -169,7 +172,13 @@ export default function DevelopersPage() {
                    ))}
                 </div>
              </div>
-             <div className="bg-black/40 rounded-2xl p-8 font-mono text-[13px] text-slate-300 border border-white/5 leading-loose overflow-x-auto">
+             <div className="bg-black/40 rounded-2xl p-8 font-mono text-[13px] text-slate-300 border border-white/5 leading-loose overflow-x-auto relative group">
+                <button 
+                  onClick={() => copyToClipboard(`curl -X GET "${API_URL}/api/v1/flights" -H "x-api-key: ${tenant?.apiKey || 'YOUR_KEY'}"`)}
+                  className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all text-slate-500 hover:text-white opacity-0 group-hover:opacity-100"
+                >
+                  <Copy size={16} />
+                </button>
                 <span className="text-slate-500 italic"># Search for flights from London to Lagos</span><br/>
                 <span className="text-white">curl</span> -X GET "<span className="text-blue-400">{API_URL}/api/v1/flights</span>" \<br/>
                 &nbsp;&nbsp;-H "<span className="text-orange-500">x-api-key: {tenant?.apiKey || 'YOUR_KEY'}</span>" \<br/>
@@ -186,22 +195,22 @@ export default function DevelopersPage() {
           <div className="bg-white rounded-[32px] border border-slate-200 p-10 shadow-sm">
              <h4 className="text-lg font-black text-slate-900 mb-8 tracking-tight">Support Resources</h4>
              <div className="space-y-3">
-                <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" />
-                <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" />
-                <ResourceItem icon={<ShieldCheck size={18} />} title="Best Practices" desc="Build like a pro" />
+                <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" path="/docs" />
+                <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" path="/docs" />
+                <ResourceItem icon={<ShieldCheck size={18} />} title="Best Practices" desc="Build like a pro" path="/docs" />
              </div>
           </div>
 
           {/* Expert Support */}
-          <div className="bg-orange-600 rounded-[32px] p-10 text-white shadow-2xl shadow-orange-600/30">
+          <div className="bg-orange-600 rounded-[32px] p-10 text-white shadow-2xl shadow-orange-600/30 group">
              <h4 className="text-xl font-black mb-4 tracking-tight">Need Expert Help?</h4>
              <p className="text-orange-100 font-bold text-sm leading-relaxed mb-10">
                Our engineering team is ready to help you build the perfect travel experience for your users.
              </p>
-             <button className="w-full py-5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl">
-                Chat with Engineers
-                <ArrowRight size={18} />
-             </button>
+             <Link href="/dashboard/settings" className="w-full py-5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-95">
+                Configure Webhooks
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
           </div>
         </div>
       </div>
@@ -217,24 +226,24 @@ export default function DevelopersPage() {
 
          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <GuideBox 
-              title="Global Flights (XML.Agency)"
+              title="Global Flights (SME.ng)"
               desc="Book 300+ airlines worldwide with real-time pricing and instant ticketing."
-              url="/api/v1/flights/search"
+              url="/api/v1/search/flights"
             />
             <GuideBox 
               title="Worldwide Hotels"
               desc="Over 2 million properties ranging from luxury resorts to budget stays."
-              url="/api/v1/hotels/search"
+              url="/api/v1/search/hotels"
             />
             <GuideBox 
               title="Airport Transfers"
               desc="Private cars, shuttles, and luxury transfers in 2000+ cities."
-              url="/api/v1/transfers/search"
+              url="/api/v1/search/transfers"
             />
             <GuideBox 
-              title="Visa Services (Sherpa)"
+              title="Visa Services (Shepper)"
               desc="Check visa requirements and apply instantly for your passengers."
-              url="/api/v1/visa/check"
+              url="/api/v1/search/visa"
             />
          </div>
       </div>
@@ -254,9 +263,9 @@ function StatMetric({ label, value, trend }: any) {
   );
 }
 
-function ResourceItem({ icon, title, desc }: any) {
+function ResourceItem({ icon, title, desc, path }: any) {
   return (
-    <a href="#" className="flex items-center gap-4 p-5 rounded-2xl border border-slate-100 hover:border-orange-500/30 hover:bg-orange-50/30 transition-all group">
+    <Link href={path} className="flex items-center gap-4 p-5 rounded-2xl border border-slate-100 hover:border-orange-500/30 hover:bg-orange-50/30 transition-all group">
        <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-white group-hover:text-orange-600 group-hover:shadow-md transition-all">
          {icon}
        </div>
@@ -264,11 +273,19 @@ function ResourceItem({ icon, title, desc }: any) {
          <h5 className="text-[13px] font-black text-slate-900 group-hover:text-orange-600 transition-colors">{title}</h5>
          <p className="text-[11px] font-bold text-slate-400">{desc}</p>
        </div>
-    </a>
+    </Link>
   );
 }
 
 function GuideBox({ title, desc, url }: any) {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="bg-white p-10 rounded-[32px] border border-slate-200 group hover:shadow-xl transition-all">
        <h4 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-3">
@@ -276,10 +293,10 @@ function GuideBox({ title, desc, url }: any) {
          {title}
        </h4>
        <p className="text-sm font-bold text-slate-500 leading-relaxed mb-8">{desc}</p>
-       <div className="bg-slate-50 rounded-2xl p-6 font-mono text-[11px] text-slate-600 border border-slate-100 flex items-center justify-between">
+       <div className="bg-slate-50 rounded-2xl p-6 font-mono text-[11px] text-slate-600 border border-slate-100 flex items-center justify-between group/code">
          <span>GET {url}</span>
-         <button className="text-slate-400 hover:text-slate-900 transition-colors">
-           <Copy size={14} />
+         <button onClick={handleCopy} className="text-slate-400 hover:text-slate-900 transition-colors">
+           {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} />}
          </button>
        </div>
     </div>

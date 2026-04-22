@@ -4,35 +4,34 @@ import { UnifiedVisa, TravelVertical } from '../../../common/interfaces/unified-
 import { PricingEngine } from '../../../common/utils/pricing.util';
 
 @Injectable()
-export class AtlysService {
-  private readonly logger = new Logger(AtlysService.name);
+export class ShepperService {
+  private readonly logger = new Logger(ShepperService.name);
   private readonly partnerId: string;
 
   constructor(private configService: ConfigService) {
-    this.partnerId = this.configService.get<string>('ATLYS_PARTNER_ID') || 'travsify';
+    this.partnerId = this.configService.get<string>('SHEPPER_PARTNER_ID') || 'travsify-visa';
   }
 
-  // Fixing parameter signature for DemoController
   async getVisaRequirements(params: { destination: string, nationality: string }, tenantMarkup: number = 0): Promise<UnifiedVisa[]> {
     const { destination, nationality } = params;
-    this.logger.log(`Atlys: Fetching visa requirements for ${nationality} -> ${destination}`);
+    this.logger.log(`Shepper: Fetching visa requirements for ${nationality} -> ${destination}`);
     
-    const basePrice = 50; 
-    const travsifyFee = 15;
+    const basePrice = 45; 
+    const travsifyFee = 20;
 
     return [{
       id: `visa-${destination.toLowerCase()}`,
       vertical: TravelVertical.VISA,
       destination,
       nationality,
-      requirements: ['Valid Passport', 'Passport Photo', 'Proof of Accommodation'],
-      processingTime: '3-5 Business Days',
+      requirements: ['Valid Passport', 'Biometric Photo', 'Letter of Invitation'],
+      processingTime: '2-4 Business Days',
       price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
-      bookingUrl: `https://www.atlys.com/apply?destination=${destination}&nationality=${nationality}&ref=${this.partnerId}`,
+      bookingUrl: `https://shepper.io/apply?to=${destination}&from=${nationality}&ref=${this.partnerId}`,
     }];
   }
 
   async getVisaApplicationStatus(applicationId: string) {
-    return { status: 'processing', applicationId };
+    return { status: 'awaiting_documents', applicationId };
   }
 }

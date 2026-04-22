@@ -7,18 +7,19 @@ import {
   Clock, 
   Users, 
   Briefcase, 
-  ArrowRight,
+  ArrowRight, 
   ShieldCheck,
   Zap,
   Navigation
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function TransfersPage() {
   const transfers = [
     {
       id: '1',
       type: 'Standard Sedan',
-      provider: 'Uber for Business',
+      provider: 'Mozio',
       capacity: '3 Passengers',
       luggage: '2 Bags',
       price: '$45.00',
@@ -28,7 +29,7 @@ export default function TransfersPage() {
     {
       id: '2',
       type: 'Executive SUV',
-      provider: 'Blacklane',
+      provider: 'Mozio Elite',
       capacity: '5 Passengers',
       luggage: '4 Bags',
       price: '$120.00',
@@ -38,7 +39,7 @@ export default function TransfersPage() {
     {
       id: '3',
       type: 'Luxury Van',
-      provider: 'Wheely',
+      provider: 'Mozio Group',
       capacity: '7 Passengers',
       luggage: '6 Bags',
       price: '$180.00',
@@ -86,9 +87,9 @@ export default function TransfersPage() {
             </div>
           </div>
           <div className="flex items-end">
-            <button className="w-full py-3.5 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
+            <Link href="/demo?tab=transfers" className="w-full py-3.5 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 text-center active:scale-95">
               Check Availability
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -126,10 +127,10 @@ export default function TransfersPage() {
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Availability</p>
                 <p className="text-[13px] font-black text-emerald-600">{ride.eta} away</p>
               </div>
-              <button className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all flex items-center gap-2 group">
+              <Link href="/demo?tab=transfers" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all flex items-center gap-2 group active:scale-95">
                 Book Ride
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </div>
         ))}

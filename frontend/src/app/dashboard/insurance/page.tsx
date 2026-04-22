@@ -14,13 +14,14 @@ import {
   Zap,
   CheckCircle2
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function InsurancePage() {
   const plans = [
     {
       id: '1',
       name: 'Global Traveler Plus',
-      provider: 'AXA Assistance',
+      provider: 'SafetyWing',
       coverage: '$100,000',
       benefits: ['Medical Emergencies', 'Trip Cancellation', 'Lost Baggage'],
       premium: '$2.50 / day',
@@ -29,7 +30,7 @@ export default function InsurancePage() {
     {
       id: '2',
       name: 'Business Elite',
-      provider: 'Allianz Care',
+      provider: 'SafetyWing Premium',
       coverage: '$500,000',
       benefits: ['Global Evacuation', 'Tech Protection', 'Lounge Delay'],
       premium: '$8.00 / day',
@@ -43,12 +44,12 @@ export default function InsurancePage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Travel Insurance</h2>
-          <p className="text-slate-500 font-medium text-sm">Protect your travelers with comprehensive global coverage.</p>
+          <p className="text-slate-500 font-medium text-sm">Protect your travelers with comprehensive global coverage from SafetyWing.</p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
+        <Link href="/demo?tab=insurance" className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
           <Plus size={18} />
           Create New Policy
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -93,10 +94,10 @@ export default function InsurancePage() {
                   </div>
                 </div>
 
-                <button className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all flex items-center justify-center gap-2 relative z-10">
+                <Link href="/demo?tab=insurance" className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all flex items-center justify-center gap-2 relative z-10 active:scale-95">
                   Select This Plan
                   <ArrowRight size={18} />
-                </button>
+                </Link>
               </div>
             ))}
           </div>
@@ -116,7 +117,7 @@ export default function InsurancePage() {
                     { id: 'POL-9283', pax: 'John Doe', plan: 'Global Traveler', expiry: 'May 20, 2026', status: 'Active' },
                     { id: 'POL-1102', pax: 'Jane Smith', plan: 'Business Elite', expiry: 'Apr 25, 2026', status: 'Expiring Soon' },
                   ].map((policy) => (
-                    <tr key={policy.id} className="group hover:bg-slate-50 transition-all">
+                    <tr key={policy.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
                       <td className="px-8 py-6">
                         <div className="flex flex-col">
                           <span className="text-[13px] font-mono font-bold text-blue-600">{policy.id}</span>
@@ -138,7 +139,7 @@ export default function InsurancePage() {
                         </span>
                       </td>
                       <td className="px-8 py-6 text-right">
-                        <button className="p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                        <button className="p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all active:scale-90" title="Download Policy">
                           <Download size={18} />
                         </button>
                       </td>
@@ -169,9 +170,9 @@ export default function InsurancePage() {
                 <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Total Payouts (YTD)</p>
                 <p className="text-3xl font-black">$12,450</p>
               </div>
-              <button className="w-full py-4 bg-blue-600 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
+              <Link href="/dashboard/settings" className="w-full py-4 bg-blue-600 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 text-center active:scale-95">
                 File a Claim
-              </button>
+              </Link>
             </div>
           </div>
 
