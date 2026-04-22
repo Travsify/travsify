@@ -19,7 +19,8 @@ import {
   Settings,
   Bell,
   Share2,
-  Search
+  Search,
+  Layers
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
