@@ -8,11 +8,12 @@ import {
   Lock, 
   ArrowRight, 
   Globe, 
-  ShieldCheck, 
-  BarChart3, 
-  ChevronLeft,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Zap,
+  ShieldCheck,
+  Building2,
+  Key
 } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -45,146 +46,142 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-sans selection:bg-blue-100 selection:text-blue-900">
-      {/* Left Form Side */}
-      <div className="w-full lg:w-1/2 flex flex-col relative overflow-hidden">
-        {/* Decorative Background for Mobile */}
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-blue-50 rounded-full blur-3xl lg:hidden" />
+    <div className="min-h-screen flex bg-slate-950 font-sans selection:bg-blue-500/30 selection:text-white overflow-hidden">
+      {/* ─── LEFT: GLASSMORPHIC FORM SIDE ─── */}
+      <div className="flex-1 relative flex items-center justify-center p-6 lg:p-12 overflow-y-auto">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         
-        <header className="p-8 lg:p-12 relative z-10">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 group-hover:scale-110 transition-transform">
-              <Globe size={20} />
-            </div>
-            <span className="text-xl font-black tracking-tight text-slate-900">Travsify<span className="text-blue-600">.</span></span>
-          </Link>
-        </header>
-        
-        <main className="flex-1 flex items-center justify-center p-8 lg:p-12 relative z-10">
-          <div className="w-full max-w-sm animate-fade-up">
-            <div className="mb-10">
-              <h1 className="text-3xl font-black tracking-tight mb-3 text-slate-900">Welcome back</h1>
-              <p className="text-[15px] font-medium text-slate-500">Sign in to manage your global travel operations.</p>
+        <div className="w-full max-w-lg relative">
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl" />
+          
+          <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[40px] p-8 lg:p-12 shadow-2xl shadow-black/50 animate-fade-up">
+            <div className="mb-12">
+              <Link href="/" className="flex lg:hidden items-center gap-3 mb-8">
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
+                  <Globe size={20} />
+                </div>
+                <span className="text-xl font-black text-white">Travsify<span className="text-blue-500">.</span></span>
+              </Link>
+              <h1 className="text-3xl font-black text-white tracking-tight mb-2">Welcome Back</h1>
+              <p className="text-slate-400 font-medium">Continue your global travel distribution.</p>
             </div>
 
             {error && (
-              <div className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-100 rounded-2xl mb-8 animate-shake">
-                <AlertCircle size={18} className="text-orange-600 shrink-0" />
-                <p className="text-xs font-bold text-orange-600">{error}</p>
+              <div className="flex items-center gap-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl mb-8 animate-shake">
+                <AlertCircle size={18} className="text-orange-500 shrink-0" />
+                <p className="text-xs font-bold text-orange-200">{error}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
-                  <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-sm group-hover:bg-white"
-                    placeholder="you@company.com" 
-                    required 
-                  />
-                </div>
-              </div>
+              <InputGroup 
+                label="Email Address" 
+                icon={<Mail size={18} />} 
+                type="email"
+                value={email}
+                onChange={(e: any) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                required
+              />
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-center ml-1">
-                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Password</label>
-                  <Link href="/forgot-password" title="Coming soon" className="text-[11px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700">Forgot?</Link>
-                </div>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
-                  <input 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 bg-slate-50/50 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-sm group-hover:bg-white"
-                    placeholder="••••••••" 
-                    required 
-                  />
-                </div>
-              </div>
+              <InputGroup 
+                label="Password" 
+                icon={<Lock size={18} />} 
+                type="password"
+                value={password}
+                onChange={(e: any) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
 
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full bg-slate-900 text-white text-sm font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-[0.98] disabled:opacity-50 mt-4 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-2 group"
+                className="w-full group bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-5 rounded-2xl font-black text-sm shadow-xl shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
               >
-                {loading ? <Loader2 className="animate-spin" size={18} /> : 'Sign in to Dashboard'}
+                {loading ? <Loader2 className="animate-spin" size={18} /> : 'Sign In'}
                 {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
               </button>
             </form>
 
-            <div className="mt-12 text-center">
-              <p className="text-[14px] font-bold text-slate-500">
-                Don't have an account?{' '}
-                <Link href="/register" className="text-blue-600 font-black hover:text-blue-700 underline underline-offset-4">Create one</Link>
+            <div className="mt-10 text-center">
+              <p className="text-slate-500 font-bold text-sm">
+                New to the platform?{' '}
+                <Link href="/register" className="text-blue-400 hover:text-blue-300 transition-colors underline underline-offset-4 decoration-blue-400/30">Create an account</Link>
               </p>
             </div>
           </div>
-        </main>
-
-        <footer className="p-8 lg:p-12 text-center lg:text-left relative z-10">
-          <p className="text-[11px] font-black uppercase tracking-widest text-slate-300">© 2026 Travsify Global Platform. All rights reserved.</p>
-        </footer>
+        </div>
       </div>
 
-      {/* Right Info Side */}
-      <div className="hidden lg:flex w-1/2 bg-[#0f172a] text-white items-center justify-center p-20 relative overflow-hidden">
-        {/* Abstract Mesh Gradient */}
-        <div className="absolute inset-0 opacity-40">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
+      {/* ─── RIGHT: INTERACTIVE BRAND SIDE ─── */}
+      <div className="hidden lg:flex w-[45%] relative flex-col justify-between p-12 overflow-hidden border-l border-white/5 bg-[#0f172a]">
+        {/* Animated Mesh Background */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse-glow" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2.5s' }} />
         </div>
-        
-        <div className="relative z-10 max-w-lg">
-          <div className="mb-12 animate-float">
-            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-500/20">
-              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200" alt="Global Infrastructure" className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent" />
+
+        <div className="relative z-10">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-blue-600/40 group-hover:scale-110 transition-transform duration-500">
+              <Globe size={24} />
+            </div>
+            <span className="text-2xl font-black tracking-tighter text-white">Travsify<span className="text-blue-500">.</span></span>
+          </Link>
+        </div>
+
+        <div className="relative z-10 max-w-md">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-8 backdrop-blur-xl">
+            <Key className="text-blue-400" size={14} />
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-200">Secure Developer Access</span>
+          </div>
+          <h2 className="text-5xl font-black text-white leading-[1.1] mb-12 tracking-tight">
+            Managing <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-200">global travel</span><br/>
+            at scale.
+          </h2>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">System Status</p>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-lg font-black text-white">Operational</span>
+              </div>
+            </div>
+            <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">API Latency</p>
+              <span className="text-lg font-black text-white">124ms</span>
             </div>
           </div>
+        </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-8 backdrop-blur-md">
-            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Systems Operational</span>
-          </div>
-          
-          <h2 className="text-5xl font-black mb-12 leading-[1.1]">Modern travel <br/>infrastructure for <span className="text-blue-500">global teams.</span></h2>
-          
-          <div className="space-y-10">
-            {[
-              { 
-                icon: <Globe className="text-blue-400" />, 
-                title: "Live Global Inventory", 
-                desc: "Real-time availability across thousands of airlines, hotels, and transfers worldwide." 
-              },
-              { 
-                icon: <ShieldCheck className="text-emerald-400" />, 
-                title: "Enterprise Security", 
-                desc: "Bank-grade encryption and advanced fraud protection for every transaction." 
-              },
-              { 
-                icon: <BarChart3 className="text-indigo-400" />, 
-                title: "Deep Analytics", 
-                desc: "Comprehensive insights into your booking volumes, revenue, and performance." 
-              }
-            ].map((item, i) => (
-              <div key={i} className="flex gap-6 group">
-                <div className="w-14 h-14 rounded-[20px] bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/10 group-hover:scale-110 transition-all duration-500">
-                  {item.icon}
-                </div>
-                <div>
-                  <h3 className="font-black text-lg mb-2 text-white">{item.title}</h3>
-                  <p className="text-slate-400 text-[14px] leading-relaxed font-medium">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+        <div className="relative z-10 flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-slate-500">
+          <span>© 2026 Travsify Global</span>
+          <div className="flex gap-4">
+            <span className="hover:text-blue-400 cursor-pointer transition-colors">Documentation</span>
+            <span className="hover:text-blue-400 cursor-pointer transition-colors">Support</span>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function InputGroup({ label, icon, ...props }: any) {
+  return (
+    <div className="space-y-2">
+      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">{label}</label>
+      <div className="relative group">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">
+          {icon}
+        </div>
+        <input 
+          {...props}
+          className="w-full pl-12 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all group-hover:bg-white/10"
+        />
       </div>
     </div>
   );
