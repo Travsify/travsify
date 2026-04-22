@@ -2,6 +2,7 @@ import { Controller, Post, Get, Body, Param, Put, Logger } from '@nestjs/common'
 import { TenantService } from '../tenant/tenant.service';
 import { Tenant } from '../tenant/tenant.entity';
 import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
 
 @Controller('admin')
 export class AdminController {
@@ -30,34 +31,40 @@ export class AdminController {
     const adminEmail = 'admin@travsify.com';
     const adminPassword = 'TravsifyMaster2026!';
     
-    // 1. Check if admin exists
-    const existing = await this.usersService.findByEmail(adminEmail);
-    if (existing) {
-      return { status: 'denied', message: 'Platform is already initialized.' };
+    try {
+      // 1. Check if admin exists
+      const existing = await this.usersService.findByEmail(adminEmail);
+      if (existing) {
+        this.logger.warn('Setup denied: Platform already initialized');
+        return { status: 'denied', message: 'Platform is already initialized.' };
+      }
+
+      // 2. Create Admin User
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      const user = await this.usersService.create({
+        email: adminEmail,
+        password: hashedPassword,
+        businessName: 'Travsify HQ',
+        role: 'admin' as any,
+        status: 'approved' as any
+      });
+
+      // 3. Create Tenant
+      await this.tenantService.create({
+        name: 'Travsify HQ',
+        email: adminEmail
+      });
+
+      this.logger.log('Admin: Master account provisioned successfully');
+      return {
+        status: 'success',
+        message: 'Master Admin provisioned.',
+        credentials: { email: adminEmail, password: adminPassword }
+      };
+    } catch (error) {
+      this.logger.error(`Setup failed: ${error.message}`);
+      return { status: 'error', message: error.message };
     }
-
-    // 2. Create Admin User
-    const bcrypt = require('bcrypt');
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
-    await this.usersService.create({
-      email: adminEmail,
-      password: hashedPassword,
-      businessName: 'Travsify HQ',
-      role: 'admin' as any,
-      status: 'approved' as any
-    });
-
-    // 3. Create Tenant
-    await this.tenantService.create({
-      name: 'Travsify HQ',
-      email: adminEmail
-    });
-
-    return {
-      status: 'success',
-      message: 'Master Admin provisioned.',
-      credentials: { email: adminEmail, password: adminPassword }
-    };
   }
 
   @Get('analytics/summary')

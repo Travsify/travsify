@@ -88,6 +88,24 @@ export default function LoginPage() {
               </div>
             )}
 
+            <div className="mb-8 p-4 bg-blue-500/5 border border-blue-500/10 rounded-2xl">
+                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">First time here?</p>
+                <button 
+                    onClick={async () => {
+                        try {
+                            const res = await fetch(`${API_URL}/admin/setup`);
+                            const data = await res.json();
+                            alert(data.message + '\n\nCredentials:\nEmail: admin@travsify.com\nPass: TravsifyMaster2026!');
+                        } catch (e: any) {
+                            alert('Setup failed: ' + e.message);
+                        }
+                    }}
+                    className="text-[12px] font-bold text-blue-400 hover:text-blue-300 underline underline-offset-4"
+                >
+                    Initialize Master Admin Account
+                </button>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <InputGroup 
                 label="Email Address" 
