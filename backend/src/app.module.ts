@@ -7,6 +7,7 @@ import { NdcModule } from './modules/ndc/ndc.module';
 import { DemoModule } from './modules/demo/demo.module';
 import { TenantModule } from './modules/tenant/tenant.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
+import { UsersModule } from './modules/users/users.module';
 import { AdminController } from './modules/admin/admin.controller';
 
 @Module({
@@ -22,6 +23,7 @@ import { AdminController } from './modules/admin/admin.controller';
     DemoModule,
     TenantModule,
     GatewayModule,
+    UsersModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService],
