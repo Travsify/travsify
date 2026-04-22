@@ -283,4 +283,3 @@ function VerticalButton({ icon, label, path, active }: any) {
     </Link>
   );
 }
-}
