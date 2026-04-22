@@ -17,4 +17,10 @@ export class TenantController {
   async rotateKey(@Request() req: any) {
     return this.tenantService.rotateApiKey(req.user.email);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('markups')
+  async updateMarkups(@Request() req: any, @Body() data: { flightMarkup: number, hotelMarkup: number, insuranceMarkup: number }) {
+    return this.tenantService.updateMarkups(req.user.email, data);
+  }
 }

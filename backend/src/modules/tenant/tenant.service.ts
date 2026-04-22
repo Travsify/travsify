@@ -42,6 +42,14 @@ export class TenantService {
     return this.tenantRepository.save(tenant);
   }
 
+  async updateMarkups(email: string, markups: Partial<Tenant>): Promise<Tenant> {
+    const tenant = await this.findByEmail(email);
+    if (markups.flightMarkup !== undefined) tenant.flightMarkup = markups.flightMarkup;
+    if (markups.hotelMarkup !== undefined) tenant.hotelMarkup = markups.hotelMarkup;
+    if (markups.insuranceMarkup !== undefined) tenant.insuranceMarkup = markups.insuranceMarkup;
+    return this.tenantRepository.save(tenant);
+  }
+
   private generateApiKey(): string {
     return 'tx_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }

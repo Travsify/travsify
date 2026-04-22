@@ -15,7 +15,8 @@ import {
   Globe2, 
   ScrollText,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Settings
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -44,10 +45,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: 'Platform',
       items: [
         { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
+        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
         { name: 'KYC Status', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
         { name: 'Documentation', path: '/dashboard/developers#docs', icon: <Code2 size={18} /> },
       ]
-    }
+    },
+    ...(user?.role === 'admin' ? [{
+      title: 'Management',
+      items: [
+        { name: 'Admin Console', path: '/dashboard/admin', icon: <ShieldCheck size={18} /> },
+      ]
+    }] : [])
   ];
 
   return (
