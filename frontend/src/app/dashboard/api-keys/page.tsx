@@ -15,6 +15,7 @@ import {
   ChevronRight,
   ExternalLink
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ApiKeysPage() {
   const [showSecret, setShowSecret] = useState<string | null>(null);
