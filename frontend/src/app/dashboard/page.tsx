@@ -39,7 +39,7 @@ import Link from 'next/link';
 import { API_URL } from '@/utils/api';
 
 export default function OverviewPage() {
-  const { user } = useAuth();
+  const { user, currency } = useAuth();
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
@@ -71,7 +71,7 @@ export default function OverviewPage() {
 
   const ngnWallet = wallets.find(w => w.currency === 'NGN') || { balance: 0 };
   const usdWallet = wallets.find(w => w.currency === 'USD') || { balance: 0 };
-  const totalRevenue = transactions.filter(t => t.type === 'CREDIT').reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalRevenue = transactions.filter(t => t.type === 'CREDIT' && t.currency === currency).reduce((acc, curr) => acc + Number(curr.amount), 0);
   const totalBookingsCount = bookings.length;
   const recentBookings = bookings.slice(0, 5);
   const recentTransactions = transactions.slice(0, 5);
@@ -92,7 +92,7 @@ export default function OverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           label="Total Revenue" 
-          value={`₦${(totalRevenue).toLocaleString()}`} 
+          value={`${currency === 'NGN' ? '₦' : '$'}${(totalRevenue).toLocaleString()}`} 
           change="Real-time" 
           positive={true}
           icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Wallet size={24} /></div>}
@@ -294,7 +294,7 @@ export default function OverviewPage() {
           <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights (NDC)" sub="Manage NDC aviation bookings, fares and ticketing." color="blue" /></Link>
           <Link href="/dashboard/hotels"><VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Global property management and live rate tracking." color="orange" /></Link>
           <Link href="/dashboard/transfers"><VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Global airport pickup and car rental logistics." color="emerald" /></Link>
-          <Link href="/dashboard/visas"><VerticalCard icon={<Globe className="text-purple-600" />} label="e-Visas" sub="Visa requirement tracking and application status." color="purple" /></Link>
+          <Link href="/dashboard/tours"><VerticalCard icon={<Globe className="text-purple-600" />} label="Tours" sub="Global curated experiences and sightseeing tours." color="purple" /></Link>
           <Link href="/dashboard/insurance"><VerticalCard icon={<ShieldCheck className="text-orange-600" />} label="Insurance" sub="Global travel protection management and quoting." color="orange" /></Link>
         </div>
       </div>

@@ -29,8 +29,14 @@ import {
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, logout, currency, setCurrency } = useAuth();
   const pathname = usePathname();
+
+  const today = new Date();
+  const nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+  const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const dateRange = `${formatDate(today)} - ${formatDate(nextWeek)}`;
 
   const menuGroups = [
     {
@@ -47,7 +53,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Flights (NDC)', path: '/dashboard/flights', icon: <Plane size={18} /> },
         { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
         { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'e-Visas', path: '/dashboard/visas', icon: <Globe size={18} /> },
+        { name: 'Tours', path: '/dashboard/tours', icon: <Globe size={18} /> },
         { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
       ]
     },
@@ -142,13 +148,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4">
-              <select className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 outline-none">
-                <option>NGN</option>
-                <option>USD</option>
+              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 outline-none">
+                <option value="NGN">NGN</option>
+                <option value="USD">USD</option>
               </select>
               <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600">
                 <Calendar size={14} className="text-slate-400" />
-                <span>May 20 - May 27, 2024</span>
+                <span>{dateRange}</span>
               </div>
             </div>
             

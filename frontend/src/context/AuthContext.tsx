@@ -9,6 +9,8 @@ interface AuthContextType {
   login: (token: string, user: any) => void;
   logout: () => void;
   loading: boolean;
+  currency: string;
+  setCurrency: (c: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,14 +19,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currency, setCurrency] = useState('NGN');
   const router = useRouter();
 
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
+    const savedCurrency = localStorage.getItem('currency');
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
+    }
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
     }
     setLoading(false);
   }, []);
@@ -45,8 +52,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.push('/login');
   };
 
+  const handleSetCurrency = (c: string) => {
+    setCurrency(c);
+    localStorage.setItem('currency', c);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading, currency, setCurrency: handleSetCurrency }}>
       {children}
     </AuthContext.Provider>
   );
