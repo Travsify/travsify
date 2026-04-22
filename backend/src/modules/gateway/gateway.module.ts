@@ -5,9 +5,10 @@ import { WebhooksController } from './webhooks.controller';
 import { TenantModule } from '../tenant/tenant.module';
 import { NdcModule } from '../ndc/ndc.module';
 import { DemoModule } from '../demo/demo.module';
+import { ApiKeysModule } from '../api-keys/api-keys.module';
 
 @Module({
-  imports: [TenantModule, NdcModule, DemoModule],
+  imports: [TenantModule, NdcModule, DemoModule, ApiKeysModule],
   controllers: [GatewayController, WebhooksController],
   providers: [CheckoutService],
 })
