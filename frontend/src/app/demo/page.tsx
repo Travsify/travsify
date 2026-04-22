@@ -139,8 +139,8 @@ export default function DemoPage() {
         </div>
 
         <div className="max-w-[1000px] mx-auto bg-white p-4 rounded-[32px] border border-slate-200 shadow-2xl shadow-slate-200/50 flex flex-wrap lg:flex-nowrap items-center gap-4 animate-fade-up">
-          <SearchField icon={<MapPin className="text-blue-500" size={20} />} label="From" value={searchParams.origin} onChange={(v) => setSearchParams({...searchParams, origin: v.toUpperCase()})} />
-          <SearchField icon={<MapPin className="text-orange-500" size={20} />} label="To" value={searchParams.destination} onChange={(v) => setSearchParams({...searchParams, destination: v.toUpperCase()})} />
+          <SearchField icon={<MapPin className="text-blue-500" size={20} />} label="From" value={searchParams.origin} onChange={(v: string) => setSearchParams({...searchParams, origin: v.toUpperCase()})} />
+          <SearchField icon={<MapPin className="text-orange-500" size={20} />} label="To" value={searchParams.destination} onChange={(v: string) => setSearchParams({...searchParams, destination: v.toUpperCase()})} />
           <button onClick={handleSearch} disabled={loading} className="w-full lg:w-auto h-16 px-10 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50">
             {loading ? <Loader2 className="animate-spin" /> : <Search size={20} />}
             Search
@@ -190,7 +190,7 @@ function SearchField({ icon, label, value, onChange }: any) {
       <div className="flex items-center gap-3 mb-1">
         {icon} <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{label}</span>
       </div>
-      <input value={value} onChange={e => onChange(e.target.value)} className="w-full bg-transparent border-none p-0 text-sm font-black focus:ring-0" />
+      <input value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)} className="w-full bg-transparent border-none p-0 text-sm font-black focus:ring-0" />
     </div>
   );
 }
