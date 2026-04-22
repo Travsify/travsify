@@ -308,4 +308,3 @@ function ActivityRow({ title, refNo, amount, time, type }: any) {
     </div>
   );
 }
-}
