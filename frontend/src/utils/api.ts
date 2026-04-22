@@ -3,9 +3,15 @@ export const getApiUrl = () => {
   if (typeof window !== 'undefined') {
     // If on Render, try to intelligently find the backend
     if (window.location.hostname.includes('onrender.com')) {
+      // 1. Try explicit backend subdomain
       if (window.location.hostname.includes('-frontend.')) {
         return `https://${window.location.hostname.replace('-frontend.', '-backend.')}`;
       }
+      // 2. Check for paypee (legacy) if it's in the browser context
+      if (window.location.hostname.includes('paypee')) {
+        return 'https://paypee.onrender.com';
+      }
+      // 3. Fallback to common conventions
       return 'https://travsify-backend.onrender.com';
     }
     // For local development on Windows, 127.0.0.1 is more reliable than localhost
