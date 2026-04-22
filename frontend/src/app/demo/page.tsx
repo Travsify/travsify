@@ -18,7 +18,8 @@ import {
   ScrollText,
   Sparkles,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 const getApiUrl = () => {
@@ -146,14 +147,14 @@ export default function DemoPage() {
               icon={<MapPin className="text-blue-500" size={20} />} 
               label="From" 
               value={searchParams.origin} 
-              onChange={(v) => setSearchParams({...searchParams, origin: v.toUpperCase()})}
+              onChange={(v: string) => setSearchParams({...searchParams, origin: v.toUpperCase()})}
             />
             <div className="w-px h-10 bg-slate-100 hidden lg:block" />
             <SearchField 
               icon={<MapPin className="text-orange-500" size={20} />} 
               label="To" 
               value={searchParams.destination}
-              onChange={(v) => setSearchParams({...searchParams, destination: v.toUpperCase()})}
+              onChange={(v: string) => setSearchParams({...searchParams, destination: v.toUpperCase()})}
             />
             <div className="w-px h-10 bg-slate-100 hidden lg:block" />
             <SearchField 
@@ -161,7 +162,7 @@ export default function DemoPage() {
               label="Departure" 
               type="date"
               value={searchParams.departureDate}
-              onChange={(v) => setSearchParams({...searchParams, departureDate: v})}
+              onChange={(v: string) => setSearchParams({...searchParams, departureDate: v})}
             />
             <button 
               onClick={handleSearch}
@@ -279,7 +280,7 @@ function TabButton({ active, onClick, icon, label }: any) {
   );
 }
 
-function SearchField({ icon, label, value, onChange, type = "text" }: any) {
+function SearchField({ icon, label, value, onChange, type = "text" }: { icon: any, label: string, value: string, onChange: (v: string) => void, type?: string }) {
   return (
     <div className="flex-1 flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-slate-50 transition-all group">
       <div className="shrink-0 group-hover:scale-110 transition-transform">{icon}</div>
