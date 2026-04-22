@@ -23,12 +23,12 @@ import {
 } from 'lucide-react';
 
 const getApiUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
-    // Using 127.0.0.1 instead of localhost/hostname to avoid IPv6/v4 mapping issues
-    return `${protocol}//127.0.0.1:3001`;
+    return `${protocol}//${window.location.hostname}:3001`;
   }
-  return 'http://127.0.0.1:3001';
+  return 'http://localhost:3001';
 };
 
 export default function DemoPage() {

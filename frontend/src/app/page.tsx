@@ -30,9 +30,9 @@ export default function LandingPage() {
       </nav>
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-40 pb-32 px-6 overflow-hidden bg-gradient-to-b from-blue-50 to-[#f8fafc]">
+      <section className="relative pt-24 pb-32 px-6 overflow-hidden bg-gradient-to-b from-blue-50 to-[#f8fafc]">
         {/* Background Mesh/Glow */}
-        <div className="absolute top-20 left-1/4 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" />
+        <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" />
         <div className="absolute top-40 right-1/4 w-[500px] h-[500px] bg-orange-400/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" style={{ animationDelay: '1.5s' }} />
         <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
@@ -148,9 +148,11 @@ export default function LandingPage() {
             <div className="animate-fade-up">
               <ul className="space-y-6 text-lg text-slate-600 leading-relaxed font-medium mb-12">
                 <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Auto-retried ticketing with wallet-safe refunds</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Per-key rate limits and usage analytics</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Signed webhooks with replay protection</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Sandbox & live environments from day one</li>
+                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Per-key rate limits and dynamic usage analytics</li>
+                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Signed webhooks with HMAC-SHA256 replay protection</li>
+                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Instant multi-currency settlement (USD/NGN/Crypto)</li>
+                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Sandbox & Live environment toggles with zero downtime</li>
+                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Global travel compliance and automated KYC flow</li>
               </ul>
             </div>
 
