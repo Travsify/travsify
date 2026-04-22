@@ -4,38 +4,22 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { 
   ArrowUpRight, 
-  ArrowDownLeft, 
   Plane, 
-  Hotel, 
-  Car, 
-  ShieldCheck, 
-  ScrollText, 
+  Wallet,
+  Key,
+  Globe,
+  Code2,
+  Search,
+  Calendar,
+  Bell,
+  LogOut,
+  ChevronRight,
+  Loader2,
   TrendingUp,
+  MapPin,
   Activity,
   Zap,
-  MoreHorizontal,
-  LogOut,
-  Loader2,
-  Globe,
-  Plus,
-  ArrowRight,
-  ChevronRight,
-  Database,
-  BarChart3,
-  Terminal,
-  Cpu,
-  Layers,
-  Network,
-  Share2,
-  Lock,
-  Key,
-  Eye,
-  ArrowDownCircle,
-  ArrowUpCircle,
-  Wallet,
-  MapPin,
-  Calendar,
-  Search
+  MoreHorizontal
 } from 'lucide-react';
 import Link from 'next/link';
 import { API_URL } from '@/utils/api';
@@ -45,37 +29,10 @@ export default function OverviewPage() {
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searching, setSearching] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [results, setResults] = useState<any[]>([]);
-  const [tab, setTab] = useState('flights');
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  const handleRealSearch = async () => {
-    if (!searchQuery) return;
-    setSearching(true);
-    setResults([]);
-    try {
-      const endpoint = tab === 'flights' ? 'flights/search' : tab === 'hotels' ? 'hotels/search' : 'visa/requirements';
-      const body = tab === 'flights' ? { origin: searchQuery, destination: 'LHR', departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], adults: 1 } : {};
-      const query = tab === 'hotels' ? `?city=${searchQuery}` : tab === 'visas' ? `?nationality=NG&destination=${searchQuery}` : '';
-      
-      const res = await fetch(`${API_URL}/demo/${endpoint}${query}`, {
-        method: tab === 'flights' ? 'POST' : 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        ...(tab === 'flights' ? { body: JSON.stringify(body) } : {})
-      });
-      const data = await res.json();
-      setResults(data);
-    } catch (err) {
-      console.error('Search failed', err);
-    } finally {
-      setSearching(false);
-    }
-  };
 
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
@@ -105,378 +62,181 @@ export default function OverviewPage() {
     return new Intl.NumberFormat(currency === 'NGN' ? 'en-NG' : 'en-US', {
       style: 'currency',
       currency: currency,
-      minimumFractionDigits: 2
+      minimumFractionDigits: 0
     }).format(amount);
   };
 
   if (loading) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center bg-[#020617] rounded-[32px] border border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.05),transparent)] pointer-events-none" />
-        <div className="w-8 h-8 border-t-2 border-orange-500 rounded-full animate-spin mb-6 shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] animate-pulse">Syncing Distributed Ledger...</p>
+      <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Skylink...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      {/* ─── SYSTEM STATUS BAR ─── */}
-      <div className="flex items-center justify-between px-8 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-xs font-bold text-slate-600">System Online</span>
-          </div>
-          <div className="h-4 w-px bg-slate-200" />
-          <span className="text-xs font-medium text-slate-500">Last updated: {new Date().toLocaleTimeString()}</span>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      {/* Welcome Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-[32px] font-black text-slate-900 tracking-tight">Welcome back, {user?.businessName?.split(' ')[0] || 'Adaeze'}</h2>
+          <p className="text-slate-500 font-medium mt-1">Here's what's happening with your bookings today.</p>
         </div>
-        <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-          <ShieldCheck size={14} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Verified Account</span>
-        </div>
+        <Link href="/dashboard/bookings" className="flex items-center gap-2 px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10 active:scale-95">
+          <Plane size={18} />
+          New booking
+        </Link>
       </div>
 
-      {/* ─── SEARCH & RESULTS ─── */}
-      <div className="bg-white p-10 rounded-[40px] border border-slate-200 shadow-2xl shadow-slate-200/40 transition-all">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Global Search Terminal</h3>
-            <p className="text-slate-500 font-medium text-sm mt-1">Directly query SML.agency, LiteAPI, and Mozio infrastructure.</p>
+      {/* Stat Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCardV2 
+          label="NGN BALANCE" 
+          value={formatCurrency(ngnWallet.balance, 'NGN')} 
+          change="+14.2%" 
+          subLabel="Locked ₦120,000" 
+        />
+        <StatCardV2 
+          label="USD BALANCE" 
+          value={formatCurrency(usdWallet.balance, 'USD')} 
+          change="+8.1%" 
+          subLabel="Locked $320.00" 
+        />
+        <StatCardV2 
+          label="API CALLS (7D)" 
+          value="184,392" 
+          change="+12.4%" 
+          subLabel="vs prior week" 
+        />
+        <StatCardV2 
+          label="TICKET SUCCESS RATE" 
+          value="98.4%" 
+          change="+0.6%" 
+          subLabel="rolling 30 days" 
+        />
+      </div>
+
+      {/* Main Stats & Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* API Usage Chart Card */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-[32px] p-8 shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">API usage</h3>
+              <p className="text-sm text-slate-500 font-medium">Requests in the last 7 days</p>
+            </div>
+            <select className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-600 outline-none cursor-pointer">
+              <option>Last 7 days</option>
+              <option>Last 30 days</option>
+            </select>
           </div>
-          <div className="flex bg-slate-100 p-1.5 rounded-2xl">
-            {['flights', 'hotels', 'visas'].map((t) => (
-              <button 
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
-                  tab === t ? 'bg-white text-blue-600 shadow-lg shadow-blue-600/10' : 'text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                {t}
-              </button>
+          <div className="h-64 flex items-end justify-between px-4 pb-4">
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+              <div key={day} className="flex flex-col items-center gap-4 group cursor-pointer">
+                <div 
+                  className="w-12 bg-slate-50 rounded-t-lg transition-all group-hover:bg-blue-600 group-hover:shadow-lg group-hover:shadow-blue-600/20" 
+                  style={{ height: `${Math.random() * 100 + 60}px` }} 
+                />
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{day}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative group">
-            <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-              <MapPin size={20} />
-            </div>
-            <input 
-              type="text" 
-              placeholder={tab === 'flights' ? 'Where from? (e.g. LOS)' : 'City or Location'} 
-              className="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-base font-bold transition-all outline-none placeholder:text-slate-400 shadow-inner"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="flex-1 relative group">
-            <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-              <Calendar size={20} />
-            </div>
-            <input 
-              type="date" 
-              className="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-base font-bold transition-all outline-none shadow-inner"
-            />
-          </div>
-          <button 
-            onClick={handleRealSearch}
-            disabled={searching}
-            className="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all active:scale-95 shadow-xl shadow-blue-600/30 flex items-center justify-center gap-3 disabled:opacity-50"
-          >
-            {searching ? <Loader2 className="animate-spin" size={18} /> : <Search size={18} />}
-            {searching ? 'Querying API...' : 'Search Inventory'}
-          </button>
-        </div>
-
-        {/* Real-time Results Area */}
-        {results.length > 0 && (
-          <div className="mt-12 space-y-4 animate-fade-up">
-            <div className="flex items-center justify-between mb-6">
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Live Inventory from SML.agency</h4>
-              <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                Real-time Rates
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {results.map((item: any) => (
-                <div key={item.id} className="group bg-white border border-slate-100 p-6 rounded-3xl hover:border-blue-600 hover:shadow-xl transition-all relative overflow-hidden">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        {tab === 'flights' ? '✈️' : tab === 'hotels' ? '🏨' : '🛂'}
-                      </div>
-                      <div>
-                        <p className="text-sm font-black text-slate-900">{item.name || item.airline || 'Standard Offer'}</p>
-                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{item.provider} • ID: {item.id?.slice(0, 8)}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-black text-blue-600">${item.price}</p>
-                      <p className="text-[10px] font-bold text-slate-400">Incl. Travsify Fee</p>
-                    </div>
-                  </div>
-                  <button className="w-full py-3 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    Book This {tab.slice(0, -1)}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* ─── LEFT: MAIN IDENTITY & ASSETS ─── */}
-        <div className="lg:col-span-3 space-y-6">
-          {/* Business Header */}
-          <div className="relative group overflow-hidden bg-white border border-slate-200 p-10 rounded-[32px] flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-2xl transition-all hover:border-blue-500/20">
-            <div className="space-y-4 relative z-10">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black bg-blue-600 text-white px-3 py-1 rounded-lg uppercase tracking-widest shadow-lg shadow-blue-600/20">Active Business</span>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
-                Welcome back, <span className="text-blue-600">{user?.businessName}</span>
-              </h2>
-              <p className="text-[14px] text-slate-500 font-medium max-w-md leading-relaxed">
-                Manage your travel bookings, track your wallet balance, and grow your travel business from one simple dashboard.
-              </p>
-            </div>
-            <div className="flex gap-4 relative z-10">
-              <Link href="/dashboard/wallets" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[13px] transition-all flex items-center gap-2 shadow-xl shadow-slate-900/10 hover:bg-blue-600 active:scale-95 uppercase tracking-widest">
-                <Wallet size={16} />
-                Manage Wallets
-              </Link>
-            </div>
-          </div>
-
-          {/* Balance Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ModernBalanceCard 
-              label="Naira Settlement Wallet" 
-              amount={ngnWallet.balance} 
-              currency="NGN" 
-              trend="+3.1%" 
-              color="emerald" 
-              icon={<Database size={20} />}
-              path="/dashboard/wallets"
-            />
-            <ModernBalanceCard 
-              label="Dollar Settlement Wallet" 
-              amount={usdWallet.balance} 
-              currency="USD" 
-              trend="+1.2%" 
-              color="blue" 
-              icon={<Globe size={20} />}
-              path="/dashboard/wallets"
-            />
-          </div>
-
-          {/* Quick Access Chips */}
-          <div className="flex flex-wrap items-center gap-3">
-            <ServiceChip icon={<Plane size={14} />} label="Flights" path="/dashboard/bookings" active />
-            <ServiceChip icon={<Hotel size={14} />} label="Hotels" path="/dashboard/hotels" />
-            <ServiceChip icon={<Car size={14} />} label="Transfers" path="/dashboard/transfers" />
-            <ServiceChip icon={<ScrollText size={14} />} label="e-Visas" path="/dashboard/visa" />
-            <ServiceChip icon={<ShieldCheck size={14} />} label="Insurance" path="/dashboard/insurance" />
-          </div>
-
-          {/* Activity Ledger */}
-          <div className="bg-slate-900 border border-white/5 rounded-[32px] overflow-hidden flex flex-col shadow-2xl">
-            <div className="px-10 py-8 border-b border-white/5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Activity size={18} className="text-orange-500" />
-                <h3 className="text-[13px] font-black text-white uppercase tracking-[0.2em]">Live Transaction Stream</h3>
-              </div>
-              <Link href="/dashboard/wallets" className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-colors">
-                View Full Ledger
-              </Link>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-white/[0.01] border-b border-white/5">
-                    <th className="px-10 py-5 text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Signature</th>
-                    <th className="px-10 py-5 text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Resource Distribution</th>
-                    <th className="px-10 py-5 text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] text-right">Settlement</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {transactions.slice(0, 5).map((tx) => (
-                    <tr key={tx.id} className="hover:bg-white/[0.02] transition-colors group cursor-pointer">
-                      <td className="px-10 py-6">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-[12px] font-black text-slate-200 group-hover:text-orange-500 transition-colors">#{tx.reference?.slice(0, 10).toUpperCase() || tx.id.slice(0, 10).toUpperCase()}</span>
-                          <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter">Verified • {new Date(tx.createdAt).toLocaleTimeString()}</span>
-                        </div>
-                      </td>
-                      <td className="px-10 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:border-orange-500/30 transition-colors shadow-lg">
-                            {tx.type === 'credit' ? <ArrowDownCircle size={16} className="text-emerald-500" /> : <Plane size={16} className="text-orange-500" />}
-                          </div>
-                          <div>
-                            <p className="text-[13px] font-black text-slate-300 group-hover:text-white transition-colors">{tx.metadata?.description || (tx.type === 'credit' ? 'Wallet Funding' : 'Inventory Order')}</p>
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{tx.wallet?.currency} Channel</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className={`px-10 py-6 text-[14px] font-black text-right ${tx.type === 'credit' ? 'text-emerald-500' : 'text-white'}`}>
-                        {tx.type === 'credit' ? '+' : '-'}{formatCurrency(tx.amount, tx.wallet?.currency)}
-                      </td>
-                    </tr>
-                  ))}
-                  {transactions.length === 0 && (
-                    <tr>
-                      <td colSpan={3} className="px-10 py-24 text-center">
-                        <Loader2 size={32} className="mx-auto text-slate-800 animate-spin mb-6" />
-                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.5em]">Synchronizing Activity Stream...</p>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* ─── RIGHT: SYSTEM DIRECTIVES & METRICS ─── */}
+        {/* Quick Actions Card */}
         <div className="space-y-6">
-          {/* Performance Node */}
-          <Link href="/dashboard/developers" className="block">
-            <div className="bg-[#0a0f1e] border border-blue-500/20 rounded-[32px] p-8 shadow-2xl relative overflow-hidden group hover:border-blue-500/40 transition-all">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent)]" />
-              <div className="flex items-center justify-between mb-10 relative z-10">
-                <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <BarChart3 size={24} className="text-blue-400" />
-                </div>
-                <div className="px-3 py-1 bg-blue-500/10 text-blue-400 text-[9px] font-black rounded-lg uppercase tracking-widest border border-blue-500/20 group-hover:bg-blue-600 group-hover:text-white transition-all">Operational</div>
-              </div>
-              <h3 className="text-[13px] font-black text-white uppercase tracking-[0.2em] mb-8 relative z-10">Interface Analysis</h3>
-              <div className="space-y-6 relative z-10">
-                <HighDensityMetric label="Success Rate" value="99.98%" sub="Last 24h" trend="+0.02%" positive />
-                <HighDensityMetric label="Request Volume" value="48.2k" sub="Scaled" trend="+14%" positive />
-                <HighDensityMetric label="Avg Latency" value="142ms" sub="Global" trend="-8ms" positive />
-              </div>
-              <div className="mt-10 w-full py-4 bg-blue-600/10 border border-blue-600/30 text-blue-400 rounded-2xl font-black text-[11px] flex items-center justify-center gap-3 group-hover:bg-blue-600 group-hover:text-white transition-all uppercase tracking-widest">
-                API Reference <ArrowRight size={16} />
-              </div>
-            </div>
-          </Link>
-
-          {/* Quick Directive Actions */}
-          <div className="bg-slate-900 border border-white/5 rounded-[32px] p-8">
-            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Lock size={12} />
-              Security Directives
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <DirectiveButton icon={<Key size={18} />} label="API Keys" path="/dashboard/developers" />
-              <DirectiveButton icon={<Share2 size={18} />} label="Webhooks" path="/dashboard/settings" />
-              <DirectiveButton icon={<Cpu size={18} />} label="Marginalia" path="/dashboard/settings" />
-              <DirectiveButton icon={<ShieldCheck size={18} />} label="KYC Status" path="/dashboard/kyc" />
-            </div>
+          <h3 className="text-lg font-black text-slate-900 tracking-tight ml-2">Quick actions</h3>
+          <div className="space-y-3">
+            <QuickAction icon={<Wallet size={18} />} label="Fund wallet" href="/dashboard/wallets" />
+            <QuickAction icon={<Key size={18} />} label="Generate API key" href="/dashboard/developers" />
+            <QuickAction icon={<Code2 size={18} />} label="Read documentation" href="/dashboard/docs" />
+            <QuickAction icon={<Globe size={18} />} label="Complete KYC" href="/dashboard/kyc" />
           </div>
+        </div>
+      </div>
 
-          {/* Global Status Widget */}
-          <Link href="/dashboard/settings" className="block group">
-            <div className="bg-orange-600 rounded-[32px] p-10 text-white shadow-2xl relative overflow-hidden active:scale-[0.98] transition-transform">
-              <div className="absolute -bottom-16 -right-16 opacity-10 group-hover:rotate-12 transition-transform duration-1000 group-hover:scale-110">
-                <Globe size={240} />
-              </div>
-              <h3 className="text-[14px] font-black mb-3 uppercase tracking-tighter relative z-10">Engineering Support</h3>
-              <p className="text-[11px] font-bold text-orange-100 opacity-90 leading-relaxed mb-8 relative z-10">
-                Live terminal is active. Custom webhooks and enterprise integrations available.
-              </p>
-              <div className="flex items-center gap-3 text-[11px] font-black uppercase tracking-widest relative z-10">
-                Configure Systems <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-              </div>
-            </div>
+      {/* Recent Bookings Section */}
+      <div className="bg-white border border-slate-200 rounded-[32px] shadow-sm overflow-hidden">
+        <div className="p-8 flex items-center justify-between border-b border-slate-100">
+          <div>
+            <h3 className="text-lg font-black text-slate-900 tracking-tight">Recent bookings</h3>
+            <p className="text-sm text-slate-500 font-medium">Last 5 across all wallets</p>
+          </div>
+          <Link href="/dashboard/bookings" className="text-sm font-black text-blue-600 hover:underline flex items-center gap-2 group">
+            View all <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <tbody className="divide-y divide-slate-50">
+              <BookingRow id="BK-9241" route="LOS → LHR" name="Adaeze Okafor" amount="₦1,240,000" status="Ticketed" />
+              <BookingRow id="BK-9240" route="ABV → DXB" name="Tunde Bakare" amount="₦980,500" status="Ticketed" />
+              <BookingRow id="BK-9239" route="JFK → LOS" name="Sarah Mensah" amount="$1,840.00" status="Pending" />
+              <BookingRow id="BK-9238" route="LOS → ACC" name="Kwame Asante" amount="₦215,000" status="Ticketed" />
+              <BookingRow id="BK-9237" route="CDG → LOS" name="Marie Dubois" amount="$1,120.00" status="Failed" />
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   );
 }
 
-function StatusIndicator({ label, status, color }: any) {
+function StatCardV2({ label, value, change, subLabel }: { label: string; value: string; change: string; subLabel: string }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor] ${color}`} />
-      <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{label}:</span>
-      <span className={`text-[10px] font-black uppercase tracking-widest ${color}`}>{status}</span>
+    <div className="bg-white border border-slate-200 p-8 rounded-[24px] shadow-sm hover:border-blue-500/20 transition-all group">
+      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">{label}</p>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-2xl font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">{value}</span>
+        <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <ArrowUpRight size={12} />
+          {change}
+        </span>
+      </div>
+      <p className="text-[12px] text-slate-500 font-medium">{subLabel}</p>
     </div>
   );
 }
 
-function ModernBalanceCard({ label, amount, currency, trend, color, icon, path }: any) {
-  const formatted = new Intl.NumberFormat(currency === 'NGN' ? 'en-NG' : 'en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2
-  }).format(amount);
-
+function QuickAction({ icon, label, href }: { icon: any; label: string; href: string }) {
   return (
-    <Link href={path} className="block group">
-      <div className="bg-slate-900 border border-white/5 p-8 rounded-[32px] group-hover:border-orange-500/30 transition-all shadow-2xl relative overflow-hidden h-full">
-        <div className="absolute top-0 right-0 p-6 opacity-5 text-white group-hover:scale-125 transition-transform">
+    <Link href={href} className="flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl hover:border-blue-600 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
           {icon}
         </div>
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 group-hover:text-slate-300 transition-colors">{label}</p>
-        <div className="flex items-end justify-between">
-          <h4 className="text-[14px] font-black text-white tracking-tight">
-            {formatted}
-          </h4>
-          <div className={`px-2 py-1 rounded-lg bg-${color}-500/10 flex items-center gap-1 text-[10px] font-black ${color === 'emerald' ? 'text-emerald-500' : 'text-blue-400'}`}>
-            <TrendingUp size={12} />
-            {trend}
-          </div>
-        </div>
+        <span className="text-[15px] font-bold text-slate-700 group-hover:text-slate-900">{label}</span>
       </div>
+      <ArrowUpRight size={18} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
     </Link>
   );
 }
 
-function ServiceChip({ icon, label, path, active }: any) {
-  return (
-    <Link href={path} className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl border transition-all duration-300 group ${
-      active 
-        ? 'bg-orange-600 border-orange-600 text-white shadow-xl shadow-orange-600/30' 
-        : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/10 hover:bg-white/10 hover:text-white'
-    }`}>
-      <span className={active ? 'text-white' : 'text-orange-500 group-hover:scale-110 transition-transform'}>{icon}</span>
-      <span className="text-[11px] font-black uppercase tracking-[0.2em]">{label}</span>
-    </Link>
-  );
-}
+function BookingRow({ id, route, name, amount, status }: { id: string; route: string; name: string; amount: string; status: string }) {
+  const isTicketed = status === 'Ticketed';
+  const isPending = status === 'Pending';
+  
+  const statusStyles = isTicketed 
+    ? 'text-emerald-600 bg-emerald-50' 
+    : isPending 
+    ? 'text-orange-600 bg-orange-50' 
+    : 'text-rose-600 bg-rose-50';
 
-function HighDensityMetric({ label, value, sub, trend, positive }: any) {
-  return (
-    <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl group-hover:bg-white/5 transition-colors">
-      <div>
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{label}</p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-[14px] font-black text-white">{value}</span>
-          <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter">{sub}</span>
-        </div>
-      </div>
-      <div className={`px-2 py-1 rounded-lg bg-${positive ? 'emerald' : 'blue'}-500/10 text-[10px] font-black ${positive ? 'text-emerald-500' : trend === 'Stable' ? 'text-slate-500' : 'text-emerald-500'}`}>
-        {trend}
-      </div>
-    </div>
-  );
-}
+  const dotColor = isTicketed ? 'bg-emerald-500' : isPending ? 'bg-orange-500' : 'bg-rose-500';
 
-function DirectiveButton({ icon, label, path }: any) {
   return (
-    <Link href={path} className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-orange-500/20 hover:bg-orange-500/5 text-slate-500 hover:text-orange-500 transition-all gap-3 group">
-      <div className="p-2.5 rounded-xl bg-slate-900 border border-white/5 group-hover:border-orange-500/20 group-hover:scale-110 transition-all">
-        {icon}
-      </div>
-      <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
-    </Link>
+    <tr className="hover:bg-slate-50/50 transition-all group">
+      <td className="px-8 py-6 text-sm font-bold text-slate-400 font-mono tracking-tight">{id}</td>
+      <td className="px-8 py-6 text-[15px] font-black text-slate-900 tracking-tight">{route}</td>
+      <td className="px-8 py-6 text-[15px] font-medium text-slate-600">{name}</td>
+      <td className="px-8 py-6 text-[15px] font-black text-slate-900 text-right tabular-nums">{amount}</td>
+      <td className="px-8 py-6 text-right">
+        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${statusStyles}`}>
+          <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
+          {status}
+        </span>
+      </td>
+    </tr>
   );
 }

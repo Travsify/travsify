@@ -26,128 +26,102 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuGroups = [
     {
-      title: 'Navigation',
       items: [
-        { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-        { name: 'My Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+        { name: 'Bookings', path: '/dashboard/bookings', icon: <Plane size={20} /> },
+        { name: 'Wallet', path: '/dashboard/wallets', icon: <Wallet size={20} /> },
+        { name: 'API keys', path: '/dashboard/developers', icon: <Key size={20} /> },
+        { name: 'KYC', path: '/dashboard/kyc', icon: <Globe2 size={20} /> },
+        { name: 'Developers', path: '/dashboard/docs', icon: <Code2 size={20} /> },
       ]
-    },
-    {
-      title: 'Services',
-      items: [
-        { name: 'Flights', path: '/dashboard/bookings', icon: <Plane size={18} /> },
-        { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
-        { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'Visas', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
-        { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
-      ]
-    },
-    {
-      title: 'Account',
-      items: [
-        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
-        { name: 'Verify Business', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
-        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
-      ]
-    },
-    ...(user?.role === 'admin' ? [{
-      title: 'Admin Control',
-      items: [
-        { name: 'Master Console', path: '/dashboard/admin', icon: <ShieldCheck size={18} /> },
-      ]
-    }] : [])
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-medium">
-      {/* Sidebar - Executive Slate */}
-      <aside className="w-80 bg-[#0a0f18] border-r border-white/5 flex flex-col fixed h-full z-50 transition-all duration-300 shadow-2xl">
-        <div className="p-10">
-          <Link href="/dashboard" className="text-2xl font-black tracking-tighter flex items-center gap-1.5 text-white">
-            Travsify<span className="text-orange-500">.</span>
+    <div className="min-h-screen bg-[#f9fafb] flex font-sans text-slate-900">
+      {/* Sidebar */}
+      <aside className="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full z-50">
+        <div className="p-8">
+          <Link href="/dashboard" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+              <Share2 size={20} />
+            </div>
+            <span className="text-xl font-black tracking-tight text-slate-900">Skylink<span className="text-blue-600">.</span></span>
           </Link>
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">B2B Travel Engine</p>
         </div>
         
-        <div className="flex-1 px-6 py-4 space-y-10 overflow-y-auto custom-scrollbar">
-          {menuGroups.map((group, idx) => (
-            <div key={idx} className="space-y-3">
-              <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
-                {group.title}
-              </h3>
-              <nav className="space-y-1">
-                {group.items.map((item) => {
-                  const isActive = pathname === item.path;
-                  return (
-                    <Link 
-                      key={item.path} 
-                      href={item.path}
-                      className={`group flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-200 relative overflow-hidden ${
-                        isActive 
-                          ? 'bg-orange-600 text-white shadow-xl shadow-orange-600/20' 
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <span className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-orange-500'} transition-colors`}>
-                          {item.icon}
-                        </span>
-                        <span className="text-[14px] font-bold tracking-tight">{item.name}</span>
-                      </div>
-                      {isActive && <ChevronRight size={14} className="opacity-50" />}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-          ))}
-        </div>
+        <nav className="flex-1 px-4 py-4 space-y-1">
+          {menuGroups[0].items.map((item) => {
+            const isActive = pathname === item.path;
+            return (
+              <Link 
+                key={item.path} 
+                href={item.path}
+                className={`flex items-center gap-4 px-6 py-4 rounded-xl font-bold text-[15px] transition-all ${
+                  isActive 
+                    ? 'bg-blue-50 text-blue-600' 
+                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <span className={isActive ? 'text-blue-600' : 'text-slate-400'}>
+                  {item.icon}
+                </span>
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
 
-        <div className="p-8 border-t border-white/5 bg-black/20">
-          <div className="flex items-center space-x-4 mb-8 px-2">
-            <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-white/10 flex items-center justify-center font-black text-sm text-white shadow-lg">
-                {user?.businessName?.[0] || 'U'}
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-[#0a0f18] shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
-            </div>
-            <div className="overflow-hidden">
-              <div className="text-[14px] font-black text-white truncate leading-tight">{user?.businessName}</div>
-              <div className="text-[9px] text-slate-500 truncate uppercase font-black tracking-widest mt-1">Status: {user?.role}</div>
-            </div>
+        <div className="p-6 m-4 bg-orange-50/50 rounded-2xl border border-orange-100">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 bg-orange-500 rounded-full" />
+            <span className="text-[12px] font-black text-orange-600 uppercase tracking-widest">Sandbox mode</span>
           </div>
-          <button 
-            onClick={logout}
-            className="w-full group flex items-center space-x-3 px-5 py-4 text-[13px] font-black text-slate-500 hover:text-orange-500 hover:bg-orange-500/5 rounded-2xl transition-all duration-200 border border-transparent hover:border-orange-500/10"
-          >
-            <LogOut size={18} />
-            <span>Terminate Session</span>
-          </button>
+          <p className="text-[11px] text-slate-500 leading-relaxed font-medium mb-3">Complete KYC to enable live bookings.</p>
+          <Link href="/dashboard/kyc" className="text-[11px] font-black text-blue-600 hover:underline">Start verification →</Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-80 min-h-screen overflow-y-auto">
-        {/* Top Header - Executive Slate */}
-        <header className="h-24 border-b border-slate-200 bg-white/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-16">
-          <div className="flex items-center gap-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
-            <h1 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">
-              {menuGroups.flatMap(g => g.items).find(i => i.path === pathname)?.name || 'Command Center'}
-            </h1>
+      <main className="flex-1 ml-72 min-h-screen">
+        {/* Top Header */}
+        <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-10">
+          <div className="flex-1 max-w-2xl relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search bookings, PNRs, transactions..." 
+              className="w-full pl-12 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all outline-none"
+            />
           </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3 px-5 py-2.5 bg-slate-900 text-white rounded-xl shadow-lg">
-               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-               <span className="text-[11px] font-black uppercase tracking-widest">Global Terminal Live</span>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 border border-slate-200 rounded-full">
+              <div className="w-2 h-2 bg-orange-500 rounded-full" />
+              <span className="text-xs font-bold text-slate-600">test mode</span>
+              <ChevronRight size={14} className="text-slate-400 rotate-90" />
             </div>
-            <button className="w-12 h-12 rounded-2xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all cursor-pointer bg-white shadow-sm">
-              <Bell size={20} />
+            <button className="p-2.5 text-slate-400 hover:text-slate-900 bg-slate-50 border border-slate-200 rounded-full transition-all">
+              <Bell size={18} />
+            </button>
+            <div className="h-10 w-px bg-slate-200 mx-2" />
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-xs">TR</div>
+              <div>
+                <p className="text-sm font-black text-slate-900 leading-none">Travsify Global Inclusive Llc</p>
+                <p className="text-[11px] text-slate-500 font-medium mt-1">info@vedio.com</p>
+              </div>
+            </div>
+            <button 
+              onClick={logout}
+              className="ml-4 p-2.5 text-slate-400 hover:text-orange-600 bg-slate-50 border border-slate-200 rounded-full transition-all"
+            >
+              <LogOut size={18} />
             </button>
           </div>
         </header>
 
-        <div className="p-16">
+        <div className="p-10 bg-[#f9fafb]">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
