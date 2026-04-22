@@ -79,14 +79,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
-      {/* Sidebar - Travexia Dark Navy */}
+      {/* Sidebar - Travsify NDC Dark Navy */}
       <aside className="w-64 bg-[#0A1629] flex flex-col fixed h-full z-50 shadow-2xl">
         <div className="p-6 mb-4 flex items-center gap-3">
           <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
             <Globe size={18} />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-black tracking-tight text-white leading-none">Travexia</span>
+            <span className="text-lg font-black tracking-tight text-white leading-none">Travsify NDC</span>
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">API Platform</span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main className="flex-1 ml-64 min-h-screen">
-        {/* Top Header - Travexia White */}
+        {/* Top Header - Travsify NDC White */}
         <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-8">
           <div className="flex flex-col">
             <h1 className="text-xl font-black text-slate-900 tracking-tight">Control Center</h1>
@@ -157,14 +157,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Bell size={20} />
                 <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-500 rounded-full border-2 border-white text-[8px] font-black text-white flex items-center justify-center">3</div>
               </button>
-              <div className="flex items-center gap-3 cursor-pointer group">
-                <div className="text-right">
-                  <p className="text-xs font-black text-slate-900 leading-none">Demo Travels Ltd.</p>
-                  <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase">Admin</p>
+              <Link href="/dashboard/settings">
+                <div className="flex items-center gap-3 cursor-pointer group hover:bg-slate-50 p-2 -mr-2 rounded-xl transition-colors">
+                  <div className="text-right">
+                    <p className="text-xs font-black text-slate-900 leading-none">{user?.businessName || 'Travsify Partner'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase">{user?.role || 'Admin'}</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-sm uppercase">
+                    {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
+                  </div>
+                  <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-600 transition-colors" />
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-sm">DT</div>
-                <ChevronRight size={14} className="text-slate-300 rotate-90" />
-              </div>
+              </Link>
             </div>
           </div>
         </header>
