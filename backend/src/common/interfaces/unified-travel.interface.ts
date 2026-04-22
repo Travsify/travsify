@@ -53,4 +53,26 @@ export interface UnifiedVisa {
   requirements: string[];
   processingTime: string;
   price: UnifiedPrice;
+  bookingUrl: string;
+}
+
+export interface UnifiedTransfer {
+  id: string;
+  vertical: TravelVertical.TRANSFER;
+  provider: string;
+  vehicleType: string;
+  capacity: number;
+  price: UnifiedPrice;
+  bookingUrl: string;
+}
+
+export interface UnifiedExperience {
+  id: string;
+  vertical: TravelVertical.EXPERIENCE;
+  provider: string;
+  title: string;
+  location: string;
+  duration: string;
+  price: UnifiedPrice;
+  bookingUrl: string;
 }

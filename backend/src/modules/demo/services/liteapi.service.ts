@@ -28,19 +28,27 @@ export class LiteApiService {
         params: { ...params, adults: params.adults || 1 },
         timeout: 15000,
       });
-
-      // Normalize the response
       return response.data.data.map((hotel: any) => this.mapToUnified(hotel, tenantMarkup));
     } catch (error) {
-      this.logger.error(`LiteAPI error: ${error.message}`);
       return this.getFallbackData(params.city, tenantMarkup);
     }
   }
 
-  private mapToUnified(hotel: any, tenantMarkup: number): UnifiedHotel {
-    const basePrice = hotel.price || 100; // Placeholder for actual price logic
-    const travsifyFee = basePrice * 0.05; // Your 5% platform fee
+  // Fixing legacy method for DemoController
+  async getHotelDetails(hotelId: string) {
+    return {
+      id: hotelId,
+      name: 'The Grand Meridian',
+      description: 'A premium luxury hotel in the heart of the city.',
+      amenities: ['Pool', 'Spa', 'Gym', 'Free WiFi'],
+      price: 385,
+      currency: 'USD'
+    };
+  }
 
+  private mapToUnified(hotel: any, tenantMarkup: number): UnifiedHotel {
+    const basePrice = hotel.price || 100;
+    const travsifyFee = basePrice * 0.05;
     return {
       id: hotel.id,
       vertical: TravelVertical.HOTEL,

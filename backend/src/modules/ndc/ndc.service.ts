@@ -71,6 +71,64 @@ export class NdcService {
     }
   }
 
+  // --- RESTORING BOOKING METHODS ---
+
+  async offerPrice(offerCode: string, searchGuid: string): Promise<any> {
+    const prebookParams = {
+      'aeroPrebookParams': {
+        '@_xmlns:a': 'http://schemas.datacontract.org/2004/07/SiteCity.Avia.Prebook',
+        'a:OfferCode': offerCode,
+        'a:SearchGuid': searchGuid,
+      }
+    };
+    const body = { ...this.getAuth(), ...prebookParams };
+    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', body);
+    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroPrebook', xmlRequest);
+  }
+
+  async orderCreate(bookingData: { offerCode: string, searchGuid: string, passengers: any[], contact: any }): Promise<any> {
+    const bookParams = {
+      'aeroBookParams': {
+        '@_xmlns:a': 'http://schemas.datacontract.org/2004/07/SiteCity.Avia.Book',
+        '@_xmlns:b': 'http://schemas.datacontract.org/2004/07/SiteCity.Common',
+        'a:OfferCode': bookingData.offerCode,
+        'a:SearchGuid': bookingData.searchGuid,
+        'a:Email': bookingData.contact?.email || 'test@test.com',
+        'a:Phone': bookingData.contact?.phone || '12345678',
+        'a:PaxList': {
+          'b:PaxData': bookingData.passengers.map(pax => ({
+            'b:AgeType': pax.ageType || 'Adult',
+            'b:BirthDay': pax.birthDay,
+            'b:BirthISO': pax.nationality || 'RUS',
+            'b:Document': pax.documentNumber,
+            'b:GenderType': pax.gender || 'Male',
+            'b:Name': pax.firstName,
+            'b:Surname': pax.lastName,
+          }))
+        },
+      }
+    };
+    const body = { ...this.getAuth(), ...bookParams };
+    const xmlRequest = NdcUtils.createEnvelope('AeroBook', body);
+    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroBook', xmlRequest);
+  }
+
+  async orderChange(confirmData: { bookId: number, bookGuid: string, price: number }): Promise<any> {
+    const confirmParams = {
+      'confirmBookParams': {
+        '@_xmlns:a': 'http://schemas.datacontract.org/2004/07/SiteCity.BookInfo.ConfirmBook',
+        'a:BookGuid': confirmData.bookGuid,
+        'a:BookId': confirmData.bookId,
+        'a:Price': confirmData.price,
+      }
+    };
+    const body = { ...this.getAuth(), ...confirmParams };
+    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', body);
+    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', xmlRequest);
+  }
+
+  // --- END OF BOOKING METHODS ---
+
   private async sendSoapRequest(url: string, action: string, xml: string): Promise<any> {
     const response = await axios.post(url, xml, {
       headers: {
@@ -104,9 +162,9 @@ export class NdcService {
       ? data.FlightData.FlightData 
       : [data.FlightData.FlightData];
 
-    return flightDataList.filter(fd => fd).map((fd: any) => {
+    return flightDataList.filter((fd: any) => fd).map((fd: any) => {
       const basePrice = parseFloat(fd.TotalPrice);
-      const travsifyFee = basePrice * 0.03; // Your 3% markup on flights
+      const travsifyFee = basePrice * 0.03;
 
       return {
         id: fd.OfferCode,
