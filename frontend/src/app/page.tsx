@@ -1,525 +1,673 @@
 'use client';
 
 import Link from 'next/link';
+import { 
+  Plane, Hotel, Car, ShieldCheck, Globe, 
+  Code2, Wallet, Search, PieChart, Lock, 
+  Key, Zap, Play, CheckCircle2, ArrowRight,
+  CreditCard, BarChart3, Settings, Users,
+  Briefcase, Rocket, Smartphone, Building2
+} from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] antialiased overflow-x-hidden selection:bg-orange-500/30">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-500/30">
+      
       {/* ─── NAV ─── */}
-      <nav className="fixed top-0 w-full z-[100] bg-white/70 backdrop-blur-xl border-b border-slate-200/50">
-        <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-black tracking-tighter flex items-center gap-1.5 hover:scale-[0.98] transition-transform">
-            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xs rotate-3 shadow-lg shadow-blue-600/20">T</div>
-            <span className="text-slate-900">Travsify<span className="text-orange-600">.</span></span>
+      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-[1200px] mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-[#0A1629] rounded flex items-center justify-center text-white">
+              <Plane size={18} className="rotate-45" />
+            </div>
+            <span className="text-xl font-black tracking-tight text-[#0A1629]">TRAVSIFY <span className="text-orange-600">NDC</span></span>
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-slate-500 uppercase tracking-widest">
-            <Link href="/demo" className="text-blue-600 hover:text-orange-600 transition-colors flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
-              Live Demo
-            </Link>
-            <Link href="/docs" className="hover:text-blue-600 transition-colors">Docs</Link>
-            <Link href="#platform" className="hover:text-blue-600 transition-colors">Platform</Link>
-            <Link href="#use-cases" className="hover:text-blue-600 transition-colors">Solutions</Link>
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-slate-500">
+            <Link href="#products" className="hover:text-[#0A1629] transition-colors">Products</Link>
+            <Link href="#developers" className="hover:text-[#0A1629] transition-colors">Developers</Link>
+            <Link href="#pricing" className="hover:text-[#0A1629] transition-colors">Pricing</Link>
+            <Link href="#company" className="hover:text-[#0A1629] transition-colors">Company</Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-[13px] font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-widest">Sign in</Link>
-            <Link href="/register" className="text-[13px] font-black bg-slate-900 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all active:scale-[0.97] shadow-xl shadow-slate-900/10 uppercase tracking-widest">
-              Build Now
+            <Link href="/login" className="text-[13px] font-bold text-slate-500 hover:text-[#0A1629] transition-colors">Log in</Link>
+            <Link href="/register" className="text-[13px] font-bold bg-orange-600 text-white px-5 py-2.5 rounded-lg hover:bg-orange-700 transition-colors">
+              Get API Access
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-48 px-6 overflow-hidden">
-        {/* Lovable-style Mesh Background */}
-        <div className="absolute inset-0 z-0 mesh-gradient opacity-60" />
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[120px] animate-pulse-glow" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
+      <main className="pt-20">
         
-        <div className="max-w-[1200px] mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto animate-reveal">
-            <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-200/50 shadow-sm mb-10 lo-density-text">
-              <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
-              Direct NDC Connection • v4.2.0-Live
-            </div>
-            
-            <h1 className="text-[clamp(3rem,8vw,6rem)] font-black leading-[0.9] tracking-[-0.05em] mb-8 text-slate-900">
-              The world's most <br/>
-              <span className="text-blue-600">powerful</span> travel API<span className="text-orange-600">.</span>
+        {/* 1. HERO SECTION */}
+        <section className="max-w-[1200px] mx-auto px-6 pt-24 pb-16 flex flex-col lg:flex-row items-center gap-12">
+          <div className="flex-1 space-y-6">
+            <h1 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tight text-[#0A1629]">
+              Build. Launch.<br/>
+              Scale Your Travel<br/>
+              Business — <span className="text-orange-600">Instantly.</span>
             </h1>
-            
-            <p className="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto mb-12 font-medium">
-              Transform your business with enterprise-grade travel infrastructure. Integrate global flights, 2.5M+ hotels, and insurance instantly.
+            <p className="text-lg text-slate-500 font-medium max-w-md">
+              One API. Global Inventory.<br/>
+              Built for Africa & the World.
             </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-              <Link href="/demo" className="bg-blue-600 text-white text-[15px] font-black px-10 py-5 rounded-2xl hover:bg-blue-700 transition-all active:scale-[0.97] shadow-2xl shadow-blue-600/30 uppercase tracking-widest">
-                Explore Demo Platform
+            <div className="flex items-center gap-4 pt-4">
+              <Link href="/register" className="bg-orange-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-700 transition-colors">
+                Get API Access
               </Link>
-              <Link href="/docs" className="text-[15px] font-black text-slate-700 bg-white border border-slate-200 px-10 py-5 rounded-2xl hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50 uppercase tracking-widest">
-                Developer Docs
+              <Link href="/docs" className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-lg font-bold hover:bg-slate-50 transition-colors">
+                View Docs
               </Link>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto pt-10 border-t border-slate-200/50">
-              <MiniStat value="99.99%" label="Uptime" color="text-blue-600" />
-              <MiniStat value="142ms" label="Latency" color="text-orange-500" />
-              <MiniStat value="200+" label="Airlines" color="text-blue-600" />
-              <MiniStat value="2.5M" label="Hotels" color="text-orange-500" />
             </div>
           </div>
-        </div>
-
-        {/* Stats Cards - Additional Visuals */}
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mt-24 relative z-10">
-          <StatCard label="Global Airlines" value="All major" change="Real-time" delay="0" />
-          <StatCard label="Hotel Properties" value="Worldwide" change="Live" delay="1" />
-          <StatCard label="API requests/sec" value="High-scale" change="Robust" delay="2" />
-        </div>
-      </section>
-
-      {/* ─── PLATFORM SECTION ─── */}
-      <section id="platform" className="relative py-32 px-6 bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-white overflow-hidden rounded-t-[3rem] -mt-10 z-20">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <div className="animate-orbit">
-            <div className="w-3 h-3 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50" />
-          </div>
-        </div>
-
-        <div className="max-w-[1200px] mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
-            <div className="animate-fade-up">
-              <p className="text-[12px] font-black uppercase tracking-[0.2em] text-orange-400 mb-4">Infrastructure</p>
-              <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-6">
-                The Ultimate <span className="text-blue-400">Travel Infrastructure</span> Platform.
-              </h2>
-              <p className="text-slate-400 leading-relaxed text-lg font-medium">Consolidate your global operations. Access flights, hotels, travel insurance, eVisa, and premium transfers through the industry's most advanced unified API.</p>
+          <div className="flex-1 relative">
+            {/* Dashboard Mockup Illustration */}
+            <div className="bg-[#0A1629] rounded-2xl p-4 shadow-2xl relative z-10 w-full max-w-[500px] ml-auto border border-slate-800">
+              <div className="flex gap-2 mb-4">
+                <div className="w-3 h-3 rounded-full bg-rose-500" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-emerald-500" />
+              </div>
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
+                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
+                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
+              </div>
+              <div className="bg-white rounded p-4 h-40 flex items-end gap-2">
+                {[40, 70, 45, 90, 65, 85, 50].map((h, i) => (
+                  <div key={i} className="flex-1 bg-blue-500 rounded-t" style={{ height: `${h}%` }} />
+                ))}
+              </div>
             </div>
-            <div className="animate-slide-in-right">
-              <div className="animate-float-slow rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-900/50">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200" alt="API Platform" className="w-full h-auto object-cover opacity-90" />
+            {/* Mobile Mockup Overlay */}
+            <div className="absolute -bottom-8 -right-8 w-48 bg-white rounded-3xl p-3 shadow-xl border border-slate-200 z-20 hidden md:block">
+              <div className="bg-slate-50 rounded-2xl h-72 p-4 border border-slate-100">
+                <div className="h-8 bg-slate-200 rounded-lg mb-4" />
+                <div className="space-y-3">
+                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
+                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
+                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
+                </div>
+              </div>
+            </div>
+            <Plane className="absolute -top-12 right-20 text-slate-300 w-32 h-32 opacity-20 rotate-45" />
+          </div>
+        </section>
+
+        {/* 2. TRUST STRIP */}
+        <section className="border-y border-slate-100 bg-slate-50/50 py-8">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest text-center mb-6">Powering the next generation of travel companies</p>
+            <div className="flex flex-wrap justify-center md:justify-between items-center gap-8 opacity-60 grayscale">
+              <span className="text-xl font-black font-serif">IATA</span>
+              <span className="text-xl font-black">Emirates</span>
+              <span className="text-2xl font-black italic text-blue-800">VISA</span>
+              <span className="text-lg font-black flex items-center gap-1"><Zap size={18}/> Flutterwave</span>
+              <span className="text-lg font-black flex items-center gap-1"><div className="w-4 h-4 bg-blue-600 rounded-sm"/> paystack</span>
+              <span className="text-xl font-black tracking-tighter">aMaDEUS</span>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. VALUE PROPOSITION */}
+        <section className="py-24 max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-12">
+            <div>
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Code2 size={20} /></div>
+                <h3 className="text-xl font-black text-slate-900">Infrastructure</h3>
+              </div>
+              <p className="text-slate-500 pl-14 text-sm font-medium">Scalable APIs & reliable systems built for global scale.</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center"><Globe size={20} /></div>
+                <h3 className="text-xl font-black text-slate-900">Inventory</h3>
+              </div>
+              <p className="text-slate-500 pl-14 text-sm font-medium">Access 500+ airlines, 1M+ hotels, and more.</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><Wallet size={20} /></div>
+                <h3 className="text-xl font-black text-slate-900">Payments</h3>
+              </div>
+              <p className="text-slate-500 pl-14 text-sm font-medium">Global payouts, multi-currency wallets & instant settlements.</p>
+            </div>
+          </div>
+          <div className="relative h-[400px] flex items-center justify-center hidden md:flex">
+            {/* Diagram node graph UI */}
+            <div className="w-32 h-32 rounded-full bg-[#0A1629] text-white flex items-center justify-center font-black text-center leading-tight shadow-xl z-10">
+              TRAVSIFY<br/>NDC
+            </div>
+            {/* Connecting Lines & Nodes */}
+            <div className="absolute inset-0 border border-dashed border-slate-200 rounded-full m-12 animate-spin-slow" style={{ animationDuration: '30s' }} />
+            <div className="absolute top-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+              <div className="w-12 h-12 bg-white shadow-md border border-slate-100 rounded-xl flex items-center justify-center text-blue-600"><Plane size={20}/></div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Airlines</span>
+            </div>
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tours</span>
+              <div className="w-12 h-12 bg-white shadow-md border border-slate-100 rounded-xl flex items-center justify-center text-purple-600"><Globe size={20}/></div>
+            </div>
+            <div className="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
+              <div className="w-12 h-12 bg-white shadow-md border border-slate-100 rounded-xl flex items-center justify-center text-orange-600"><Hotel size={20}/></div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Hotels</span>
+            </div>
+            <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
+              <div className="w-12 h-12 bg-white shadow-md border border-slate-100 rounded-xl flex items-center justify-center text-emerald-600"><Car size={20}/></div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Transfers</span>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. TRAVEL VERTICALS */}
+        <section className="bg-slate-50 py-24">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Everything you need.</h2>
+            <p className="text-lg text-slate-500 font-medium mb-12">One integration.</p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {[
+                { icon: <Plane size={24} className="text-blue-600" />, label: "Flights", color: "blue" },
+                { icon: <Hotel size={24} className="text-orange-600" />, label: "Hotels", color: "orange" },
+                { icon: <Car size={24} className="text-emerald-600" />, label: "Transfers", color: "emerald" },
+                { icon: <Globe size={24} className="text-purple-600" />, label: "Tours", color: "purple" },
+                { icon: <ShieldCheck size={24} className="text-teal-600" />, label: "Insurance", color: "teal" }
+              ].map((v, i) => (
+                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-4 hover:shadow-md transition-shadow group cursor-pointer">
+                  <div className={`w-14 h-14 rounded-full bg-${v.color}-50 flex items-center justify-center`}>
+                    {v.icon}
+                  </div>
+                  <span className="font-bold text-slate-900">{v.label}</span>
+                  <ArrowRight size={16} className={`text-${v.color}-600 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform`} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 5. DEVELOPER ECOSYSTEM & 6. FINTECH INFRASTRUCTURE */}
+        <section className="py-24 max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+          {/* Developer */}
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Built for developers.</h2>
+              <p className="text-lg text-slate-500 font-medium">Loved by businesses.</p>
+            </div>
+            <ul className="space-y-3 text-sm font-bold text-slate-600">
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-600" /> Clean, well-documented APIs</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-600" /> Sandbox & live environments</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-600" /> Real-time logs & webhooks</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-600" /> SDKs in multiple languages</li>
+            </ul>
+            <div className="bg-[#0A1629] rounded-2xl p-4 text-[13px] text-slate-300 font-mono overflow-hidden shadow-xl">
+              <div className="flex gap-4 border-b border-slate-700 pb-3 mb-3 text-xs">
+                <span className="text-white border-b-2 border-orange-500 pb-3 -mb-3">Request</span>
+                <span>Response</span>
+                <span>Python</span>
+                <span>cURL</span>
+              </div>
+              <p className="text-emerald-400">GET /v1/flights/search</p>
+              <br/>
+              <p>Headers</p>
+              <p>Authorization: Bearer sk_live_*********</p>
+              <br/>
+              <p className="text-slate-400">{"{"}</p>
+              <p className="pl-4">"status": <span className="text-yellow-300">"success"</span>,</p>
+              <p className="pl-4">"data": {"{"}</p>
+              <p className="pl-8">"flights": [</p>
+              <p className="pl-12">{"{"}</p>
+              <p className="pl-16">"id": <span className="text-yellow-300">"FL123"</span>,</p>
+              <p className="pl-16">"airline": <span className="text-yellow-300">"Emirates"</span>,</p>
+              <p className="pl-16">"price": <span className="text-blue-400">450.00</span></p>
+              <p className="pl-12">{"}"}</p>
+              <p className="pl-8">]</p>
+              <p className="pl-4">{"}"}</p>
+              <p className="text-slate-400">{"}"}</p>
+            </div>
+          </div>
+
+          {/* Fintech */}
+          <div className="space-y-8 lg:mt-0 mt-12">
+            <div>
+              <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Get paid globally.</h2>
+              <p className="text-lg text-slate-500 font-medium">Instantly.</p>
+            </div>
+            <ul className="space-y-3 text-sm font-bold text-slate-600">
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Multi-currency wallets</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Instant settlements</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Low fees. High success rate</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Payouts to 120+ countries</li>
+            </ul>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+              <div className="flex gap-4 mb-6">
+                <div className="flex-1 bg-[#0A1629] text-white p-4 rounded-xl">
+                  <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">USD</p>
+                  <p className="font-black text-xl">$45,680.50</p>
+                </div>
+                <div className="flex-1 bg-emerald-600 text-white p-4 rounded-xl">
+                  <p className="text-[10px] uppercase tracking-widest text-emerald-200 mb-1">NGN</p>
+                  <p className="font-black text-xl">₦32,560,000.00</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-slate-100 text-sm font-bold text-slate-900">
+                  <div className="flex items-center gap-3"><div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center"><Plane size={14}/></div> Booking Payment</div>
+                  <div className="flex items-center gap-4">+$1,250.00 <span className="text-[10px] px-2 py-1 bg-emerald-50 text-emerald-600 rounded uppercase">Completed</span></div>
+                </div>
+                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-slate-100 text-sm font-bold text-slate-900">
+                  <div className="flex items-center gap-3"><div className="w-8 h-8 rounded bg-orange-50 text-orange-600 flex items-center justify-center"><Wallet size={14}/></div> Payout to Bank</div>
+                  <div className="flex items-center gap-4">-$850.00 <span className="text-[10px] px-2 py-1 bg-emerald-50 text-emerald-600 rounded uppercase">Completed</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. GLOBAL TERMINAL & 8. ANALYTICS */}
+        <section className="bg-slate-50 py-24 border-y border-slate-100">
+          <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Terminal */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Control your entire</h2>
+                <p className="text-lg text-slate-500 font-medium">travel operation in one place.</p>
+              </div>
+              <ul className="space-y-3 text-sm font-bold text-slate-600">
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Smart search</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Live availability</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Real-time pricing</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Book & issue instantly</li>
+              </ul>
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+                <div className="bg-[#0A1629] p-4 flex gap-6 text-[11px] font-bold text-white uppercase tracking-widest">
+                  <span className="border-b-2 border-orange-500 pb-1">Flights</span>
+                  <span className="text-slate-400">Hotels</span>
+                  <span className="text-slate-400">Transfers</span>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="flex gap-4 text-xs font-bold text-slate-600">
+                    <div className="flex-1 bg-slate-50 p-2 rounded border border-slate-200">Lagos (LOS)</div>
+                    <div className="flex-1 bg-slate-50 p-2 rounded border border-slate-200">Dubai (DXB)</div>
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl text-sm font-bold">
+                      <div className="flex items-center gap-3"><Plane size={16} className="text-blue-600"/> Emirates</div>
+                      <div className="text-slate-500 text-xs">08:45 - 18:30</div>
+                      <div className="font-black">$450</div>
+                      <button className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg">Book</button>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl text-sm font-bold">
+                      <div className="flex items-center gap-3"><Plane size={16} className="text-purple-600"/> Qatar Airways</div>
+                      <div className="text-slate-500 text-xs">07:20 - 17:10</div>
+                      <div className="font-black">$470</div>
+                      <button className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg">Book</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics */}
+            <div className="space-y-8 lg:mt-0 mt-12">
+              <div>
+                <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Make smarter decisions</h2>
+                <p className="text-lg text-slate-500 font-medium">with real-time data.</p>
+              </div>
+              <ul className="space-y-3 text-sm font-bold text-slate-600">
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Revenue analytics</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Booking trends</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Customer insights</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Performance monitoring</li>
+              </ul>
+              <div className="bg-white rounded-2xl border border-slate-200 p-6 flex gap-6 items-center shadow-lg">
+                <div className="flex-1">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">Revenue Overview</p>
+                  <p className="text-3xl font-black text-[#0A1629] mb-2">$245,680</p>
+                  <p className="text-xs text-emerald-500 font-bold flex items-center gap-1 mb-6"><ArrowRight size={12} className="-rotate-45" /> +24.5% vs last month</p>
+                  {/* Mock Line Chart */}
+                  <div className="h-24 w-full flex items-end gap-2">
+                    {[30, 45, 25, 60, 40, 70, 50, 80, 65, 90, 100, 85].map((h, i) => (
+                      <div key={i} className="flex-1 bg-blue-100 rounded-t-sm" style={{ height: `${h}%` }}>
+                        <div className="w-full bg-blue-500 rounded-t-sm" style={{ height: '4px' }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="w-1/3 flex flex-col items-center justify-center border-l border-slate-100 pl-6">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 text-center">Bookings</p>
+                  {/* Mock Donut Chart */}
+                  <div className="w-24 h-24 rounded-full border-[12px] border-blue-500 border-r-orange-500 border-b-emerald-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 9. COMPLIANCE & 10. HOW IT WORKS */}
+        <section className="py-24 max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="space-y-8">
+             <div>
+              <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Enterprise-grade</h2>
+              <p className="text-lg text-slate-500 font-medium">security & KYC verification</p>
+            </div>
+            <ul className="space-y-3 text-sm font-bold text-slate-600">
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-slate-400" /> KYC & KYB verification</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-slate-400" /> Fraud detection</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-slate-400" /> Data encryption</li>
+              <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-slate-400" /> GDPR compliant</li>
+            </ul>
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-6">
+              <div className="w-16 h-16 rounded-full bg-[#0A1629] flex items-center justify-center text-white shrink-0 shadow-lg">
+                <Lock size={24} />
+              </div>
+              <div className="space-y-2 flex-1">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                  <span className="text-xs font-bold text-slate-700">Identity Document</span>
+                  <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Verified</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                  <span className="text-xs font-bold text-slate-700">Address Proof</span>
+                  <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Verified</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-700">Wallet Check</span>
+                  <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Verified</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <PlatformCard icon="✈️" title="Flights Engine" desc="Search, price, book and ticket flights globally. We handle the complex GDS/NDC handshakes." />
-            <PlatformCard icon="🏨" title="Global Hotels" desc="Access millions of hotel rooms worldwide with real-time availability and dynamic pricing." />
-            <PlatformCard icon="🛡️" title="Travel Insurance" desc="Automatically quote and issue comprehensive travel insurance policies alongside bookings." />
-            <PlatformCard icon="🛂" title="eVisa Processing" desc="Streamline visa applications with our automated eVisa processing endpoints." />
-            <PlatformCard icon="🚘" title="Transfers & Tours" desc="Book airport pickups, rental cars, and curated local experiences worldwide." />
-            <PlatformCard icon="💰" title="Unified Wallet" desc="Pay for every vertical from a single multi-currency ledger with auto-reconciliation." />
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Simple steps.</h2>
+              <p className="text-lg text-slate-500 font-medium">Infinite possibilities.</p>
+            </div>
+            <div className="flex flex-col gap-6 pt-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black shrink-0 text-lg">1</div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-lg">Get API Key</h4>
+                  <p className="text-sm font-medium text-slate-500">Sign up and get your API credentials.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center font-black shrink-0 text-lg">2</div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-lg">Integrate</h4>
+                  <p className="text-sm font-medium text-slate-500">Integrate our APIs in minutes.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-black shrink-0 text-lg">3</div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-lg">Start Selling</h4>
+                  <p className="text-sm font-medium text-slate-500">Go live and start selling instantly.</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── DEVELOPER EXPERIENCE ─── */}
-      <section id="developer" className="py-32 px-6 bg-white relative z-20">
-        <div className="max-w-[1200px] mx-auto">
-          <p className="text-[12px] font-black uppercase tracking-[0.2em] text-blue-600 mb-4 animate-fade-up">Developer Experience</p>
-          <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-16 max-w-3xl animate-fade-up">
-            Built by developers, <span className="text-orange-500">engineered for global scale.</span>
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* Left */}
-            <div className="animate-fade-up">
-              <ul className="space-y-6 text-lg text-slate-600 leading-relaxed font-medium mb-12">
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Auto-retried ticketing with wallet-safe refunds</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Per-key rate limits and dynamic usage analytics</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Signed webhooks with HMAC-SHA256 replay protection</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Instant multi-currency settlement (USD/NGN/Crypto)</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Sandbox & Live environment toggles with zero downtime</li>
-                <li className="flex items-start gap-4"><span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[12px] font-bold shrink-0 mt-1">✓</span> Global travel compliance and automated KYC flow</li>
+        {/* 11. TESTIMONIALS & 12. GLOBAL COVERAGE */}
+        <section className="bg-slate-50 py-24 border-y border-slate-100">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+              <div>
+                <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Trusted by innovative</h2>
+                <p className="text-lg text-slate-500 font-medium mb-10">travel businesses.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p className="text-sm font-medium text-slate-600 mb-6 leading-relaxed">"Travsify NDC helped us scale our platform globally with just one integration."</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-200" />
+                      <div>
+                        <p className="text-xs font-black text-slate-900">Adebayo O.</p>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">CEO, TravelWings</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p className="text-sm font-medium text-slate-600 mb-6 leading-relaxed">"Best API platform we've used. Reliable, fast and amazing support."</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-200" />
+                      <div>
+                        <p className="text-xs font-black text-slate-900">Sarah K.</p>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">CTO, TripWay</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Access travel inventory</h2>
+                <p className="text-lg text-slate-500 font-medium mb-8">across 100+ countries</p>
+                <ul className="space-y-4 text-sm font-bold text-slate-600 mb-8">
+                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> 500+ Airlines</li>
+                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-orange-600 rounded-full" /> 1M+ Hotels</li>
+                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" /> Thousands of routes</li>
+                </ul>
+                <div className="h-40 w-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-100 via-slate-50 to-transparent opacity-80 rounded-3xl" style={{ backgroundImage: 'radial-gradient(circle, #cbd5e1 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 13. USE CASES */}
+        <section className="py-24 max-w-[1200px] mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-[#0A1629] mb-4 tracking-tight">Built for every kind of<br/>travel business.</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center p-8 border border-slate-100 rounded-3xl hover:shadow-xl transition-shadow bg-white">
+              <div className="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6"><Briefcase size={28}/></div>
+              <h3 className="font-black text-slate-900 mb-2">Travel Agencies</h3>
+              <p className="text-sm font-medium text-slate-500">Scale your business with global inventory</p>
+            </div>
+            <div className="text-center p-8 border border-slate-100 rounded-3xl hover:shadow-xl transition-shadow bg-white">
+              <div className="w-16 h-16 mx-auto bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6"><Rocket size={28}/></div>
+              <h3 className="font-black text-slate-900 mb-2">Startups</h3>
+              <p className="text-sm font-medium text-slate-500">Launch fast with powerful APIs</p>
+            </div>
+            <div className="text-center p-8 border border-slate-100 rounded-3xl hover:shadow-xl transition-shadow bg-white">
+              <div className="w-16 h-16 mx-auto bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6"><Smartphone size={28}/></div>
+              <h3 className="font-black text-slate-900 mb-2">Fintech Apps</h3>
+              <p className="text-sm font-medium text-slate-500">Embed travel into your financial apps</p>
+            </div>
+            <div className="text-center p-8 border border-slate-100 rounded-3xl hover:shadow-xl transition-shadow bg-white">
+              <div className="w-16 h-16 mx-auto bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6"><Building2 size={28}/></div>
+              <h3 className="font-black text-slate-900 mb-2">Corporate Travel</h3>
+              <p className="text-sm font-medium text-slate-500">Streamline bookings for your team</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 14. AUTOMATION & MARKUPS */}
+        <section className="bg-slate-50 py-24 border-y border-slate-100">
+          <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl font-black text-[#0A1629] mb-2 tracking-tight">Set your profit.</h2>
+                <p className="text-lg text-slate-500 font-medium">We handle the rest.</p>
+              </div>
+              <ul className="space-y-3 text-sm font-bold text-slate-600">
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Flexible markup rules</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Auto pricing engine</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Maximize your margins</li>
               </ul>
             </div>
-
-            {/* Right - Code Block */}
-            <div className="animate-slide-in-right">
-              <div className="bg-[#0f172a] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl shadow-slate-900/30">
-                <div className="flex items-center gap-2 px-6 py-4 border-b border-white/[0.05] bg-white/[0.02]">
-                  <span className="w-3 h-3 rounded-full bg-orange-500/80" />
-                  <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                  <span className="w-3 h-3 rounded-full bg-green-500/80" />
-                  <span className="text-[12px] font-bold tracking-wider text-slate-500 font-mono ml-4">POST /v1/flights/book</span>
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-200">
+              <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-6">Markup Rule</p>
+              <div className="space-y-8">
+                <div>
+                  <div className="flex justify-between text-sm font-bold mb-2">
+                    <span className="text-slate-900 flex items-center gap-2"><Plane size={14} className="text-blue-600"/> Flights</span>
+                    <span className="text-slate-500">12%</span>
+                  </div>
+                  <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 w-[12%]" />
+                  </div>
                 </div>
-                <pre className="p-8 text-[13px] font-mono leading-[2] overflow-x-auto text-slate-300">
-<span className="text-slate-500">$</span> <span className="text-blue-400">curl</span>{` https://api.travsify.com/v1/flights/book \\
-  `}<span className="text-slate-500">-H</span> <span className="text-orange-400">{`\"Authorization: Bearer sk_live_••••9aF2\"`}</span>{` \\
-  `}<span className="text-slate-500">-H</span> <span className="text-orange-400">{`\"Idempotency-Key: bk_2026_04_19_001\"`}</span>{` \\
-  `}<span className="text-slate-500">-d</span> <span className="text-emerald-400">{`'{
-    "offer_id": "off_01HX9...",
-    "passenger": {
-      "name": "Adaeze Okafor",
-      "dob": "1992-03-14"
-    },
-    "wallet": "USD"
-  }'`}</span>
-                </pre>
-                <div className="border-t border-white/[0.05] p-8 bg-black/20 animate-shimmer">
-                  <p className="text-[12px] font-bold text-slate-500 font-mono mb-4"># → 201 Created</p>
-                  <pre className="text-[13px] font-mono leading-[2] text-emerald-400">{`{
-  "booking_id": "bk_9241",
-  "pnr": "X7H2QP",
-  "status": "ticketed",
-  "ticket_number": "125-7842910432",
-  "amount": 840.50,
-  "currency": "USD"
-}`}</pre>
+                <div>
+                  <div className="flex justify-between text-sm font-bold mb-2">
+                    <span className="text-slate-900 flex items-center gap-2"><Hotel size={14} className="text-orange-600"/> Hotels</span>
+                    <span className="text-slate-500">18%</span>
+                  </div>
+                  <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-orange-500 w-[18%]" />
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── USE CASES ─── */}
-      <section id="use-cases" className="py-32 px-6 bg-slate-50 border-y border-slate-200/50">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4 text-slate-900">
-              Powering the Next Generation of Global Travel
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <UseCaseCard
-              tag="For OTA Startups"
-              title="Launch Your OTA in a Weekend."
-              desc="Get instant sandbox access, comprehensive mock data, and robust webhooks to validate your product immediately."
-              gradient="from-blue-600 to-blue-800"
-              emoji="🚀"
-            />
-            <UseCaseCard
-              tag="For Enterprise Travel"
-              title="Modernize Legacy Systems."
-              desc="Migrate from outdated GDS infrastructure. Retain full brand control while gaining multi-currency automation."
-              gradient="from-orange-500 to-orange-700"
-              emoji="✈️"
-            />
-            <UseCaseCard
-              tag="For Global Fintechs"
-              title="Embed Travel into Your App."
-              desc="Deploy white-label portals and dynamic markups to instantly add high-margin travel offerings to your platform."
-              gradient="from-blue-600 via-purple-600 to-orange-500"
-              emoji="📱"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ─── WHITE-LABEL PORTALS ─── */}
-      <section className="relative py-32 px-6 bg-white overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
-        <div className="max-w-[1200px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="animate-slide-in-left">
-            <div className="animate-float relative rounded-3xl overflow-hidden border border-slate-200 shadow-2xl shadow-slate-200">
-              <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200" alt="White-label Portal" className="w-full h-[400px] object-cover" />
-              <div className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-100 px-6 py-5 animate-float-slow">
-                <div className="flex items-center gap-4">
-                  <span className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20">🎨</span>
-                  <div>
-                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Custom Brand</p>
-                    <p className="text-base font-bold text-slate-800">Your logo & domain</p>
+                <div>
+                  <div className="flex justify-between text-sm font-bold mb-2">
+                    <span className="text-slate-900 flex items-center gap-2"><Car size={14} className="text-emerald-600"/> Transfers</span>
+                    <span className="text-slate-500">15%</span>
+                  </div>
+                  <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-[15%]" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="animate-fade-up">
-            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-orange-500 mb-4">B2B Portals</p>
-            <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-6">
-              Launch Your <span className="text-blue-600">Travel Empire.</span>
-            </h2>
-            <p className="text-lg text-slate-600 leading-relaxed font-medium mb-10">Deploy fully-featured, white-labeled booking engines for your B2B clients in minutes. Capture market share globally with zero development overhead.</p>
-            <div className="space-y-5 mb-12">
-              <WhitelabelFeature icon="🌐" text="Custom domain mapping with SSL" />
-              <WhitelabelFeature icon="🎨" text="Full brand kit — logo, colors, typography" />
-              <WhitelabelFeature icon="💳" text="Embedded payment with your merchant ID" />
-              <WhitelabelFeature icon="📊" text="Per-portal analytics and booking reports" />
-            </div>
-            <Link href="/register" className="inline-flex items-center gap-2 bg-orange-600 text-white text-[15px] font-bold px-8 py-4 rounded-full hover:bg-orange-700 transition-all active:scale-[0.97] shadow-xl shadow-orange-600/25">
-              Launch your portal →
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── MULTI-CURRENCY WALLET ─── */}
-      <section className="py-32 px-6 bg-slate-900 text-white overflow-hidden rounded-3xl mx-4 lg:mx-8 mb-20 shadow-2xl">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="animate-fade-up">
-            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">Global Treasury</p>
-            <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-6">
-              Automated <span className="bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">Multi-Currency</span> Settlement.
-            </h2>
-            <p className="text-slate-400 leading-relaxed font-medium text-lg mb-10">Operate seamlessly across borders. Auto-lock funds, process instant cross-border refunds, and monitor your global operations via an enterprise-grade ledger.</p>
-            <div className="grid grid-cols-2 gap-6 mb-12">
-              <WalletStat icon="🇳🇬" currency="NGN" rate="Active" label="Local Settlement" />
-              <WalletStat icon="🇺🇸" currency="USD" rate="Active" label="Global Settlement" />
+        {/* 15. PRICING */}
+        <section className="py-24 max-w-[1200px] mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-[#0A1629] mb-4 tracking-tight">Simple, transparent pricing</h2>
+            <p className="text-lg text-slate-500 font-medium">— built to scale globally</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-8 border border-slate-200 rounded-3xl bg-white flex flex-col">
+              <p className="text-sm font-black text-slate-900 mb-2">Starter</p>
+              <p className="text-4xl font-black text-[#0A1629] mb-6 tracking-tight">Free</p>
+              <ul className="space-y-3 text-[13px] font-medium text-slate-500 mb-8 flex-1">
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Sandbox API</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Limited requests</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Basic support</li>
+              </ul>
+              <Link href="/register" className="block text-center w-full py-3 rounded-xl border border-slate-200 font-bold text-sm text-slate-600 hover:bg-slate-50 transition-colors">Get Started</Link>
             </div>
-            <div className="flex flex-wrap items-center gap-8 text-[14px] font-bold text-slate-300">
-              <div className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Auto-refunds</div>
-              <div className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Pessimistic locking</div>
-              <div className="flex items-center gap-3"><span className="w-2.5 h-2.5 rounded-full bg-orange-500" /> Real-time ledger</div>
+            <div className="p-8 border-2 border-orange-500 rounded-3xl bg-white flex flex-col relative shadow-xl shadow-orange-500/10">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</div>
+              <p className="text-sm font-black text-slate-900 mb-2">Growth</p>
+              <p className="text-4xl font-black text-[#0A1629] mb-6 tracking-tight">$49<span className="text-sm font-medium text-slate-400">/mo</span></p>
+              <ul className="space-y-3 text-[13px] font-medium text-slate-500 mb-8 flex-1">
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-orange-600"/> Live API access</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-orange-600"/> All travel verticals</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-orange-600"/> Webhooks</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-orange-600"/> Wallet access</li>
+              </ul>
+              <Link href="/register" className="block text-center w-full py-3 rounded-xl bg-orange-600 font-bold text-sm text-white hover:bg-orange-700 transition-colors shadow-lg shadow-orange-600/20">Get Started</Link>
+            </div>
+            <div className="p-8 border border-slate-200 rounded-3xl bg-white flex flex-col">
+              <p className="text-sm font-black text-slate-900 mb-2">Scale</p>
+              <p className="text-4xl font-black text-[#0A1629] mb-6 tracking-tight">$199<span className="text-sm font-medium text-slate-400">/mo</span></p>
+              <ul className="space-y-3 text-[13px] font-medium text-slate-500 mb-8 flex-1">
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Higher API limits</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Advanced analytics</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Priority support</li>
+              </ul>
+              <Link href="/register" className="block text-center w-full py-3 rounded-xl border border-slate-200 font-bold text-sm text-slate-600 hover:bg-slate-50 transition-colors">Get Started</Link>
+            </div>
+            <div className="p-8 border border-slate-200 rounded-3xl bg-white flex flex-col">
+              <p className="text-sm font-black text-slate-900 mb-2">Enterprise</p>
+              <p className="text-4xl font-black text-[#0A1629] mb-6 tracking-tight">Custom</p>
+              <ul className="space-y-3 text-[13px] font-medium text-slate-500 mb-8 flex-1">
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> Dedicated infra</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> SLA guarantee</li>
+                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> Custom integrations</li>
+              </ul>
+              <Link href="/contact" className="block text-center w-full py-3 rounded-xl border border-slate-200 font-bold text-sm text-slate-600 hover:bg-slate-50 transition-colors">Contact Sales</Link>
             </div>
           </div>
-          <div className="animate-slide-in-right relative">
-            <div className="animate-float-slow rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-              <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200" alt="Multi-currency Wallet" className="w-full h-[400px] object-cover opacity-80" />
+        </section>
+
+        {/* 16. FINAL CTA & FOOTER */}
+        <section className="bg-[#0A1629] text-white pt-24">
+          <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">Start building your<br/>travel business today.</h2>
+              <ul className="space-y-3 text-sm font-medium text-slate-400 mb-10">
+                <li className="flex items-center gap-2">• Powerful APIs</li>
+                <li className="flex items-center gap-2">• Global reach</li>
+                <li className="flex items-center gap-2">• Infinite possibilities</li>
+              </ul>
+              <Link href="/register" className="inline-block bg-orange-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl shadow-orange-600/20 hover:bg-orange-700 transition-colors">
+                Get API Access
+              </Link>
             </div>
-            <div className="absolute -top-6 -left-6 bg-[#0f172a] rounded-2xl shadow-xl border border-white/10 px-6 py-5 animate-bounce-subtle">
-              <div className="flex items-center gap-4">
-                <span className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 text-xl font-bold">↓</span>
-                <div>
-                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Funded</p>
-                  <p className="text-base font-bold text-emerald-400">+ $5,000.00</p>
-                </div>
+            <div className="relative">
+              <div className="bg-slate-800 rounded-t-3xl rounded-bl-3xl p-6 border-t border-l border-r border-slate-700 h-[300px] overflow-hidden flex items-end justify-center relative">
+                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A1629] via-transparent to-transparent z-10" />
+                 {/* Decorative users working mockup */}
+                 <div className="w-full h-full bg-slate-900 rounded-xl border border-slate-700 p-4 relative z-0">
+                   <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
+                     <span className="text-xs font-bold text-slate-400">Welcome Back, John</span>
+                     <div className="flex gap-4">
+                       <div className="text-right"><p className="text-[10px] text-slate-500 uppercase tracking-widest">Revenue</p><p className="font-bold text-white">$245,680</p></div>
+                       <div className="text-right"><p className="text-[10px] text-slate-500 uppercase tracking-widest">Success</p><p className="font-bold text-emerald-400">98.2%</p></div>
+                     </div>
+                   </div>
+                   <div className="w-full h-24 flex items-end gap-2 opacity-50">
+                     {[20, 30, 45, 25, 60, 40, 70, 50, 80, 65, 90, 100].map((h, i) => (
+                       <div key={i} className="flex-1 bg-blue-500 rounded-t-sm" style={{ height: `${h}%` }} />
+                     ))}
+                   </div>
+                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-6 -right-6 bg-[#0f172a] rounded-2xl shadow-xl border border-white/10 px-6 py-5 animate-float" style={{ animationDelay: '1.5s' }}>
-              <div className="flex items-center gap-4">
-                <span className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 text-xl font-bold">🔒</span>
-                <div>
-                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Locked</p>
-                  <p className="text-base font-bold text-white">$840.50 for PNR</p>
+          </div>
+          
+          <footer className="border-t border-slate-800 py-12">
+            <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+              <div className="col-span-2 space-y-4">
+                <Link href="/" className="flex items-center gap-2 mb-6">
+                  <div className="w-8 h-8 bg-white rounded flex items-center justify-center text-[#0A1629]">
+                    <Plane size={18} className="rotate-45" />
+                  </div>
+                  <span className="text-xl font-black tracking-tight text-white">TRAVSIFY <span className="text-orange-600">NDC</span></span>
+                </Link>
+                <p className="text-[13px] text-slate-400 font-medium max-w-xs leading-relaxed">The complete travel infrastructure for the world.</p>
+                <div className="flex gap-4 text-slate-500 pt-4">
+                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-slate-700 hover:text-white cursor-pointer transition-colors"><Globe size={14}/></div>
+                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-slate-700 hover:text-white cursor-pointer transition-colors"><Search size={14}/></div>
+                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-slate-700 hover:text-white cursor-pointer transition-colors"><Code2 size={14}/></div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── SECURITY & COMPLIANCE ─── */}
-      <section className="relative py-32 px-6 bg-[#f8fafc] overflow-hidden">
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-200/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="animate-slide-in-left relative order-2 lg:order-1">
-            <div className="animate-float rounded-3xl overflow-hidden shadow-2xl border-[8px] border-white">
-              <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200" alt="Security Shield" className="w-full h-[450px] object-cover" />
-            </div>
-          </div>
-          <div className="animate-fade-up order-1 lg:order-2">
-            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-blue-600 mb-4">Trust & Safety</p>
-            <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-6 text-slate-900">
-              Bank-Grade Security. <span className="text-orange-600">Global Compliance.</span>
-            </h2>
-            <p className="text-lg text-slate-600 leading-relaxed font-medium mb-12">Protect your business and your customers. Our infrastructure utilizes advanced encryption, verified KYC protocols, and signed webhooks to guarantee uncompromised data integrity worldwide.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <SecurityCard icon="🔐" title="End-to-end encryption" desc="TLS 1.3 on all endpoints. PII never stored in plain text." />
-              <SecurityCard icon="📝" title="KYC verification" desc="Global business identity verification before live access." />
-              <SecurityCard icon="🔑" title="API key scoping" desc="Separate sandbox and live keys with granular permissions." />
-              <SecurityCard icon="🛡️" title="Signed webhooks" desc="HMAC-SHA256 signatures with replay protection." />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── GLOBAL COVERAGE ─── */}
-      <section className="relative py-32 px-6 bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="max-w-[1200px] mx-auto relative z-10">
-          <div className="text-center mb-20 animate-fade-up">
-            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-orange-400 mb-4">Market Reach</p>
-            <h2 className="text-4xl md:text-[3rem] font-black tracking-tight leading-[1.1] mb-6">
-              Unrivaled Global Inventory. <span className="text-blue-400">Instant Access.</span>
-            </h2>
-            <p className="text-slate-400 text-lg font-medium max-w-2xl mx-auto">From New York to Tokyo, London to Dubai — instantly connect your business to the most comprehensive travel inventory available worldwide.</p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            <div className="space-y-6 animate-fade-up">
-              <RouteCard from="JFK" to="LHR" airline="British Airways" price="$650" />
-              <RouteCard from="DXB" to="SIN" airline="Emirates" price="$890" />
-              <RouteCard from="LOS" to="ATL" airline="Delta Airlines" price="$1,200" />
-            </div>
-            <div className="flex justify-center animate-scale-in my-12 lg:my-0">
-              <div className="relative">
-                <div className="globe-container w-[320px] h-[320px]">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent to-white/10" />
-                </div>
-                {/* Orbiting elements */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                  <div className="animate-orbit"><div className="w-4 h-4 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50" /></div>
-                </div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                  <div className="animate-orbit-small"><div className="w-3 h-3 rounded-full bg-blue-400 shadow-lg shadow-blue-400/50" /></div>
-                </div>
-                {/* Ping effect */}
-                <div className="absolute top-[35%] left-[30%] w-5 h-5 rounded-full bg-orange-500/40 animate-ping-slow" />
-                <div className="absolute top-[25%] right-[25%] w-4 h-4 rounded-full bg-blue-400/40 animate-ping-slow" style={{ animationDelay: '1s' }} />
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-100 mb-6">Product</p>
+                <ul className="space-y-4 text-[13px] text-slate-400 font-medium">
+                  <li><Link href="/docs" className="hover:text-white transition-colors">APIs</Link></li>
+                  <li><Link href="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Status</Link></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-100 mb-6">Company</p>
+                <ul className="space-y-4 text-[13px] text-slate-400 font-medium">
+                  <li><Link href="#" className="hover:text-white transition-colors">About Us</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-100 mb-6">Legal</p>
+                <ul className="space-y-4 text-[13px] text-slate-400 font-medium">
+                  <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Data Protection</Link></li>
+                </ul>
               </div>
             </div>
-            <div className="space-y-6 animate-fade-up-delay-2">
-              <RouteCard from="NRT" to="SYD" airline="Japan Airlines" price="$920" />
-              <RouteCard from="CDG" to="JNB" airline="Air France" price="$850" />
-              <RouteCard from="FRA" to="GRU" airline="Lufthansa" price="$1,100" />
+            <div className="max-w-[1200px] mx-auto px-6 border-t border-slate-800 pt-8 text-center text-xs text-slate-500 font-medium">
+              &copy; 2024 Travsify NDC. All rights reserved.
             </div>
-          </div>
-        </div>
-      </section>
+          </footer>
+        </section>
 
-      {/* ─── CTA ─── */}
-      <section className="relative py-32 px-6 bg-gradient-to-r from-blue-700 to-orange-600 overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2px)', backgroundSize: '40px 40px' }} />
-        {/* Floating dots */}
-        <div className="absolute top-12 left-20 w-4 h-4 rounded-full bg-white/40 animate-float" />
-        <div className="absolute top-24 right-32 w-3 h-3 rounded-full bg-white/30 animate-float-slow" />
-        <div className="absolute bottom-16 left-1/3 w-5 h-5 rounded-full bg-white/20 animate-float" style={{ animationDelay: '2s' }} />
-
-        <div className="max-w-[1200px] mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-[4rem] font-black tracking-tight mb-6 text-white leading-tight">
-            Scale Your Travel Business <br/> Globally Today.
-          </h2>
-          <p className="text-white/90 mb-12 text-xl font-medium max-w-2xl mx-auto">Join industry leaders using our infrastructure to power millions of global bookings. Get started in minutes.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/register" className="bg-white text-blue-700 text-[16px] font-black px-12 py-5 rounded-full hover:scale-105 transition-all active:scale-[0.97] shadow-2xl shadow-black/20">
-              Create Your Free Account
-            </Link>
-            <Link href="/dashboard/docs" className="text-[16px] font-bold text-white border-2 border-white/40 px-12 py-5 rounded-full hover:bg-white/10 transition-all">
-              Contact Enterprise Sales
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FOOTER ─── */}
-      <footer className="py-20 px-6 border-t border-slate-200 bg-white">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div className="col-span-2 md:col-span-1">
-              <span className="text-2xl font-black tracking-tight">
-                <span className="text-blue-600">Travs</span><span className="text-orange-600">ify.</span>
-              </span>
-              <p className="text-sm text-slate-500 mt-4 leading-relaxed font-medium">The unified global travel API. Complexity abstracted.</p>
-            </div>
-            <FooterCol title="Product" links={['Flights API', 'Hotels API', 'Wallet', 'White-label']} />
-            <FooterCol title="Developers" links={['Documentation', 'API reference', 'Changelog', 'Status']} />
-            <FooterCol title="Company" links={['About', 'Customers', 'Pricing', 'Contact']} />
-          </div>
-          <div className="flex flex-col md:flex-row items-center justify-between mt-20 pt-8 border-t border-slate-200 text-sm text-slate-500 font-medium">
-            <span>© 2026 Travsify Travel API. All rights reserved.</span>
-            <span className="mt-4 md:mt-0">Global API Coverage</span>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-/* ─── COMPONENTS ─── */
-
-function StatCard({ label, value, change, delay }: { label: string; value: string; change: string; delay: string }) {
-  const animClass = delay === '0' ? 'animate-fade-up' : delay === '1' ? 'animate-fade-up-delay-1' : 'animate-fade-up-delay-2';
-  return (
-    <div className={`bg-white rounded-3xl border border-slate-200 p-8 shadow-xl shadow-slate-200/50 hover:-translate-y-2 transition-all duration-300 group ${animClass}`}>
-      <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-2">{label}</p>
-      <div className="flex items-end justify-between">
-        <span className="text-4xl font-black tracking-tight text-slate-800 group-hover:text-blue-600 transition-colors">{value}</span>
-        <span className="text-[11px] font-bold text-green-700 bg-green-100 px-3 py-1 rounded-full">{change}</span>
-      </div>
-    </div>
-  );
-}
-
-function PlatformCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <div className="bg-white/5 backdrop-blur-md p-10 rounded-[32px] border border-white/10 hover:bg-white/10 transition-all duration-500 group premium-border">
-      <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 group-hover:bg-white group-hover:text-blue-600 transition-all duration-500 shadow-inner">
-        {icon}
-      </div>
-      <h3 className="text-lg font-black mb-4 text-white tracking-tight">{title}</h3>
-      <p className="text-[14px] text-slate-400 leading-relaxed font-bold">{desc}</p>
-    </div>
-  );
-}
-
-function MiniStat({ value, label, color }: { value: string; label: string; color: string }) {
-  return (
-    <div className="flex flex-col items-center">
-      <p className={`text-4xl font-black tracking-tighter ${color}`}>{value}</p>
-      <p className="lo-density-text mt-2">{label}</p>
-    </div>
-  );
-}
-
-function UseCaseCard({ tag, title, desc, gradient, emoji }: { tag: string; title: string; desc: string; gradient: string; emoji: string }) {
-  return (
-    <div className="group relative rounded-[40px] border border-slate-200 overflow-hidden shadow-2xl shadow-slate-200/50 hover:shadow-3xl transition-all duration-700 hover:-translate-y-2 bg-white">
-      <div className={`bg-gradient-to-br ${gradient} p-10 pb-20 text-white relative overflow-hidden`}>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
-        <span className="text-6xl block mb-8 transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700">{emoji}</span>
-        <span className="lo-density-text bg-white/20 px-4 py-2 rounded-xl text-white border border-white/20 backdrop-blur-md">{tag}</span>
-      </div>
-      <div className="p-10 -mt-10 rounded-t-[40px] relative bg-white">
-        <h3 className="text-2xl font-black tracking-tight mb-4 text-slate-900 leading-tight">{title}</h3>
-        <p className="text-[15px] text-slate-500 leading-relaxed mb-10 font-medium">{desc}</p>
-        <Link href="/register" className="inline-flex items-center gap-3 text-[13px] font-black text-blue-600 group-hover:text-orange-600 transition-colors uppercase tracking-[0.2em]">
-          Start building <span className="group-hover:translate-x-2 transition-transform">→</span>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function FooterCol({ title, links }: { title: string; links: string[] }) {
-  return (
-    <div>
-      <h4 className="text-[12px] font-black uppercase tracking-widest text-slate-400 mb-6">{title}</h4>
-      <ul className="space-y-3.5">
-        {links.map((link) => (
-          <li key={link}>
-            <Link href="#" className="text-[14px] font-medium text-slate-500 hover:text-blue-600 transition-colors">{link}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function WhitelabelFeature({ icon, text }: { icon: string; text: string }) {
-  return (
-    <div className="flex items-center gap-4 text-[15px] font-medium">
-      <span className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-lg shadow-sm border border-slate-200">{icon}</span>
-      <span className="text-slate-700">{text}</span>
-    </div>
-  );
-}
-
-function WalletStat({ icon, currency, rate, label }: { icon: string; currency: string; rate: string; label: string }) {
-  return (
-    <div className="bg-white/10 rounded-2xl border border-white/10 p-5 shadow-inner">
-      <div className="flex items-center gap-3 mb-3">
-        <span className="text-2xl">{icon}</span>
-        <span className="text-sm font-black text-slate-300 uppercase tracking-wider">{currency}</span>
-      </div>
-      <p className="text-2xl font-black tracking-tight text-white">{rate}</p>
-      <p className="text-[11px] text-slate-400 font-bold mt-1 uppercase tracking-widest">{label}</p>
-    </div>
-  );
-}
-
-function SecurityCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-md shadow-slate-200/50 hover:border-blue-300 transition-all group hover:-translate-y-1 duration-300">
-      <span className="text-3xl mb-4 block group-hover:scale-110 transition-transform">{icon}</span>
-      <h4 className="text-base font-black mb-2 text-slate-800">{title}</h4>
-      <p className="text-[14px] text-slate-500 leading-relaxed font-medium">{desc}</p>
-    </div>
-  );
-}
-
-function RouteCard({ from, to, airline, price }: { from: string; to: string; airline: string; price: string }) {
-  return (
-    <div className="bg-white/[0.05] backdrop-blur-md rounded-2xl border border-white/10 p-6 hover:bg-white/[0.1] transition-all group shadow-lg shadow-black/20">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-black text-white tracking-wider">{from}</span>
-          <span className="text-slate-500 text-sm">✈️</span>
-          <span className="text-lg font-black text-white tracking-wider">{to}</span>
-        </div>
-        <span className="text-sm font-black text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{price}</span>
-      </div>
-      <p className="text-[13px] font-bold text-slate-400">{airline}</p>
+      </main>
     </div>
   );
 }
