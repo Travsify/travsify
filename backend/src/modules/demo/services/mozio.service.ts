@@ -30,8 +30,8 @@ export class MozioService {
   }
 
   // Legacy methods for DemoController
-  async searchTransfers(params: any) {
-    return this.getTransferOptions(params.pickupAddress || 'London');
+  async searchTransfers(params: any, tenantMarkup: number = 0) {
+    return this.getTransferOptions(params.pickupAddress || 'London', tenantMarkup);
   }
 
   async getTransferStatus(searchId: string) {

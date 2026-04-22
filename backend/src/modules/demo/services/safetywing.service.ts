@@ -34,7 +34,7 @@ export class SafetyWingService {
   }
 
   // Legacy method for DemoController
-  async getQuotes(params: any) {
-    return this.getInsuranceQuotes();
+  async getQuotes(params: any, tenantMarkup: number = 0) {
+    return this.getInsuranceQuotes(tenantMarkup);
   }
 }
