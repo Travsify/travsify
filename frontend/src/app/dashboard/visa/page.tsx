@@ -15,7 +15,8 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-const SHERPA_LINK = "https://apply.joinsherpa.com/explore?affiliateId=pickpadiglobalinclusivelimited";
+import { SHERPA_URL } from '@/utils/api';
+import Link from 'next/link';
 
 export default function VisaPage() {
   const visaTypes = [
@@ -46,7 +47,7 @@ export default function VisaPage() {
         </div>
         <div className="flex items-center gap-3">
           <a 
-            href={SHERPA_LINK} 
+            href={SHERPA_URL} 
             target="_blank" 
             rel="noopener noreferrer"
             className="px-8 py-4 bg-blue-600 text-white rounded-[24px] font-black text-[13px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2 group"
@@ -77,7 +78,7 @@ export default function VisaPage() {
                />
              </div>
              <a 
-               href={SHERPA_LINK} 
+               href={SHERPA_URL} 
                target="_blank" 
                rel="noopener noreferrer"
                className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-3xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20"
@@ -125,7 +126,7 @@ export default function VisaPage() {
                 </div>
 
                 <a 
-                  href={SHERPA_LINK}
+                  href={SHERPA_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-4.5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] hover:bg-blue-600 transition-all flex items-center justify-center gap-3 group/btn"

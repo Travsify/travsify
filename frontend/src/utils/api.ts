@@ -49,3 +49,5 @@ export const getApiUrl = () => {
 };
 
 export const API_URL = getApiUrl();
+
+export const SHERPA_URL = "https://apply.joinsherpa.com/explore?affiliateId=pickpadiglobalinclusivelimited";
