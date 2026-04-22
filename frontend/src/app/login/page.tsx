@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -15,6 +15,7 @@ import {
   Building2,
   Key
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { API_URL } from '@/utils/api';
 
@@ -24,6 +25,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.warn('🚀 Travsify Login Page Loaded. API_URL:', API_URL);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
