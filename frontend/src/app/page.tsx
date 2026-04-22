@@ -38,16 +38,22 @@ export default function LandingPage() {
 
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md text-blue-700 px-4 py-2 rounded-full text-xs font-bold mb-8 border border-blue-100 shadow-sm">
-              <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
-              Direct NDC Connection Enabled
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md text-blue-700 px-4 py-2 rounded-full text-xs font-bold border border-blue-100 shadow-sm">
+                <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
+                Direct NDC Connection Enabled
+              </div>
+              <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full text-xs font-bold border border-emerald-100 shadow-sm">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full" />
+                System Live: 99.9% Uptime
+              </div>
             </div>
             <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black leading-[1.05] tracking-[-0.03em] mb-6 text-slate-900">
               The world's most powerful{' '}
               <span className="bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent">travel infrastructure.</span>
             </h1>
             <p className="text-lg text-slate-600 leading-relaxed max-w-xl mb-10 font-medium">
-              Transform your business with enterprise-grade travel technology. Integrate global flights, 2.5M+ hotels, transfers, and insurance instantly. Built to scale your revenue worldwide.
+              Transform your business with enterprise-grade travel technology. Integrate global flights, 2.5M+ hotels, transfers, and insurance instantly. Built for the next generation of global travel providers.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-6">
               <Link href="/demo" className="bg-blue-600 text-white text-[15px] font-bold px-8 py-3.5 rounded-full hover:bg-blue-700 transition-all active:scale-[0.97] shadow-xl shadow-blue-600/25">

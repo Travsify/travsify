@@ -1,5 +1,14 @@
 export const getApiUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    let url = process.env.NEXT_PUBLIC_API_URL;
+    // Fix missing protocol if user provided just the hostname in Render env vars
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `https://${url}`;
+    }
+    // Remove trailing slash to prevent double slashes in paths
+    return url.replace(/\/$/, '');
+  }
+
   if (typeof window !== 'undefined') {
     // If on Render, try to intelligently find the backend
     if (window.location.hostname.includes('onrender.com')) {
