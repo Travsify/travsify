@@ -18,7 +18,7 @@ import {
   CreditCard
 } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_URL } from '@/utils/api';
 
 export default function AdminPage() {
   const { user } = useAuth();

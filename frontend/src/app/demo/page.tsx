@@ -24,17 +24,9 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-const getApiUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
-  if (typeof window !== 'undefined') {
-    const protocol = window.location.protocol;
-    return `${protocol}//${window.location.hostname}:3001`;
-  }
-  return 'http://localhost:3001';
-};
+import { API_URL } from '@/utils/api';
 
 export default function DemoPage() {
-  const API_URL = getApiUrl();
   const [activeTab, setActiveTab] = useState<'flights' | 'hotels' | 'insurance' | 'transfers' | 'visa'>('flights');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
@@ -88,7 +80,11 @@ export default function DemoPage() {
 
       clearTimeout(timeoutId);
 
-      if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `API Error: ${res.status} ${res.statusText}`);
+      }
+      
       const data = await res.json();
       setResults(data);
     } catch (err: any) {
