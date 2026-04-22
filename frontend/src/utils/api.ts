@@ -3,16 +3,19 @@ export const getApiUrl = () => {
   if (typeof window !== 'undefined') {
     // If on Render, try to intelligently find the backend
     if (window.location.hostname.includes('onrender.com')) {
-      // Convention: travsify-frontend.onrender.com -> travsify-backend.onrender.com
       if (window.location.hostname.includes('-frontend.')) {
         return `https://${window.location.hostname.replace('-frontend.', '-backend.')}`;
       }
       return 'https://travsify-backend.onrender.com';
     }
+    // For local development on Windows, 127.0.0.1 is more reliable than localhost
+    if (window.location.hostname === 'localhost') {
+      return 'http://127.0.0.1:3001';
+    }
     const protocol = window.location.protocol;
     return `${protocol}//${window.location.hostname}:3001`;
   }
-  return 'http://localhost:3001';
+  return 'http://127.0.0.1:3001';
 };
 
 export const API_URL = getApiUrl();
