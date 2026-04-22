@@ -43,9 +43,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     {
       title: 'Platform',
       items: [
-        { name: 'API Keys', path: '/dashboard/api-keys', icon: <Key size={18} /> },
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
         { name: 'KYC Status', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
-        { name: 'Developers', path: '/dashboard/docs', icon: <Code2 size={18} /> },
+        { name: 'Documentation', path: '/dashboard/developers#docs', icon: <Code2 size={18} /> },
       ]
     }
   ];

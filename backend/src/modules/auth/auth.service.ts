@@ -9,15 +9,27 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private tenantService: TenantService,
   ) {}
 
   async register(userData: any): Promise<any> {
-    const { password, ...rest } = userData;
+    const { password, businessName, email, ...rest } = userData;
+    
+    // 1. Create the user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.usersService.create({
       ...rest,
+      email,
+      businessName,
       password: hashedPassword,
     });
+
+    // 2. Create the associated Tenant (B2B Account)
+    await this.tenantService.create({
+      name: businessName,
+      email: email,
+    });
+
     return this.login(user);
   }
 
