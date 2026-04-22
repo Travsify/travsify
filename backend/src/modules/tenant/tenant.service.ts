@@ -50,6 +50,10 @@ export class TenantService {
     return this.tenantRepository.save(tenant);
   }
 
+  async findAll(): Promise<Tenant[]> {
+    return this.tenantRepository.find();
+  }
+
   private generateApiKey(): string {
     return 'tx_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }

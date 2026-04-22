@@ -172,6 +172,69 @@ export default function DevelopersPage() {
           </div>
         </div>
       </div>
+
+      {/* ─── FULL DOCUMENTATION GUIDE ─── */}
+      <div id="docs" className="pt-20 space-y-16 border-t border-slate-100 animate-fade-up">
+        <div className="max-w-2xl">
+          <h2 className="text-4xl font-black text-slate-900 mb-6">Integration Guide</h2>
+          <p className="text-lg font-medium text-slate-500 leading-relaxed">
+            Everything you need to build the next generation of travel experiences. Our unified infrastructure bridges multiple global providers into a single, predictable API.
+          </p>
+        </div>
+
+        {/* Vertical Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <GuideSection 
+            title="Aviation Engine (Duffel Bridged)"
+            desc="Access 300+ airlines globally with real-time NDC and GDS availability."
+            code={`curl -X GET "${API_URL}/api/v1/flights/search" \\
+-H "x-api-key: YOUR_KEY"`}
+          />
+          <GuideSection 
+            title="Global Lodging (LiteAPI Bridged)"
+            desc="2M+ properties with real-time availability and wholesale rates."
+            code={`curl -X GET "${API_URL}/api/v1/hotels/search" \\
+-H "x-api-key: YOUR_KEY"`}
+          />
+          <GuideSection 
+            title="Logistics & Transfers (Mozio Bridged)"
+            desc="Airport transfers and last-mile logistics in 2000+ cities."
+            code={`curl -X POST "${API_URL}/api/v1/transfers/search" \\
+-H "x-api-key: YOUR_KEY"`}
+          />
+          <GuideSection 
+            title="Unified eVisas (Atlys Bridged)"
+            desc="Automated visa requirements and processing for 150+ destinations."
+            code={`curl -X GET "${API_URL}/api/v1/visa/requirements" \\
+-H "x-api-key: YOUR_KEY"`}
+          />
+        </div>
+
+        {/* Dummy Proof Auth */}
+        <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100">
+          <h3 className="text-2xl font-black text-slate-900 mb-4">Authentication for Dummies</h3>
+          <p className="text-slate-500 mb-8 font-medium">It's simple. Every request to our API must include your unique key in the header. No complex OAuth flows required.</p>
+          <div className="bg-slate-900 rounded-2xl p-6 font-mono text-sm text-blue-400">
+            <span className="text-slate-500"># Just add this to your headers:</span><br/>
+            <span className="text-white">x-api-key:</span> tx_your_secret_key_here
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GuideSection({ title, desc, code }: any) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full bg-blue-600" />
+        <h4 className="font-black text-slate-900">{title}</h4>
+      </div>
+      <p className="text-sm font-medium text-slate-400 leading-relaxed">{desc}</p>
+      <div className="bg-slate-900/5 rounded-2xl p-4 font-mono text-[11px] text-slate-600 border border-slate-100">
+        {code}
+      </div>
     </div>
   );
 }

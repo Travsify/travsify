@@ -18,6 +18,12 @@ export class AdminController {
     return this.tenantService.create(data as any);
   }
 
+  @Get('tenants')
+  async listTenants() {
+    this.logger.log('Admin: Fetching all tenants');
+    return this.tenantService.findAll();
+  }
+
   @Get('setup')
   async setupAdmin() {
     this.logger.log('Admin: One-time setup initiated');
