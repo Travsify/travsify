@@ -20,7 +20,8 @@ import {
   Bell,
   Share2,
   Search,
-  Layers
+  Layers,
+  Calendar
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
