@@ -60,37 +60,17 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
-          <div className="flex-1 relative">
-            {/* Dashboard Mockup Illustration */}
-            <div className="bg-[#0A1629] rounded-2xl p-4 shadow-2xl relative z-10 w-full max-w-[500px] ml-auto border border-slate-800">
-              <div className="flex gap-2 mb-4">
-                <div className="w-3 h-3 rounded-full bg-rose-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
-              </div>
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
-                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
-                <div className="bg-white/10 rounded p-3"><div className="h-2 w-12 bg-white/20 rounded mb-2" /><div className="h-4 w-20 bg-white rounded" /></div>
-              </div>
-              <div className="bg-white rounded p-4 h-40 flex items-end gap-2">
-                {[40, 70, 45, 90, 65, 85, 50].map((h, i) => (
-                  <div key={i} className="flex-1 bg-blue-500 rounded-t" style={{ height: `${h}%` }} />
-                ))}
-              </div>
+          <div className="flex-1 relative perspective-1000">
+            {/* Animated Hero Image */}
+            <div className="relative z-10 w-full max-w-[600px] ml-auto animate-[bounce_6s_infinite]">
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/30 to-orange-500/30 blur-3xl -z-10 rounded-full" />
+              <img src="/hero_dashboard.png" alt="Travel API Dashboard" className="w-full h-auto rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.3)] border border-white/20 object-cover" />
             </div>
             {/* Mobile Mockup Overlay */}
-            <div className="absolute -bottom-8 -right-8 w-48 bg-white rounded-3xl p-3 shadow-xl border border-slate-200 z-20 hidden md:block">
-              <div className="bg-slate-50 rounded-2xl h-72 p-4 border border-slate-100">
-                <div className="h-8 bg-slate-200 rounded-lg mb-4" />
-                <div className="space-y-3">
-                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
-                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
-                  <div className="h-12 bg-white rounded-lg shadow-sm border border-slate-100" />
-                </div>
-              </div>
+            <div className="absolute -bottom-12 -left-12 w-64 rounded-3xl p-2 shadow-2xl z-20 hidden md:block animate-[bounce_8s_infinite] bg-white/10 backdrop-blur-md border border-white/30">
+              <img src="/flight_search.png" alt="Mobile Flight Search" className="w-full h-auto rounded-2xl object-cover shadow-lg" />
             </div>
-            <Plane className="absolute -top-12 right-20 text-slate-300 w-32 h-32 opacity-20 rotate-45" />
+            <Plane className="absolute -top-12 right-20 text-blue-500 w-32 h-32 opacity-20 rotate-45 animate-pulse" />
           </div>
         </section>
 
@@ -134,8 +114,9 @@ export default function LandingPage() {
               <p className="text-slate-500 pl-14 text-sm font-medium">Global payouts, multi-currency wallets & instant settlements.</p>
             </div>
           </div>
-          <div className="relative h-[400px] flex items-center justify-center hidden md:flex">
+          <div className="relative h-[400px] flex items-center justify-center hidden md:flex animate-[pulse_4s_ease-in-out_infinite]">
             {/* Diagram node graph UI */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-orange-500/10 rounded-full blur-3xl -z-10" />
             <div className="w-32 h-32 rounded-full bg-[#0A1629] text-white flex items-center justify-center font-black text-center leading-tight shadow-xl z-10">
               TRAVSIFY<br/>NDC
             </div>
@@ -279,32 +260,9 @@ export default function LandingPage() {
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Real-time pricing</li>
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-600" /> Book & issue instantly</li>
               </ul>
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
-                <div className="bg-[#0A1629] p-4 flex gap-6 text-[11px] font-bold text-white uppercase tracking-widest">
-                  <span className="border-b-2 border-orange-500 pb-1">Flights</span>
-                  <span className="text-slate-400">Hotels</span>
-                  <span className="text-slate-400">Transfers</span>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex gap-4 text-xs font-bold text-slate-600">
-                    <div className="flex-1 bg-slate-50 p-2 rounded border border-slate-200">Lagos (LOS)</div>
-                    <div className="flex-1 bg-slate-50 p-2 rounded border border-slate-200">Dubai (DXB)</div>
-                  </div>
-                  <div className="space-y-2 mt-4">
-                    <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl text-sm font-bold">
-                      <div className="flex items-center gap-3"><Plane size={16} className="text-blue-600"/> Emirates</div>
-                      <div className="text-slate-500 text-xs">08:45 - 18:30</div>
-                      <div className="font-black">$450</div>
-                      <button className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg">Book</button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl text-sm font-bold">
-                      <div className="flex items-center gap-3"><Plane size={16} className="text-purple-600"/> Qatar Airways</div>
-                      <div className="text-slate-500 text-xs">07:20 - 17:10</div>
-                      <div className="font-black">$470</div>
-                      <button className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg">Book</button>
-                    </div>
-                  </div>
-                </div>
+              <div className="relative animate-[bounce_7s_infinite]">
+                <div className="absolute inset-0 bg-blue-500/20 blur-3xl -z-10 rounded-full" />
+                <img src="/flight_search.png" alt="Flight Search Terminal" className="w-full rounded-2xl shadow-2xl border border-white/20" />
               </div>
             </div>
 
@@ -320,25 +278,9 @@ export default function LandingPage() {
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Customer insights</li>
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Performance monitoring</li>
               </ul>
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 flex gap-6 items-center shadow-lg">
-                <div className="flex-1">
-                  <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">Revenue Overview</p>
-                  <p className="text-3xl font-black text-[#0A1629] mb-2">$245,680</p>
-                  <p className="text-xs text-emerald-500 font-bold flex items-center gap-1 mb-6"><ArrowRight size={12} className="-rotate-45" /> +24.5% vs last month</p>
-                  {/* Mock Line Chart */}
-                  <div className="h-24 w-full flex items-end gap-2">
-                    {[30, 45, 25, 60, 40, 70, 50, 80, 65, 90, 100, 85].map((h, i) => (
-                      <div key={i} className="flex-1 bg-blue-100 rounded-t-sm" style={{ height: `${h}%` }}>
-                        <div className="w-full bg-blue-500 rounded-t-sm" style={{ height: '4px' }} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="w-1/3 flex flex-col items-center justify-center border-l border-slate-100 pl-6">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 text-center">Bookings</p>
-                  {/* Mock Donut Chart */}
-                  <div className="w-24 h-24 rounded-full border-[12px] border-blue-500 border-r-orange-500 border-b-emerald-500" />
-                </div>
+              <div className="relative animate-[bounce_6s_infinite_reverse]">
+                <div className="absolute inset-0 bg-orange-500/20 blur-3xl -z-10 rounded-full" />
+                <img src="/analytics_chart.png" alt="Revenue Analytics Dashboard" className="w-full rounded-2xl shadow-2xl border border-white/20" />
               </div>
             </div>
           </div>
@@ -602,19 +544,8 @@ export default function LandingPage() {
               <div className="bg-slate-800 rounded-t-3xl rounded-bl-3xl p-6 border-t border-l border-r border-slate-700 h-[300px] overflow-hidden flex items-end justify-center relative">
                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1629] via-transparent to-transparent z-10" />
                  {/* Decorative users working mockup */}
-                 <div className="w-full h-full bg-slate-900 rounded-xl border border-slate-700 p-4 relative z-0">
-                   <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
-                     <span className="text-xs font-bold text-slate-400">Welcome Back, John</span>
-                     <div className="flex gap-4">
-                       <div className="text-right"><p className="text-[10px] text-slate-500 uppercase tracking-widest">Revenue</p><p className="font-bold text-white">$245,680</p></div>
-                       <div className="text-right"><p className="text-[10px] text-slate-500 uppercase tracking-widest">Success</p><p className="font-bold text-emerald-400">98.2%</p></div>
-                     </div>
-                   </div>
-                   <div className="w-full h-24 flex items-end gap-2 opacity-50">
-                     {[20, 30, 45, 25, 60, 40, 70, 50, 80, 65, 90, 100].map((h, i) => (
-                       <div key={i} className="flex-1 bg-blue-500 rounded-t-sm" style={{ height: `${h}%` }} />
-                     ))}
-                   </div>
+                 <div className="w-full h-full relative z-0 animate-[bounce_5s_infinite]">
+                   <img src="/analytics_chart.png" alt="Revenue Analytics" className="w-full h-full object-cover rounded-xl border border-slate-700 shadow-2xl" />
                  </div>
               </div>
             </div>
