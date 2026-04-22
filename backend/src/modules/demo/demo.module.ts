@@ -6,6 +6,8 @@ import { AtlysService } from './services/atlys.service';
 import { GetYourGuideService } from './services/getyourguide.service';
 import { MozioService } from './services/mozio.service';
 import { SafetyWingService } from './services/safetywing.service';
+import { FincraService } from './services/fincra.service';
+import { StripeService } from './services/stripe.service';
 
 @Module({
   imports: [NdcModule],
@@ -16,6 +18,8 @@ import { SafetyWingService } from './services/safetywing.service';
     GetYourGuideService,
     MozioService,
     SafetyWingService,
+    FincraService,
+    StripeService,
   ],
   exports: [
     LiteApiService,
@@ -23,6 +27,8 @@ import { SafetyWingService } from './services/safetywing.service';
     GetYourGuideService,
     MozioService,
     SafetyWingService,
+    FincraService,
+    StripeService,
   ],
 })
 export class DemoModule {}

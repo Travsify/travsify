@@ -1,114 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-brand-blue: #0052FF; /* Royal Blue */
   --color-brand-blue-light: #4D8BFF;
-  --color-brand-orange: #FF8C00; /* Dark Orange */
-  --color-brand-orange-light: #FFA500;
-  --color-brand-navy: #0A0F1D;
-  --color-border: #F1F5F9;
+  --color-brand-orange: #FF6B00; /* Safety Orange */
+  --color-brand-orange-light: #FF9E5C;
+  --color-glass-bg: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+  
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  @apply text-slate-900 bg-white;
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-slate-50 text-slate-900;
+  }
 }
 
-/* ─── PREMIUM UTILITIES ─── */
-
-.glass {
-  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
-}
-
-.glass-dark {
-  @apply bg-slate-900/40 backdrop-blur-2xl border border-white/10 shadow-2xl;
-}
-
-.mesh-gradient {
-  background-color: #ffffff;
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(221,100%,94%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,100%,96%,1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(221,100%,94%,1) 0, transparent 50%);
-}
-
-.premium-border {
-  position: relative;
-}
-
-.premium-border::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(to right, #0052FF, #FF8C00);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0.15;
-}
-
-/* ─── KEYFRAME ANIMATIONS ─── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-16px); }
-}
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
-}
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: blur(100px); }
+  50% { opacity: 0.8; filter: blur(120px); }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-@keyframes bounce-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+
+.glass-card {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
 }
 
-.animate-float { animation: float 5s ease-in-out infinite; }
-.animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
-.animate-fade-up { animation: fade-up 0.8s ease-out both; }
-.animate-slide-in-right { animation: slide-in-right 0.8s ease-out 0.3s both; }
-.animate-spin-slow { animation: spin-slow 30s linear infinite; }
-.animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
-.animate-shake { animation: shake 0.4s ease-in-out; }
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-}
-
-/* ─── GLOBE CSS ─── */
-.globe-container {
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1e40af 40%, #0f172a 100%);
-  box-shadow: 0 0 80px rgba(37, 99, 235, 0.3), inset 0 0 30px rgba(0,0,0,0.3);
-  position: relative;
-  overflow: hidden;
-}
-.globe-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: repeating-conic-gradient(transparent 0deg, transparent 8deg, rgba(255,255,255,0.03) 9deg, transparent 10deg);
-  animation: spin-slow 40s linear infinite;
+.mesh-gradient {
+  background: radial-gradient(at 0% 0%, hsla(220, 100%, 50%, 0.1) 0px, transparent 50%),
+              radial-gradient(at 100% 0%, hsla(30, 100%, 50%, 0.1) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, hsla(220, 100%, 50%, 0.05) 0px, transparent 50%),
+              radial-gradient(at 0% 100%, hsla(30, 100%, 50%, 0.05) 0px, transparent 50%);
 }

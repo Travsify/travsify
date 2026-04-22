@@ -22,6 +22,20 @@ services:
         sync: false
       - key: NDC_API_ACTION_URL
         sync: false
+      - key: LITEAPI_API_KEY
+        sync: false
+      - key: ATLYS_API_KEY
+        sync: false
+      - key: GETYOURGUIDE_API_KEY
+        sync: false
+      - key: MOZIO_API_KEY
+        sync: false
+      - key: SAFETYWING_PARTNER_ID
+        sync: false
+      - key: FINCRA_API_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
 
   # Frontend Service
   - type: web
