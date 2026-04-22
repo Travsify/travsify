@@ -186,6 +186,6 @@ function DocLink({ title, desc, icon }: any) {
         <h5 className="text-sm font-black text-slate-900">{title}</h5>
         <p className="text-[11px] font-medium text-slate-400">{desc}</p>
       </div>
-    </div>
+    </a>
   );
 }
