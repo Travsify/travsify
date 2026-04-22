@@ -13,8 +13,9 @@ async function bootstrap() {
       credentials: true,
     });
     const port = process.env.PORT ?? 3001;
-    await app.listen(port, '127.0.0.1');
-    logger.log(`Application is running on: http://127.0.0.1:${port}`);
+    const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
+    await app.listen(port, host);
+    logger.log(`Application is running on: http://${host}:${port}`);
   } catch (error) {
     logger.error(`Application failed to start: ${error.message}`);
     process.exit(1);
