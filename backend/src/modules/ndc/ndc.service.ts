@@ -190,17 +190,7 @@ export class NdcService {
   }
 
   private getFallbackFlights(criteria: any, tenantMarkup: number): UnifiedFlight[] {
-    return [
-      {
-        id: 'tx-f1',
-        vertical: TravelVertical.FLIGHT,
-        provider: 'SME.ng',
-        source: 'demo-guid',
-        segments: [
-          { flightNumber: 'TX101', airline: 'Virgin Atlantic', departure: criteria.origin, arrival: criteria.destination, departureTime: criteria.departureDate }
-        ],
-        price: PricingEngine.calculate(850, 25.5, tenantMarkup, 'USD'),
-      }
-    ];
+    this.logger.warn(`Search failed for ${criteria.origin} -> ${criteria.destination}. Returning empty results (No Dummy Data).`);
+    return [];
   }
 }

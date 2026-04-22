@@ -43,10 +43,37 @@ export default function OverviewPage() {
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState<any[]>([]);
+  const [tab, setTab] = useState('flights');
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleRealSearch = async () => {
+    if (!searchQuery) return;
+    setSearching(true);
+    setResults([]);
+    try {
+      const endpoint = tab === 'flights' ? 'flights/search' : tab === 'hotels' ? 'hotels/search' : 'visa/requirements';
+      const body = tab === 'flights' ? { origin: searchQuery, destination: 'LHR', departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], adults: 1 } : {};
+      const query = tab === 'hotels' ? `?city=${searchQuery}` : tab === 'visas' ? `?nationality=NG&destination=${searchQuery}` : '';
+      
+      const res = await fetch(`${API_URL}/demo/${endpoint}${query}`, {
+        method: tab === 'flights' ? 'POST' : 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        ...(tab === 'flights' ? { body: JSON.stringify(body) } : {})
+      });
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      console.error('Search failed', err);
+    } finally {
+      setSearching(false);
+    }
+  };
 
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
@@ -108,35 +135,96 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* ─── SEARCH BAR ─── */}
-      <div className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-xl shadow-slate-200/20">
-        <h3 className="text-lg font-black text-slate-900 mb-6 tracking-tight">Search and Book Instantly</h3>
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-            <Globe size={20} />
+      {/* ─── SEARCH & RESULTS ─── */}
+      <div className="bg-white p-10 rounded-[40px] border border-slate-200 shadow-2xl shadow-slate-200/40 transition-all">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Global Search Terminal</h3>
+            <p className="text-slate-500 font-medium text-sm mt-1">Directly query SML.agency, LiteAPI, and Mozio infrastructure.</p>
           </div>
-          <input 
-            type="text" 
-            placeholder="Search flights, hotels, visas, or transfers..." 
-            className="w-full pl-16 pr-6 py-6 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-lg font-medium transition-all outline-none placeholder:text-slate-400 shadow-inner"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                window.location.href = `/demo?search=${(e.target as HTMLInputElement).value}`;
-              }
-            }}
-          />
-          <div className="absolute inset-y-0 right-4 flex items-center">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-sm hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/20">
-              Search
-            </button>
+          <div className="flex bg-slate-100 p-1.5 rounded-2xl">
+            {['flights', 'hotels', 'visas'].map((t) => (
+              <button 
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                  tab === t ? 'bg-white text-blue-600 shadow-lg shadow-blue-600/10' : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           </div>
         </div>
-        <div className="flex gap-4 mt-6">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Quick actions:</span>
-          <Link href="/demo?tab=flights" className="text-xs font-bold text-blue-600 hover:underline">Find Flights</Link>
-          <Link href="/demo?tab=hotels" className="text-xs font-bold text-blue-600 hover:underline">Book Hotels</Link>
-          <Link href="/demo?tab=visa" className="text-xs font-bold text-blue-600 hover:underline">Apply Visa</Link>
+
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative group">
+            <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+              <MapPin size={20} />
+            </div>
+            <input 
+              type="text" 
+              placeholder={tab === 'flights' ? 'Where from? (e.g. LOS)' : 'City or Location'} 
+              className="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-base font-bold transition-all outline-none placeholder:text-slate-400 shadow-inner"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex-1 relative group">
+            <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+              <Calendar size={20} />
+            </div>
+            <input 
+              type="date" 
+              className="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl text-base font-bold transition-all outline-none shadow-inner"
+            />
+          </div>
+          <button 
+            onClick={handleRealSearch}
+            disabled={searching}
+            className="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition-all active:scale-95 shadow-xl shadow-blue-600/30 flex items-center justify-center gap-3 disabled:opacity-50"
+          >
+            {searching ? <Loader2 className="animate-spin" size={18} /> : <Search size={18} />}
+            {searching ? 'Querying API...' : 'Search Inventory'}
+          </button>
         </div>
+
+        {/* Real-time Results Area */}
+        {results.length > 0 && (
+          <div className="mt-12 space-y-4 animate-fade-up">
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Live Inventory from SML.agency</h4>
+              <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                Real-time Rates
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {results.map((item: any) => (
+                <div key={item.id} className="group bg-white border border-slate-100 p-6 rounded-3xl hover:border-blue-600 hover:shadow-xl transition-all relative overflow-hidden">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        {tab === 'flights' ? '✈️' : tab === 'hotels' ? '🏨' : '🛂'}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-900">{item.name || item.airline || 'Standard Offer'}</p>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{item.provider} • ID: {item.id?.slice(0, 8)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-black text-blue-600">${item.price}</p>
+                      <p className="text-[10px] font-bold text-slate-400">Incl. Travsify Fee</p>
+                    </div>
+                  </div>
+                  <button className="w-full py-3 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                    Book This {tab.slice(0, -1)}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

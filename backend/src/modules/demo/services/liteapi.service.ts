@@ -63,18 +63,7 @@ export class LiteApiService {
   }
 
   private getFallbackData(city: string, tenantMarkup: number): UnifiedHotel[] {
-    return [
-      {
-        id: 'lite-h1',
-        vertical: TravelVertical.HOTEL,
-        provider: 'LiteAPI',
-        name: 'The Grand Meridian',
-        location: city,
-        stars: 5,
-        amenities: ['Pool', 'Spa'],
-        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945',
-        price: PricingEngine.calculate(385, 19.25, tenantMarkup, 'USD'),
-      }
-    ];
+    this.logger.warn(`Hotel search failed for ${city}. Returning empty results.`);
+    return [];
   }
 }
