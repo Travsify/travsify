@@ -26,34 +26,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuGroups = [
     {
-      title: 'Global Assets',
+      title: 'Main Hub',
       items: [
-        { name: 'Terminal Overview', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-        { name: 'Liquidity Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Dashboard Home', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+        { name: 'My Wallets', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
       ]
     },
     {
-      title: 'Vertical Stack',
+      title: 'Travel Services',
       items: [
-        { name: 'Aviation GDS', path: '/dashboard/bookings', icon: <Plane size={18} /> },
-        { name: 'Hospitality Hub', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
-        { name: 'Global Logistics', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'eVisa Portal', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
-        { name: 'Insurance Guard', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
+        { name: 'Book Flights', path: '/dashboard/bookings', icon: <Plane size={18} /> },
+        { name: 'Book Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
+        { name: 'Airport Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
+        { name: 'Apply for Visas', path: '/dashboard/visa', icon: <ScrollText size={18} /> },
+        { name: 'Travel Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
       ]
     },
     {
-      title: 'Infrastructure',
+      title: 'Account & Settings',
       items: [
-        { name: 'API Management', path: '/dashboard/developers', icon: <Key size={18} /> },
-        { name: 'Node Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
-        { name: 'Identity KYC', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
+        { name: 'System Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
+        { name: 'Identity (KYC)', path: '/dashboard/kyc', icon: <Globe2 size={18} /> },
       ]
     },
     ...(user?.role === 'admin' ? [{
-      title: 'Master Control',
+      title: 'Admin Control',
       items: [
-        { name: 'Executive Console', path: '/dashboard/admin', icon: <ShieldCheck size={18} /> },
+        { name: 'Master Console', path: '/dashboard/admin', icon: <ShieldCheck size={18} /> },
       ]
     }] : [])
   ];
@@ -66,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/dashboard" className="text-2xl font-black tracking-tighter flex items-center gap-1.5 text-white">
             Travsify<span className="text-orange-500">.</span>
           </Link>
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">Executive Terminal</p>
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">B2B Travel Engine</p>
         </div>
         
         <div className="flex-1 px-6 py-4 space-y-10 overflow-y-auto custom-scrollbar">

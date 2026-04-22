@@ -21,10 +21,11 @@ import {
   ArrowRight,
   ChevronRight,
   Database,
-  BarChart3
+  BarChart3,
+  ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
-import { API_URL } from '@/utils/api';
+import { API_URL, SHERPA_URL } from '@/utils/api';
 
 export default function OverviewPage() {
   const { user } = useAuth();
@@ -84,63 +85,88 @@ export default function OverviewPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Terminal Live</span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Everything is running smoothly</span>
           </div>
           <h2 className="text-4xl font-black tracking-tight text-white">
-            Welcome back, <span className="text-orange-500">{user?.businessName?.split(' ')[0]}</span>
+            Good morning, <span className="text-orange-500">{user?.businessName?.split(' ')[0]}</span>!
           </h2>
           <p className="text-slate-400 font-bold text-sm max-w-lg">
-            Institutional management for {user?.businessName}. Access global inventory across 5 verticals.
+            Ready to book some amazing trips today? Your travel portal is fully loaded and ready for action.
           </p>
         </div>
         <div className="flex items-center gap-4 mt-8 lg:mt-0">
           <Link href="/dashboard/bookings" className="px-10 py-5 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl font-black text-[13px] transition-all flex items-center justify-center gap-3 shadow-xl shadow-orange-600/20">
             <Plus size={18} />
-            Quick Booking
+            Start New Booking
           </Link>
         </div>
       </div>
 
-      {/* Asset Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <SlateAssetCard 
-          label="Naira Liquidity" 
+          label="Naira Balance" 
           value={formatCurrency(ngnWallet.balance, 'NGN')} 
           symbol="₦"
-          status="Available"
+          status="Ready to Use"
           trend="+1.2%"
         />
         <SlateAssetCard 
-          label="Dollar Liquidity" 
+          label="Dollar Balance" 
           value={formatCurrency(usdWallet.balance, 'USD')} 
           symbol="$"
-          status="Available"
+          status="Ready to Use"
           trend="+0.5%"
         />
-        <div className="bg-slate-900 rounded-[32px] border border-white/5 p-8 flex flex-col justify-between">
+        <a 
+          href={SHERPA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-orange-600 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-orange-500 transition-all shadow-xl shadow-orange-600/20"
+        >
            <div className="flex items-center justify-between mb-8">
-             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Infrastructure</p>
-             <Database size={16} className="text-blue-500" />
+             <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Travel Intelligence</p>
+             <Globe size={16} className="text-white" />
            </div>
-           <div className="space-y-4">
-             <MetricRow label="Sync Status" value="Online" active />
-             <MetricRow label="API Latency" value="124ms" />
-             <MetricRow label="Cache Hit" value="98.2%" />
+           <div className="space-y-1">
+             <h4 className="text-xl font-black text-white leading-tight">Check Travel Requirements</h4>
+             <p className="text-white/70 text-xs font-bold">Visas, Health & Entry Rules</p>
            </div>
-           <div className="mt-8 pt-6 border-t border-white/5">
-             <Link href="/dashboard/developers" className="text-[11px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2 hover:text-blue-300 transition-colors">
-               Terminal Settings <ArrowRight size={12} />
-             </Link>
+           <div className="mt-8 pt-6 border-t border-white/10">
+             <span className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+               Launch Portal <ExternalLink size={12} />
+             </span>
            </div>
-        </div>
+        </a>
+      </div>
+
+      <div className="bg-slate-900 rounded-[32px] border border-white/5 p-10 relative overflow-hidden group">
+         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/5 blur-[100px] rounded-full translate-x-1/2" />
+         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+            <div className="space-y-4">
+               <h3 className="text-xl font-black text-white tracking-tight">System Status</h3>
+               <div className="flex flex-wrap gap-4">
+                  <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-2">
+                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Aviation API Live</span>
+                  </div>
+                  <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-2">
+                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Hotel Hub Sync</span>
+                  </div>
+               </div>
+            </div>
+            <Link href="/dashboard/developers" className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl font-black text-[12px] transition-all flex items-center justify-center gap-2">
+               View Developer Tools <ArrowRight size={16} />
+            </Link>
+         </div>
       </div>
 
       {/* Service Vertical Selectors */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <VerticalButton icon={<Plane size={20} />} label="Aviation" path="/dashboard/bookings" active />
-        <VerticalButton icon={<Hotel size={20} />} label="Hospitality" path="/dashboard/hotels" />
-        <VerticalButton icon={<Car size={20} />} label="Logistics" path="/dashboard/transfers" />
-        <VerticalButton icon={<ScrollText size={20} />} label="eVisa" path="/dashboard/visa" />
+        <VerticalButton icon={<Plane size={20} />} label="Flights" path="/dashboard/bookings" active />
+        <VerticalButton icon={<Hotel size={20} />} label="Hotels" path="/dashboard/hotels" />
+        <VerticalButton icon={<Car size={20} />} label="Transfers" path="/dashboard/transfers" />
+        <VerticalButton icon={<ScrollText size={20} />} label="Visas" path="/dashboard/visa" />
         <VerticalButton icon={<ShieldCheck size={20} />} label="Insurance" path="/dashboard/insurance" />
       </div>
 
@@ -149,20 +175,20 @@ export default function OverviewPage() {
         <div className="lg:col-span-2 bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-sm flex flex-col">
           <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
             <div>
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">Transaction Ledger</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Real-time settlement history</p>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">Recent Transactions</h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">History of your bookings and fundings</p>
             </div>
             <Link href="/dashboard/wallets" className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-black transition-all">
-              Full Statement
+              See All History
             </Link>
           </div>
           <div className="overflow-x-auto">
              <table className="w-full text-left">
                <thead>
                  <tr className="bg-slate-50 border-b border-slate-100">
-                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identifier</th>
-                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</th>
-                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Settlement</th>
+                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Transaction ID</th>
+                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Service Details</th>
+                   <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
                  </tr>
                </thead>
                <tbody className="divide-y divide-slate-100">
