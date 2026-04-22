@@ -32,7 +32,8 @@ import {
   Key,
   Eye,
   ArrowDownCircle,
-  ArrowUpCircle
+  ArrowUpCircle,
+  Wallet
 } from 'lucide-react';
 import Link from 'next/link';
 import { API_URL } from '@/utils/api';
