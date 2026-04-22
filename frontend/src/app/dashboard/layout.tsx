@@ -21,7 +21,10 @@ import {
   Share2,
   Search,
   Layers,
-  Calendar
+  Calendar,
+  Database,
+  Zap,
+  Activity
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
