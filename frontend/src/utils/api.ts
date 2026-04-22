@@ -6,6 +6,12 @@ export const getApiUrl = () => {
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = `https://${url}`;
     }
+    // Fix missing domain if user provided just the service name (e.g. "travsify-backend")
+    if (url.includes('onrender') && !url.includes('.')) {
+        // This case is rare but let's be safe
+    } else if (!url.includes('.') && !url.includes('localhost') && !url.includes('127.0.0.1')) {
+      url = `${url}.onrender.com`;
+    }
     // Remove trailing slash to prevent double slashes in paths
     finalUrl = url.replace(/\/$/, '');
   } else if (typeof window !== 'undefined') {
