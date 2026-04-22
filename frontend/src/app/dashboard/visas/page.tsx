@@ -13,8 +13,10 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function VisaPage() {
+  const apiKey = useApiKey();
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [search, setSearch] = useState({
@@ -27,7 +29,9 @@ export default function VisaPage() {
     setLoading(true);
     setResults(null);
     try {
-      const res = await fetch(`${API_URL}/demo/visa/requirements?nationality=${search.nationality.toUpperCase()}&destination=${search.destination.toUpperCase()}`);
+      const res = await fetch(`${API_URL}/api/v1/search/visa?nationality=${search.nationality.toUpperCase()}&destination=${search.destination.toUpperCase()}`, {
+        headers: { 'x-api-key': apiKey || '' }
+      });
       const data = await res.json();
       setResults(data);
     } catch (err) {

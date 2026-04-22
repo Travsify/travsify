@@ -19,8 +19,10 @@ import {
   Users
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function InsurancePage() {
+  const apiKey = useApiKey();
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState<any[]>([]);
   const [search, setSearch] = useState({
@@ -34,9 +36,9 @@ export default function InsurancePage() {
     if (!search.destination || !search.startDate || !search.endDate) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/demo/insurance/search`, {
+      const res = await fetch(`${API_URL}/api/v1/search/insurance`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' },
         body: JSON.stringify(search)
       });
       const data = await res.json();

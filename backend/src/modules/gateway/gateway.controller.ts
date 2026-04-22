@@ -32,21 +32,20 @@ export class GatewayController {
     return this.checkoutService.processBooking(tenant, bookingData);
   }
 
-  @Get('search/flights')
+  @Post('search/flights')
   async searchFlights(
     @Headers('x-api-key') apiKey: string,
-    @Query('origin') origin: string,
-    @Query('destination') destination: string,
-    @Query('date') date: string,
-    @Query('adults') adults: string,
+    @Body() criteria: any,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.ndcService.airShopping({
-      origin,
-      destination,
-      departureDate: date,
-      adults: parseInt(adults) || 1,
-    }, tenant.flightMarkup);
+    const searchCriteria = criteria.origin ? criteria : {
+      origin: 'LOS',
+      destination: 'LHR',
+      departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      adults: 1,
+      ...criteria
+    };
+    return this.ndcService.airShopping(searchCriteria, tenant.flightMarkup);
   }
 
   @Get('search/hotels')
@@ -76,13 +75,20 @@ export class GatewayController {
     return this.shepperService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup);
   }
 
-  @Get('search/transfers')
+  @Post('search/transfers')
   async searchTransfers(
     @Headers('x-api-key') apiKey: string,
-    @Query('location') location: string,
+    @Body() criteria: any,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.mozioService.getTransferOptions(location, tenant.hotelMarkup);
+    // Aligning with demo controller payload handling
+    return this.mozioService.searchTransfers({
+      pickupAddress: criteria.pickup || criteria.pickupAddress || 'Heathrow Airport (LHR)',
+      dropoffAddress: criteria.dropoff || criteria.dropoffAddress || 'Central London',
+      pickupDatetime: criteria.time || criteria.pickupDatetime || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      passengers: criteria.passengers || 1,
+      currency: criteria.currency || 'USD',
+    }, tenant.hotelMarkup);
   }
 
   @Get('search/tours')
@@ -94,10 +100,19 @@ export class GatewayController {
     return this.gygService.getTours(location, tenant.hotelMarkup);
   }
 
-  @Get('search/insurance')
-  async searchInsurance(@Headers('x-api-key') apiKey: string) {
+  @Post('search/insurance')
+  async searchInsurance(
+    @Headers('x-api-key') apiKey: string,
+    @Body() criteria: any,
+  ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.safetyWingService.getInsuranceQuotes(tenant.insuranceMarkup);
+    return this.safetyWingService.getQuotes({
+      destination: criteria.destination || 'Worldwide',
+      startDate: criteria.startDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      endDate: criteria.endDate || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      age: criteria.age || 30,
+      citizenship: criteria.citizenship || 'NG',
+    }, tenant.insuranceMarkup);
   }
 
   @Get('search/all')

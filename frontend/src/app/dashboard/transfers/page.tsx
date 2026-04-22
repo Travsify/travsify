@@ -14,8 +14,10 @@ import {
   Navigation
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function TransfersPage() {
+  const apiKey = useApiKey();
   const [loading, setLoading] = useState(false);
   const [transfers, setTransfers] = useState<any[]>([]);
   const [search, setSearch] = useState({
@@ -28,9 +30,9 @@ export default function TransfersPage() {
     if (!search.pickup || !search.dropoff) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/demo/transfers/search`, {
+      const res = await fetch(`${API_URL}/api/v1/search/transfers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' },
         body: JSON.stringify(search)
       });
       const data = await res.json();

@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Search, Plane, Hotel, Car, Globe, ShieldCheck, Loader2, MapPin, Calendar, Clock, Star, Map } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function TerminalPage() {
+  const apiKey = useApiKey();
   const [tab, setTab] = useState('flights');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
@@ -15,13 +17,13 @@ export default function TerminalPage() {
     setLoading(true);
     setResults([]);
     try {
-      const endpoint = tab === 'flights' ? 'flights/search' : tab === 'hotels' ? 'hotels/search' : 'visa/requirements';
-      const body = tab === 'flights' ? { origin: query.toUpperCase(), destination: 'LHR', departureDate: '2024-06-20', adults: 1 } : {};
+      const endpoint = tab === 'flights' ? 'flights' : tab === 'hotels' ? 'hotels' : 'visa';
+      const body = tab === 'flights' ? { origin: query.toUpperCase(), destination: 'LHR', departureDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], adults: 1 } : {};
       const searchParams = tab === 'hotels' ? `?city=${query}` : tab === 'visas' ? `?nationality=NG&destination=${query}` : '';
       
-      const res = await fetch(`${API_URL}/demo/${endpoint}${searchParams}`, {
+      const res = await fetch(`${API_URL}/api/v1/search/${endpoint}${searchParams}`, {
         method: tab === 'flights' ? 'POST' : 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' },
         ...(tab === 'flights' ? { body: JSON.stringify(body) } : {})
       });
       const data = await res.json();

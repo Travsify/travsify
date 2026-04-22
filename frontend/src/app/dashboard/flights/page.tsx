@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Plane, Search, Calendar, MapPin, Loader2, Clock, Plus, Trash2, CheckCircle2 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function FlightsPage() {
+  const apiKey = useApiKey();
   const [loading, setLoading] = useState(false);
   const [flights, setFlights] = useState<any[]>([]);
   const [tripType, setTripType] = useState('one_way');
@@ -45,9 +47,9 @@ export default function FlightsPage() {
         adults: 1
       };
 
-      const res = await fetch(`${API_URL}/demo/flights/search`, {
+      const res = await fetch(`${API_URL}/api/v1/search/flights`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' },
         body: JSON.stringify(payload)
       });
       const data = await res.json();

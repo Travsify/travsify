@@ -15,8 +15,10 @@ import {
   Clock
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
+import { useApiKey } from '@/hooks/useApiKey';
 
 export default function HotelsPage() {
+  const apiKey = useApiKey();
   const [loading, setLoading] = useState(false);
   const [hotels, setHotels] = useState<any[]>([]);
   const [search, setSearch] = useState({
@@ -31,9 +33,9 @@ export default function HotelsPage() {
     if (!search.city) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/demo/hotels/search?city=${encodeURIComponent(search.city)}`, {
+      const res = await fetch(`${API_URL}/api/v1/search/hotels?city=${encodeURIComponent(search.city)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' }
       });
       const data = await res.json();
       setHotels(Array.isArray(data) ? data : []);
