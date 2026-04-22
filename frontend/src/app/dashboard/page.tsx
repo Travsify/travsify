@@ -16,14 +16,15 @@ import {
   MoreHorizontal,
   LogOut,
   Loader2,
-  Globe
+  Globe,
+  Plus,
+  ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_URL } from '@/utils/api';
 
 export default function OverviewPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,217 +68,244 @@ export default function OverviewPage() {
   if (loading) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-        <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Compiling Dashboard...</p>
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg animate-pulse" />
+          </div>
+        </div>
+        <p className="text-sm font-black text-slate-400 uppercase tracking-widest animate-pulse">Syncing Infrastructure...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div className="relative space-y-10 pb-20">
+      {/* Background Decor */}
+      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] -z-10 animate-pulse-glow" />
+      <div className="absolute top-[40%] -left-40 w-[400px] h-[400px] bg-orange-600/5 rounded-full blur-[100px] -z-10 animate-pulse-glow" style={{ animationDelay: '2s' }} />
+
       {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">
-            Welcome back, {user?.businessName?.split(' ')[0]}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+        <div className="animate-fade-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-blue-100 shadow-sm">
+            <Zap size={12} className="fill-blue-600" />
+            System Operational
+          </div>
+          <h2 className="text-4xl font-black tracking-tight text-slate-900 mb-2 leading-none">
+            Hello, <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{user?.businessName?.split(' ')[0]}</span>
           </h2>
-          <p className="text-slate-500 font-medium">
-            Your global travel operations are running smoothly today.
+          <p className="text-slate-500 font-bold">
+            Here's what's happening with your travel empire today.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="px-6 py-3 bg-white border border-slate-100 rounded-2xl font-bold text-sm text-slate-900 hover:bg-slate-50 transition-all shadow-sm">
-            Download Reports
+        <div className="flex items-center gap-4 animate-fade-up" style={{ animationDelay: '100ms' }}>
+          <button className="flex-1 lg:flex-none px-8 py-4 bg-white border border-slate-200 rounded-[24px] font-black text-[13px] text-slate-600 hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2">
+            Settings
           </button>
-          <Link href="/dashboard/bookings" className="px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
-            Search Flights
+          <Link href="/dashboard/bookings" className="flex-1 lg:flex-none px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-[24px] font-black text-[13px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2 group">
+            <Plus size={18} />
+            New Booking
+            <ArrowRight size={18} className="ml-1 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard 
-          title="NGN Wallet" 
+      {/* Wallet / Stat Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <PremiumStatCard 
+          title="Naira Wallet" 
           value={formatCurrency(ngnWallet.balance, 'NGN').split('.')[0]} 
           decimal={'.' + (formatCurrency(ngnWallet.balance, 'NGN').split('.')[1] || '00')}
-          change="+12.5%" 
-          trend="up"
+          currency="NGN"
           color="blue"
+          icon="₦"
         />
-        <StatCard 
-          title="USD Wallet" 
+        <PremiumStatCard 
+          title="Dollar Wallet" 
           value={formatCurrency(usdWallet.balance, 'USD').split('.')[0]} 
           decimal={'.' + (formatCurrency(usdWallet.balance, 'USD').split('.')[1] || '00')}
-          change="+5.2%" 
-          trend="up"
-          color="emerald"
-        />
-        <StatCard 
-          title="Success Rate" 
-          value="99.8" 
-          decimal="%"
-          change="Real-time" 
-          trend="neutral"
+          currency="USD"
           color="indigo"
+          icon="$"
         />
+        <div className="bg-[#0f172a] rounded-[40px] p-8 border border-white/5 relative overflow-hidden group shadow-2xl shadow-black/20 flex flex-col justify-between">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 blur-3xl rounded-full translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700" />
+           <div className="relative z-10">
+              <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6">Platform Performance</p>
+              <div className="space-y-6">
+                <MetricLine label="API Uptime" value="100%" color="blue" />
+                <MetricLine label="Success Rate" value="99.9%" color="indigo" />
+                <MetricLine label="Avg. Response" value="124ms" color="emerald" />
+              </div>
+           </div>
+           <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Global Status</span>
+              <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-black border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                STABLE
+              </div>
+           </div>
+        </div>
       </div>
 
-      {/* Quick Actions / Verticals */}
+      {/* Vertical Selection */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <QuickAction icon={<Plane size={20} />} label="Flights" href="/dashboard/bookings" color="blue" />
-        <QuickAction icon={<Hotel size={20} />} label="Hotels" href="/dashboard/hotels" color="indigo" />
-        <QuickAction icon={<Car size={20} />} label="Transfers" href="/dashboard/transfers" color="emerald" />
-        <QuickAction icon={<ScrollText size={20} />} label="eVisa" href="/dashboard/visa" color="orange" />
-        <QuickAction icon={<ShieldCheck size={20} />} label="Insurance" href="/dashboard/insurance" color="orange" />
+        <ModernQuickAction icon={<Plane size={24} />} label="Flights" href="/dashboard/bookings" active />
+        <ModernQuickAction icon={<Hotel size={24} />} label="Hotels" href="/dashboard/hotels" />
+        <ModernQuickAction icon={<Car size={24} />} label="Transfers" href="/dashboard/transfers" />
+        <ModernQuickAction icon={<ScrollText size={24} />} label="eVisa" href="/dashboard/visa" />
+        <ModernQuickAction icon={<ShieldCheck size={24} />} label="Insurance" href="/dashboard/insurance" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <Activity size={20} className="text-blue-600" />
-              Recent Transactions
-            </h3>
-            <Link href="/dashboard/wallets" className="text-[13px] font-bold text-blue-600 hover:underline">View all</Link>
+        <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-200/60 p-10 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -translate-y-1/2 translate-x-1/2 -z-10" />
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight mb-1">Recent Activity</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Transaction History</p>
+            </div>
+            <Link href="/dashboard/wallets" className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black transition-all">
+              View All
+            </Link>
           </div>
-          <div className="space-y-6">
-            {transactions.slice(0, 4).map((tx) => (
-              <ActivityItem 
+          <div className="space-y-2">
+            {transactions.slice(0, 5).map((tx) => (
+              <ActivityRow 
                 key={tx.id}
                 title={tx.metadata?.description || (tx.type === 'credit' ? 'Wallet Funding' : 'Booking Payment')} 
-                subtitle={`Ref: ${tx.reference || tx.id.slice(0, 8)}`} 
-                amount={`${tx.type === 'credit' ? '+' : '-'}${formatCurrency(tx.amount, tx.wallet?.currency)}`} 
-                time={new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
+                refNo={tx.reference || tx.id.slice(0, 8)} 
+                amount={formatCurrency(tx.amount, tx.wallet?.currency)} 
+                time={new Date(tx.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })} 
                 type={tx.type}
-                positive={tx.type === 'credit'}
               />
             ))}
             {transactions.length === 0 && (
-              <div className="py-10 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No recent activity</p>
+              <div className="py-20 text-center flex flex-col items-center gap-4">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                  <Activity size={32} />
+                </div>
+                <p className="text-sm font-black text-slate-300 uppercase tracking-widest">No recent records</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* API Metrics */}
-        <div className="bg-[#0f172a] rounded-[32px] p-8 text-white relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Zap size={120} />
-          </div>
-          <div className="relative z-10">
-            <h3 className="text-lg font-bold mb-8 flex items-center gap-2 text-blue-400">
-              <Zap size={18} />
-              API Performance
-            </h3>
-            <div className="space-y-8">
-              <MetricBar label="Requests (24h)" value="12.8k" percent={75} />
-              <MetricBar label="Latency (ms)" value="124ms" percent={30} />
-              <MetricBar label="Error Rate" value="0.02%" percent={5} />
-              
-              <div className="pt-4">
-                <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-                  <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Endpoint Health</p>
-                  <div className="flex gap-1.5">
-                    {[1,1,1,1,1,1,1,1,1,0,1,1,1].map((s, i) => (
-                      <div key={i} className={`flex-1 h-8 rounded-sm ${s ? 'bg-emerald-500/40' : 'bg-orange-500/40'} animate-pulse`} style={{ animationDelay: `${i * 100}ms` }} />
-                    ))}
-                  </div>
-                </div>
-              </div>
+        {/* Developer Info Card */}
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-10 text-white shadow-2xl shadow-blue-600/20 flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-8 border border-white/10">
+              <Globe size={24} className="text-white" />
+            </div>
+            <h3 className="text-2xl font-black mb-4 tracking-tight leading-tight">Ready to integrate?</h3>
+            <p className="text-blue-100/70 text-sm font-medium leading-relaxed mb-8">
+              Use our robust API to scale your travel offerings. Access the full documentation and sandbox keys.
+            </p>
+            <div className="space-y-3">
+              <Link href="/dashboard/developers" className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black text-[13px] flex items-center justify-center gap-2 hover:scale-[1.02] transition-all">
+                API Settings
+              </Link>
+              <a href="#" className="w-full py-4 bg-white/10 border border-white/10 text-white rounded-2xl font-black text-[13px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
+                Read Docs
+              </a>
             </div>
           </div>
+          <div className="mt-12 flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {[1,2,3].map(i => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-blue-600 bg-slate-200" />
+              ))}
+            </div>
+            <span className="text-[11px] font-bold text-blue-100">Joined by 500+ Devs</span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function StatCard({ title, value, decimal, change, trend, color }: any) {
-  const colors: any = {
-    blue: 'bg-blue-600 shadow-blue-600/20',
-    emerald: 'bg-emerald-600 shadow-emerald-600/20',
-    indigo: 'bg-indigo-600 shadow-indigo-600/20',
-  };
-
+function PremiumStatCard({ title, value, decimal, color, icon }: any) {
   return (
-    <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-      <div className="flex justify-between items-start mb-6">
-        <div className={`w-12 h-12 rounded-2xl ${colors[color]} flex items-center justify-center text-white shadow-lg`}>
-          {color === 'blue' ? '₦' : color === 'emerald' ? '$' : <TrendingUp size={20} />}
+    <div className="group bg-white rounded-[40px] p-10 border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+      <div className={`absolute top-0 right-0 w-40 h-40 ${color === 'blue' ? 'bg-blue-600/5' : 'bg-indigo-600/5'} rounded-full translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700`} />
+      
+      <div className="relative z-10">
+        <div className="flex justify-between items-start mb-8">
+          <div className={`w-14 h-14 rounded-[22px] flex items-center justify-center text-xl font-black shadow-xl transition-transform group-hover:scale-110 duration-500 ${
+            color === 'blue' ? 'bg-blue-600 text-white shadow-blue-600/30' : 'bg-indigo-600 text-white shadow-indigo-600/30'
+          }`}>
+            {icon}
+          </div>
+          <div className="px-4 py-1.5 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-tight group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+            Live Balance
+          </div>
         </div>
-        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-black uppercase tracking-tight ${trend === 'up' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-500'}`}>
-          {trend === 'up' ? <ArrowUpRight size={12} /> : null}
-          {change}
-        </div>
-      </div>
-      <div>
-        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{title}</p>
-        <div className="flex items-baseline gap-0.5">
-          <span className="text-3xl font-black text-slate-900 tracking-tight">{value}</span>
-          <span className="text-lg font-bold text-slate-400">{decimal}</span>
+        
+        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">{title}</p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-4xl font-black text-slate-900 tracking-tighter">{value}</span>
+          <span className="text-xl font-black text-slate-300">{decimal}</span>
         </div>
       </div>
     </div>
   );
 }
 
-function QuickAction({ icon, label, href, color }: any) {
-  const colors: any = {
-    blue: 'bg-blue-50 text-blue-600 group-hover:bg-blue-600',
-    indigo: 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600',
-    emerald: 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600',
-    orange: 'bg-orange-50 text-orange-600 group-hover:bg-orange-600',
-    red: 'bg-orange-50 text-orange-600 group-hover:bg-orange-600',
-  };
-
+function MetricLine({ label, value, color }: any) {
   return (
-    <Link href={href} className="group p-6 rounded-3xl bg-white border border-slate-100 hover:border-transparent hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center gap-3">
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${colors[color]} group-hover:text-white group-hover:scale-110 group-hover:shadow-lg`}>
+    <div className="flex items-center justify-between">
+      <span className="text-[13px] font-bold text-slate-400">{label}</span>
+      <div className="flex items-center gap-3">
+        <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden hidden sm:block">
+          <div className={`h-full rounded-full ${color === 'blue' ? 'bg-blue-500' : 'bg-indigo-500'}`} style={{ width: '85%' }} />
+        </div>
+        <span className="text-[13px] font-black text-white">{value}</span>
+      </div>
+    </div>
+  );
+}
+
+function ModernQuickAction({ icon, label, href, active }: any) {
+  return (
+    <Link href={href} className={`group p-8 rounded-[32px] border flex flex-col items-center justify-center gap-4 transition-all duration-500 ${
+      active 
+        ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-600/20' 
+        : 'bg-white border-slate-200/60 text-slate-900 hover:border-blue-600/30 hover:shadow-xl hover:-translate-y-1'
+    }`}>
+      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+        active ? 'bg-white/10 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
+      }`}>
         {icon}
       </div>
-      <span className="text-xs font-black text-slate-900 uppercase tracking-widest">{label}</span>
+      <span className="text-xs font-black uppercase tracking-widest">{label}</span>
     </Link>
   );
 }
 
-function MetricBar({ label, value, percent }: any) {
+function ActivityRow({ title, refNo, amount, time, type }: any) {
+  const isCredit = type === 'credit';
   return (
-    <div className="space-y-3">
-      <div className="flex justify-between text-[13px] font-bold">
-        <span className="text-slate-400">{label}</span>
-        <span className="text-blue-400">{value}</span>
+    <div className="flex items-center justify-between p-5 rounded-[24px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+      <div className="flex items-center gap-5">
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm transition-transform group-hover:scale-110 ${
+          isCredit ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'
+        }`}>
+          {isCredit ? <ArrowDownLeft size={22} /> : <ArrowUpRight size={22} />}
+        </div>
+        <div>
+          <h4 className="text-[15px] font-black text-slate-900 mb-0.5">{title}</h4>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">REF: {refNo}</p>
+        </div>
       </div>
-      <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full transition-all duration-1000" 
-          style={{ width: `${percent}%` }} 
-        />
+      <div className="text-right">
+        <p className={`text-[16px] font-black tracking-tight ${isCredit ? 'text-emerald-600' : 'text-slate-900'}`}>
+          {isCredit ? '+' : '-'}{amount}
+        </p>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{time}</p>
       </div>
     </div>
   );
 }
-
-function ActivityItem({ title, subtitle, amount, time, positive, type }: any) {
-  return (
-    <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 transition-all group">
-      <div className="flex items-center gap-5">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg ${positive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'} group-hover:scale-110 transition-transform`}>
-          {positive ? <ArrowDownLeft size={20} /> : <ArrowUpRight size={20} />}
-        </div>
-        <div>
-          <h4 className="text-[14px] font-bold text-slate-900">{title}</h4>
-          <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">{subtitle}</p>
-        </div>
-      </div>
-      <div className="text-right">
-        <p className={`text-[14px] font-black tracking-tight ${positive ? 'text-emerald-600' : 'text-slate-900'}`}>
-          {amount}
-        </p>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{time}</p>
-      </div>
-    </div>
-  );
 }
