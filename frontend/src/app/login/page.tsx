@@ -30,16 +30,24 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const url = `${API_URL}/auth/login`;
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `API Error ${res.status}: ${res.statusText} at ${url}`);
+      }
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Login failed');
       login(data.access_token, data.user);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message.includes('Unexpected token') 
+        ? `Connectivity Error: Received HTML instead of JSON from ${API_URL}/auth/login. Please verify backend deployment.`
+        : err.message);
     } finally {
       setLoading(false);
     }
