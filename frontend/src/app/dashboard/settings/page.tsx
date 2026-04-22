@@ -99,21 +99,21 @@ export default function SettingsPage() {
             icon={<Plane className="text-blue-600" size={20} />}
             title="Flight Markup"
             value={markups.flightMarkup}
-            onChange={(val) => setMarkups({...markups, flightMarkup: parseFloat(val)})}
+            onChange={(val: string) => setMarkups({...markups, flightMarkup: parseFloat(val)})}
             desc="Percentage added to base flight fares."
           />
           <MarkupCard 
             icon={<Hotel className="text-orange-600" size={20} />}
             title="Hotel Markup"
             value={markups.hotelMarkup}
-            onChange={(val) => setMarkups({...markups, hotelMarkup: parseFloat(val)})}
+            onChange={(val: string) => setMarkups({...markups, hotelMarkup: parseFloat(val)})}
             desc="Flat fee or percentage for hotel bookings."
           />
           <MarkupCard 
             icon={<ShieldCheck className="text-emerald-600" size={20} />}
             title="Insurance Markup"
             value={markups.insuranceMarkup}
-            onChange={(val) => setMarkups({...markups, insuranceMarkup: parseFloat(val)})}
+            onChange={(val: string) => setMarkups({...markups, insuranceMarkup: parseFloat(val)})}
             desc="Platform fee for travel protection."
           />
         </div>
