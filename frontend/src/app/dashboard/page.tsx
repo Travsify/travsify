@@ -31,9 +31,11 @@ import {
   Code2,
   Key,
   Eye,
-  ArrowDownCircle,
   ArrowUpCircle,
-  Wallet
+  Wallet,
+  MapPin,
+  Calendar,
+  Search
 } from 'lucide-react';
 import Link from 'next/link';
 import { API_URL } from '@/utils/api';
