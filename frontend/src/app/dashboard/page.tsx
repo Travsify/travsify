@@ -111,31 +111,31 @@ export default function OverviewPage() {
         {/* ─── LEFT: MAIN IDENTITY & ASSETS ─── */}
         <div className="lg:col-span-3 space-y-6">
           {/* Identity Header */}
-          <div className="relative group overflow-hidden bg-gradient-to-br from-slate-900 to-[#020617] border border-white/5 p-10 rounded-[32px] flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-2xl transition-all hover:border-orange-500/20">
+          <div className="relative group overflow-hidden bg-gradient-to-br from-[#0f172a] to-[#020617] border border-white/5 p-10 rounded-[32px] flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-2xl transition-all hover:border-orange-500/20 premium-border">
             <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-700 pointer-events-none">
               <Code2 size={180} />
             </div>
             <div className="space-y-3 relative z-10">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-[0.2em] border border-orange-500/20 rounded-lg">Enterprise Console</span>
-                <span className="text-[10px] font-bold text-slate-600">ID: SLATE-{user?.id?.slice(0, 8).toUpperCase()}</span>
+                <span className="lo-density-text bg-orange-500/10 text-orange-500 px-3 py-1 rounded-lg border border-orange-500/20">Enterprise Console</span>
+                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Node ID: SLATE-{user?.id?.slice(0, 8).toUpperCase()}</span>
               </div>
-              <h2 className="text-[14px] font-black text-white uppercase tracking-tighter flex items-center gap-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                Executive Node: <span className="text-orange-500">{user?.businessName}</span>
+              <h2 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
+                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                Executive: <span className="text-orange-500">{user?.businessName}</span>
               </h2>
               <p className="text-[12px] text-slate-400 font-medium max-w-md leading-relaxed">
-                Automated travel distribution hub. Real-time access to global NDC inventory, hotel aggregators, and financial rails.
+                High-density travel distribution node. Live access to global NDC inventory and multi-currency settlement rails.
               </p>
             </div>
             <div className="flex gap-4 relative z-10">
-              <Link href="/dashboard/developers" className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl font-black text-[12px] transition-all flex items-center gap-2">
+              <Link href="/dashboard/developers" className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl font-black text-[11px] transition-all flex items-center gap-2 uppercase tracking-widest">
                 <Terminal size={14} className="text-orange-500" />
                 Metrics
               </Link>
-              <Link href="/dashboard/bookings" className="px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl font-black text-[12px] transition-all flex items-center gap-2 shadow-xl shadow-orange-600/30 active:scale-95">
+              <Link href="/dashboard/bookings" className="px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl font-black text-[11px] transition-all flex items-center gap-2 shadow-xl shadow-orange-600/30 active:scale-95 uppercase tracking-widest">
                 <Plus size={14} />
-                Deploy New Inventory
+                Deploy Inventory
               </Link>
             </div>
           </div>

@@ -4,99 +4,73 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] antialiased overflow-x-hidden selection:bg-blue-500/30">
+    <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] antialiased overflow-x-hidden selection:bg-orange-500/30">
       {/* ─── NAV ─── */}
-      <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200/50">
+      <nav className="fixed top-0 w-full z-[100] bg-white/70 backdrop-blur-xl border-b border-slate-200/50">
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="text-xl font-black tracking-tight">
-            <span className="text-blue-600">Travs</span><span className="text-orange-600">ify.</span>
-          </span>
-          <div className="hidden md:flex items-center gap-8 text-[14px] font-semibold text-slate-600">
+          <Link href="/" className="text-xl font-black tracking-tighter flex items-center gap-1.5 hover:scale-[0.98] transition-transform">
+            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xs rotate-3 shadow-lg shadow-blue-600/20">T</div>
+            <span className="text-slate-900">Travsify<span className="text-orange-600">.</span></span>
+          </Link>
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-slate-500 uppercase tracking-widest">
             <Link href="/demo" className="text-blue-600 hover:text-orange-600 transition-colors flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
               Live Demo
             </Link>
-            <Link href="/docs" className="hover:text-blue-600 transition-colors">Documentation</Link>
+            <Link href="/docs" className="hover:text-blue-600 transition-colors">Docs</Link>
             <Link href="#platform" className="hover:text-blue-600 transition-colors">Platform</Link>
             <Link href="#use-cases" className="hover:text-blue-600 transition-colors">Solutions</Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-[14px] font-semibold text-slate-600 hover:text-blue-600 transition-colors">Sign in</Link>
-            <Link href="/register" className="text-[14px] font-bold bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition-all active:scale-[0.97] shadow-lg shadow-blue-600/20">
-              Start building →
+            <Link href="/login" className="text-[13px] font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-widest">Sign in</Link>
+            <Link href="/register" className="text-[13px] font-black bg-slate-900 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all active:scale-[0.97] shadow-xl shadow-slate-900/10 uppercase tracking-widest">
+              Build Now
             </Link>
           </div>
         </div>
       </nav>
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-24 pb-32 px-6 overflow-hidden bg-gradient-to-b from-blue-50 to-[#f8fafc]">
-        {/* Background Mesh/Glow */}
-        <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" />
-        <div className="absolute top-40 right-1/4 w-[500px] h-[500px] bg-orange-400/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-          <div className="animate-fade-up">
-            <div className="flex flex-wrap items-center gap-3 mb-8">
-              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md text-blue-700 px-4 py-2 rounded-full text-xs font-bold border border-blue-100 shadow-sm">
-                <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
-                Direct NDC Connection Enabled
-              </div>
-              <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full text-xs font-bold border border-emerald-100 shadow-sm">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full" />
-                System Live: 99.9% Uptime
-              </div>
+      <section className="relative pt-32 pb-48 px-6 overflow-hidden">
+        {/* Lovable-style Mesh Background */}
+        <div className="absolute inset-0 z-0 mesh-gradient opacity-60" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[120px] animate-pulse-glow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
+        
+        <div className="max-w-[1200px] mx-auto relative z-10">
+          <div className="text-center max-w-4xl mx-auto animate-reveal">
+            <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-200/50 shadow-sm mb-10 lo-density-text">
+              <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping" />
+              Direct NDC Connection • v4.2.0-Live
             </div>
-            <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black leading-[1.05] tracking-[-0.03em] mb-6 text-slate-900">
-              The world's most powerful{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent">travel infrastructure.</span>
+            
+            <h1 className="text-[clamp(3rem,8vw,6rem)] font-black leading-[0.9] tracking-[-0.05em] mb-8 text-slate-900">
+              The world's most <br/>
+              <span className="text-blue-600">powerful</span> travel API<span className="text-orange-600">.</span>
             </h1>
-            <p className="text-lg text-slate-600 leading-relaxed max-w-xl mb-10 font-medium">
-              Transform your business with enterprise-grade travel technology. Integrate global flights, 2.5M+ hotels, transfers, and insurance instantly. Built for the next generation of global travel providers.
+            
+            <p className="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto mb-12 font-medium">
+              Transform your business with enterprise-grade travel infrastructure. Integrate global flights, 2.5M+ hotels, and insurance instantly.
             </p>
-            <div className="flex flex-wrap items-center gap-4 mb-6">
-              <Link href="/demo" className="bg-blue-600 text-white text-[15px] font-bold px-8 py-3.5 rounded-full hover:bg-blue-700 transition-all active:scale-[0.97] shadow-xl shadow-blue-600/25">
-                Try Live Demo
+            
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+              <Link href="/demo" className="bg-blue-600 text-white text-[15px] font-black px-10 py-5 rounded-2xl hover:bg-blue-700 transition-all active:scale-[0.97] shadow-2xl shadow-blue-600/30 uppercase tracking-widest">
+                Explore Demo Platform
               </Link>
-              <Link href="/docs" className="text-[15px] font-bold text-slate-700 border-2 border-slate-200 px-8 py-3.5 rounded-full hover:border-orange-300 hover:text-orange-600 transition-all bg-white/50 backdrop-blur-sm">
-                View Documentation
+              <Link href="/docs" className="text-[15px] font-black text-slate-700 bg-white border border-slate-200 px-10 py-5 rounded-2xl hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50 uppercase tracking-widest">
+                Developer Docs
               </Link>
             </div>
-            <p className="text-[13px] text-slate-500 font-semibold flex items-center gap-2">
-              <span className="text-green-500">✓</span> No credit card required 
-              <span className="text-green-500 ml-2">✓</span> Zero setup fees
-              <span className="text-green-500 ml-2">✓</span> Instant live access
-            </p>
-          </div>
-
-          {/* Hero Image */}
-          <div className="animate-slide-in-right relative">
-            <div className="animate-float relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 border-[8px] border-white/50">
-              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200" alt="Global Travel API" className="w-full object-cover h-[450px]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            </div>
-            {/* Floating Accent Cards */}
-            <div className="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white px-5 py-4 animate-float-slow">
-              <div className="flex items-center gap-3">
-                <span className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-green-500/30">✓</span>
-                <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Booking Confirmed</p>
-                  <p className="text-sm font-black text-slate-800">PNR: X7H2QP</p>
-                </div>
-              </div>
-            </div>
-            <div className="absolute -top-6 -right-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white px-5 py-4 animate-float" style={{ animationDelay: '1s' }}>
-              <div className="flex items-center gap-3">
-                <span className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/30">⚡</span>
-                <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">API Latency</p>
-                  <p className="text-sm font-black text-slate-800">124ms avg</p>
-                </div>
-              </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto pt-10 border-t border-slate-200/50">
+              <MiniStat value="99.99%" label="Uptime" color="text-blue-600" />
+              <MiniStat value="142ms" label="Latency" color="text-orange-500" />
+              <MiniStat value="200+" label="Airlines" color="text-blue-600" />
+              <MiniStat value="2.5M" label="Hotels" color="text-orange-500" />
             </div>
           </div>
         </div>
+      </section>
 
         {/* Stats Cards */}
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mt-24 relative z-10">
@@ -450,35 +424,38 @@ function StatCard({ label, value, change, delay }: { label: string; value: strin
 
 function PlatformCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
   return (
-    <div className="bg-white/[0.03] backdrop-blur-md p-8 rounded-2xl border border-white/10 hover:bg-white/[0.08] transition-all duration-300 group hover:-translate-y-1">
-      <span className="text-3xl mb-6 block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">{icon}</span>
-      <h3 className="text-lg font-bold mb-3 text-white">{title}</h3>
-      <p className="text-[14px] text-slate-400 leading-relaxed font-medium">{desc}</p>
+    <div className="bg-white/5 backdrop-blur-md p-10 rounded-[32px] border border-white/10 hover:bg-white/10 transition-all duration-500 group premium-border">
+      <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 group-hover:bg-white group-hover:text-blue-600 transition-all duration-500 shadow-inner">
+        {icon}
+      </div>
+      <h3 className="text-lg font-black mb-4 text-white tracking-tight">{title}</h3>
+      <p className="text-[14px] text-slate-400 leading-relaxed font-bold">{desc}</p>
     </div>
   );
 }
 
 function MiniStat({ value, label, color }: { value: string; label: string; color: string }) {
   return (
-    <div>
-      <p className={`text-3xl font-black tracking-tight ${color}`}>{value}</p>
-      <p className="text-[12px] text-slate-500 font-bold mt-1">{label}</p>
+    <div className="flex flex-col items-center">
+      <p className={`text-4xl font-black tracking-tighter ${color}`}>{value}</p>
+      <p className="lo-density-text mt-2">{label}</p>
     </div>
   );
 }
 
 function UseCaseCard({ tag, title, desc, gradient, emoji }: { tag: string; title: string; desc: string; gradient: string; emoji: string }) {
   return (
-    <div className="group relative rounded-3xl border border-slate-200 overflow-hidden shadow-lg shadow-slate-200/50 hover:shadow-2xl transition-all hover:-translate-y-2 duration-300">
-      <div className={`bg-gradient-to-br ${gradient} p-8 pb-16 text-white relative`}>
-        <span className="text-5xl block mb-6 transform group-hover:scale-110 transition-transform duration-300">{emoji}</span>
-        <span className="text-[11px] font-black uppercase tracking-widest bg-white/20 px-3 py-1.5 rounded-lg">{tag}</span>
+    <div className="group relative rounded-[40px] border border-slate-200 overflow-hidden shadow-2xl shadow-slate-200/50 hover:shadow-3xl transition-all duration-700 hover:-translate-y-2 bg-white">
+      <div className={`bg-gradient-to-br ${gradient} p-10 pb-20 text-white relative overflow-hidden`}>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+        <span className="text-6xl block mb-8 transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700">{emoji}</span>
+        <span className="lo-density-text bg-white/20 px-4 py-2 rounded-xl text-white border border-white/20 backdrop-blur-md">{tag}</span>
       </div>
-      <div className="p-8 bg-white -mt-6 rounded-t-3xl relative">
-        <h3 className="text-xl font-black tracking-tight mb-4 text-slate-800">{title}</h3>
-        <p className="text-[14px] text-slate-600 leading-relaxed mb-6 font-medium">{desc}</p>
-        <Link href="/register" className="text-[14px] font-bold text-blue-600 group-hover:text-orange-600 transition-colors flex items-center gap-2">
-          Start building <span>→</span>
+      <div className="p-10 -mt-10 rounded-t-[40px] relative bg-white">
+        <h3 className="text-2xl font-black tracking-tight mb-4 text-slate-900 leading-tight">{title}</h3>
+        <p className="text-[15px] text-slate-500 leading-relaxed mb-10 font-medium">{desc}</p>
+        <Link href="/register" className="inline-flex items-center gap-3 text-[13px] font-black text-blue-600 group-hover:text-orange-600 transition-colors uppercase tracking-[0.2em]">
+          Start building <span className="group-hover:translate-x-2 transition-transform">→</span>
         </Link>
       </div>
     </div>
