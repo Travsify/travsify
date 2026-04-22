@@ -8,6 +8,11 @@ import { DemoModule } from './modules/demo/demo.module';
 import { TenantModule } from './modules/tenant/tenant.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ApiKeysModule } from './modules/api-keys/api-keys.module';
+import { BookingsModule } from './modules/bookings/bookings.module';
+import { KycModule } from './modules/kyc/kyc.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 import { AdminController } from './modules/admin/admin.controller';
 
 @Module({
@@ -24,6 +29,11 @@ import { AdminController } from './modules/admin/admin.controller';
     TenantModule,
     GatewayModule,
     UsersModule,
+    AuthModule,
+    ApiKeysModule,
+    BookingsModule,
+    KycModule,
+    WalletModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService],
