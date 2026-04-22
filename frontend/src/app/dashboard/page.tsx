@@ -42,6 +42,7 @@ export default function OverviewPage() {
   const { user } = useAuth();
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('flights');
 
@@ -52,17 +53,15 @@ export default function OverviewPage() {
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
     try {
-      const [walletRes, transRes] = await Promise.all([
-        fetch(`${API_URL}/wallet`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`${API_URL}/wallet/transactions`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+      const [walletRes, transRes, bookRes] = await Promise.all([
+        fetch(`${API_URL}/wallet`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`${API_URL}/wallet/transactions`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`${API_URL}/bookings/my-bookings`, { headers: { 'Authorization': `Bearer ${token}` } })
       ]);
 
       if (walletRes.ok) setWallets(await walletRes.json());
       if (transRes.ok) setTransactions(await transRes.json());
+      if (bookRes.ok) setBookings(await bookRes.json());
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
     } finally {
@@ -72,12 +71,16 @@ export default function OverviewPage() {
 
   const ngnWallet = wallets.find(w => w.currency === 'NGN') || { balance: 0 };
   const usdWallet = wallets.find(w => w.currency === 'USD') || { balance: 0 };
+  const totalRevenue = transactions.filter(t => t.type === 'CREDIT').reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalBookingsCount = bookings.length;
+  const recentBookings = bookings.slice(0, 5);
+  const recentTransactions = transactions.slice(0, 5);
 
   if (loading) {
     return (
       <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
         <Loader2 className="w-10 h-10 text-orange-600 animate-spin" />
-        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travexia Platform...</p>
+        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify NDC...</p>
       </div>
     );
   }
@@ -89,29 +92,29 @@ export default function OverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           label="Total Revenue" 
-          value={`₦${(24580900).toLocaleString()}`} 
-          change="+18.6%" 
+          value={`₦${(totalRevenue).toLocaleString()}`} 
+          change="Real-time" 
           positive={true}
           icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Wallet size={24} /></div>}
         />
         <StatCard 
           label="Total Bookings" 
-          value="1,482" 
-          change="+12.4%" 
+          value={totalBookingsCount.toString()} 
+          change="Real-time" 
           positive={true}
           icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Plane size={24} /></div>}
         />
         <StatCard 
           label="API Calls (Today)" 
-          value="24,856" 
-          change="+15.9%" 
+          value="Live" 
+          change="Real-time" 
           positive={true}
           icon={<div className="p-3 bg-purple-50 text-purple-600 rounded-xl"><Code2 size={24} /></div>}
         />
         <StatCard 
-          label="Conversion Rate" 
-          value="3.72%" 
-          change="+8.7%" 
+          label="Platform Status" 
+          value="Active" 
+          change="Operational" 
           positive={true}
           icon={<div className="p-3 bg-orange-50 text-orange-600 rounded-xl"><TrendingUp size={24} /></div>}
         />
@@ -162,23 +165,19 @@ export default function OverviewPage() {
           <div className="relative w-48 h-48 mb-8">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
               <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#F1F5F9" strokeWidth="3.5"></circle>
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#2563EB" strokeWidth="3.5" strokeDasharray="45 100" strokeDashoffset="0"></circle>
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#F97316" strokeWidth="3.5" strokeDasharray="25 100" strokeDashoffset="-45"></circle>
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#10B981" strokeWidth="3.5" strokeDasharray="12 100" strokeDashoffset="-70"></circle>
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#8B5CF6" strokeWidth="3.5" strokeDasharray="10 100" strokeDashoffset="-82"></circle>
-              <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#6366F1" strokeWidth="3.5" strokeDasharray="8 100" strokeDashoffset="-92"></circle>
+              {totalBookingsCount > 0 && <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#2563EB" strokeWidth="3.5" strokeDasharray="100 100" strokeDashoffset="0"></circle>}
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-black text-slate-900 leading-none">1,482</span>
+              <span className="text-2xl font-black text-slate-900 leading-none">{totalBookingsCount}</span>
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Total</span>
             </div>
           </div>
           <div className="w-full space-y-3">
-            <VerticalLegend color="#2563EB" label="Flights" percent="45%" value="667" />
-            <VerticalLegend color="#F97316" label="Hotels" percent="25%" value="370" />
-            <VerticalLegend color="#10B981" label="Transfers" percent="12%" value="178" />
-            <VerticalLegend color="#8B5CF6" label="e-Visas" percent="10%" value="148" />
-            <VerticalLegend color="#6366F1" label="Insurance" percent="8%" value="119" />
+            <VerticalLegend color="#2563EB" label="Flights" percent={totalBookingsCount > 0 ? "100%" : "0%"} value={totalBookingsCount} />
+            <VerticalLegend color="#F97316" label="Hotels" percent="0%" value="0" />
+            <VerticalLegend color="#10B981" label="Transfers" percent="0%" value="0" />
+            <VerticalLegend color="#8B5CF6" label="e-Visas" percent="0%" value="0" />
+            <VerticalLegend color="#6366F1" label="Insurance" percent="0%" value="0" />
           </div>
         </div>
       </div>
@@ -207,13 +206,13 @@ export default function OverviewPage() {
             <HelpCircle size={14} className="text-slate-300" />
           </div>
           <div className="space-y-6">
-            <ActivityItem icon={<Plane size={14} />} label="Flight booked - N450,000" sub="Lagos → London" time="2m ago" color="blue" />
-            <ActivityItem icon={<Hotel size={14} />} label="Hotel booked - N120,000" sub="Eko Hotel, Lagos" time="5m ago" color="orange" />
-            <ActivityItem icon={<Globe size={14} />} label="Visa processed - UK" sub="Application approved" time="15m ago" color="cyan" />
-            <ActivityItem icon={<CheckCircle2 size={14} />} label="Payment received - N780,000" sub="Wallet top-up" time="20m ago" color="emerald" />
-            <ActivityItem icon={<Zap size={14} />} label="Webhook triggered" sub="booking.confirmed" time="25m ago" color="indigo" />
+            {recentTransactions.length > 0 ? recentTransactions.map((tx: any) => (
+              <ActivityItem key={tx.id} icon={<Wallet size={14} />} label={`${tx.type} - ₦${Number(tx.amount).toLocaleString()}`} sub={tx.description || 'Wallet Transaction'} time={new Date(tx.createdAt).toLocaleDateString()} color={tx.type === 'CREDIT' ? 'emerald' : 'rose'} />
+            )) : <p className="text-sm text-slate-400">No recent activity.</p>}
           </div>
-          <button className="w-full mt-8 py-3 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline text-left">View all activities</button>
+          <Link href="/dashboard/ledger">
+            <button className="w-full mt-8 py-3 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline text-left">View all activities</button>
+          </Link>
         </div>
       </div>
 
@@ -278,11 +277,11 @@ export default function OverviewPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              <TableRow id="BK-739291" customer="John Doe" service="Flight" status="Confirmed" amount="₦450,000" date="May 27, 2024" />
-              <TableRow id="BK-739290" customer="Jane Smith" service="Hotel" status="Confirmed" amount="₦120,000" date="May 27, 2024" />
-              <TableRow id="BK-739289" customer="Mike Brown" service="Visa" status="Pending" amount="₦85,000" date="May 26, 2024" />
-              <TableRow id="BK-739288" customer="Anna Lee" service="Transfer" status="Confirmed" amount="₦40,000" date="May 26, 2024" />
-              <TableRow id="BK-739287" customer="Chris Green" service="Insurance" status="Failed" amount="₦15,000" date="May 25, 2024" />
+              {recentBookings.length > 0 ? recentBookings.map((bk: any) => (
+                <TableRow key={bk.id} id={bk.pnr || bk.id.substring(0, 8)} customer={user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Travsify User'} service={bk.vertical || 'Flight'} status={bk.status || 'Confirmed'} amount={`₦${Number(bk.totalAmount || 0).toLocaleString()}`} date={new Date(bk.createdAt).toLocaleDateString()} />
+              )) : (
+                <tr><td colSpan={6} className="px-8 py-4 text-center text-slate-400">No bookings found.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -292,11 +291,11 @@ export default function OverviewPage() {
       <div className="space-y-6">
         <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Travel Verticals <span className="text-slate-400 font-medium">(Inventory Management)</span></h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <VerticalCard icon={<Plane className="text-blue-600" />} label="Flights (NDC)" sub="Manage SML/Aviation bookings, fares and ticketing." color="blue" />
-          <VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Property management and rate tracking via LiteAPI." color="orange" />
-          <VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Airport pickup and car rental logistics via Mozio." color="emerald" />
-          <VerticalCard icon={<Globe className="text-purple-600" />} label="e-Visas" sub="Visa requirement tracking and application status via Sherpa." color="purple" />
-          <VerticalCard icon={<ShieldCheck className="text-orange-600" />} label="Insurance" sub="Travel protection management via SafetyWing." color="orange" />
+          <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights (NDC)" sub="Manage NDC aviation bookings, fares and ticketing." color="blue" /></Link>
+          <Link href="/dashboard/hotels"><VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Global property management and live rate tracking." color="orange" /></Link>
+          <Link href="/dashboard/transfers"><VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Global airport pickup and car rental logistics." color="emerald" /></Link>
+          <Link href="/dashboard/visas"><VerticalCard icon={<Globe className="text-purple-600" />} label="e-Visas" sub="Visa requirement tracking and application status." color="purple" /></Link>
+          <Link href="/dashboard/insurance"><VerticalCard icon={<ShieldCheck className="text-orange-600" />} label="Insurance" sub="Global travel protection management and quoting." color="orange" /></Link>
         </div>
       </div>
 
@@ -313,7 +312,7 @@ export default function OverviewPage() {
                 <p className="text-sm font-black text-slate-900">Settlement Wallet</p>
                 <HelpCircle size={14} className="text-slate-300" />
               </div>
-              <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View wallet →</button>
+              <Link href="/dashboard/wallets"><button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View wallet →</button></Link>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="p-6 bg-slate-50 border border-slate-100 rounded-2xl relative overflow-hidden">
@@ -321,24 +320,24 @@ export default function OverviewPage() {
                   <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-black">NGN</div>
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">NGN Balance</span>
                 </div>
-                <p className="text-xl font-black text-slate-900">₦12,450,000.00</p>
+                <p className="text-xl font-black text-slate-900">₦{(ngnWallet?.balance || 0).toLocaleString()}</p>
               </div>
               <div className="p-6 bg-slate-50 border border-slate-100 rounded-2xl relative overflow-hidden">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-black">USD</div>
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">USD Balance</span>
                 </div>
-                <p className="text-xl font-black text-slate-900">$24,850.00</p>
+                <p className="text-xl font-black text-slate-900">${(usdWallet?.balance || 0).toLocaleString()}</p>
               </div>
             </div>
             <div className="flex gap-4">
-              <button className="flex-1 py-3.5 bg-orange-600 text-white rounded-xl text-xs font-black shadow-lg shadow-orange-600/20">Fund Wallet</button>
-              <button className="flex-1 py-3.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 flex items-center justify-center gap-2">
+              <Link href="/dashboard/wallets" className="flex-1"><button className="w-full py-3.5 bg-orange-600 text-white rounded-xl text-xs font-black shadow-lg shadow-orange-600/20">Fund Wallet</button></Link>
+              <Link href="/dashboard/wallets" className="flex-1"><button className="w-full py-3.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 flex items-center justify-center gap-2">
                 <ArrowUpRight size={14} /> Withdraw
-              </button>
-              <button className="flex-1 py-3.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 flex items-center justify-center gap-2">
+              </button></Link>
+              <Link href="/dashboard/wallets" className="flex-1"><button className="w-full py-3.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 flex items-center justify-center gap-2">
                 <RefreshCw size={14} /> Convert
-              </button>
+              </button></Link>
             </div>
           </div>
         </div>
@@ -347,18 +346,18 @@ export default function OverviewPage() {
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Financial Ledger</h3>
-            <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View all</button>
+            <Link href="/dashboard/ledger"><button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View all</button></Link>
           </div>
           <div className="space-y-4">
-            <LedgerItem type="Credit" source="Flight Booking" amount="₦450,000" status="Success" date="May 27, 2024" color="emerald" />
-            <LedgerItem type="Debit" source="Hotel Booking" amount="₦120,000" status="Success" date="May 27, 2024" color="rose" />
-            <LedgerItem type="Credit" source="Visa Fee" amount="₦85,000" status="Success" date="May 27, 2024" color="emerald" />
-            <LedgerItem type="Debit" source="Transfer" amount="₦40,000" status="Success" date="May 26, 2024" color="rose" />
-            <LedgerItem type="Credit" source="Insurance" amount="₦15,000" status="Failed" date="May 25, 2024" color="rose" />
+            {recentTransactions.length > 0 ? recentTransactions.map((tx: any) => (
+              <LedgerItem key={tx.id} type={tx.type} source={tx.description || 'Transaction'} amount={`${tx.currency === 'NGN' ? '₦' : '$'}${Number(tx.amount).toLocaleString()}`} status={tx.status || 'Success'} date={new Date(tx.createdAt).toLocaleDateString()} color={tx.type === 'CREDIT' ? 'emerald' : 'rose'} />
+            )) : <p className="text-sm text-slate-400">No transactions found.</p>}
           </div>
-          <button className="w-full mt-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 flex items-center justify-center gap-2">
-            <ArrowDownCircle size={14} /> Download Ledger
-          </button>
+          <Link href="/dashboard/ledger">
+            <button className="w-full mt-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 flex items-center justify-center gap-2">
+              <ArrowDownCircle size={14} /> Download Ledger
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -368,10 +367,10 @@ export default function OverviewPage() {
         <div className="space-y-6">
           <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Developer Suite</h3>
           <div className="grid grid-cols-2 gap-6">
-            <DevCard icon={<Key className="text-orange-600" />} label="API Keys" sub="Manage your Sandbox and Live environment API keys." link="View Keys" />
-            <DevCard icon={<Zap className="text-rose-600" />} label="Webhooks" sub="Configure real-time event notifications for your endpoints." link="Manage Webhooks" />
-            <DevCard icon={<Activity className="text-blue-600" />} label="API Logs" sub="Monitor API requests and responses for debugging." link="View Logs" />
-            <DevCard icon={<Code2 className="text-blue-700" />} label="Documentation" sub="Access API reference, SDKs and integration guides." link="View Documentation" />
+            <Link href="/dashboard/developers"><DevCard icon={<Key className="text-orange-600" />} label="API Keys" sub="Manage your Sandbox and Live environment API keys." link="View Keys" /></Link>
+            <Link href="/dashboard/developers"><DevCard icon={<Zap className="text-rose-600" />} label="Webhooks" sub="Configure real-time event notifications for your endpoints." link="Manage Webhooks" /></Link>
+            <Link href="/dashboard/developers"><DevCard icon={<Activity className="text-blue-600" />} label="API Logs" sub="Monitor API requests and responses for debugging." link="View Logs" /></Link>
+            <Link href="/dashboard/docs"><DevCard icon={<Code2 className="text-blue-700" />} label="Documentation" sub="Access API reference, SDKs and integration guides." link="View Documentation" /></Link>
           </div>
         </div>
 
@@ -393,7 +392,7 @@ export default function OverviewPage() {
                   </div>
                 </div>
               </div>
-              <button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">View Details →</button>
+              <Link href="/dashboard/developers"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">View Details →</button></Link>
             </div>
             
             <div className="p-8 bg-white border border-slate-200 rounded-2xl flex items-center justify-between shadow-sm">
@@ -405,11 +404,11 @@ export default function OverviewPage() {
                   <h4 className="text-base font-black text-slate-900">Organization</h4>
                   <p className="text-xs text-slate-400 font-medium mt-1">Manage team members, roles and platform settings.</p>
                   <div className="flex items-center gap-2 mt-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Members: 8</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Members: {user?.firstName ? 'Active' : '1'}</span>
                   </div>
                 </div>
               </div>
-              <button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">Manage Organization →</button>
+              <Link href="/dashboard/developers"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">Manage Organization →</button></Link>
             </div>
           </div>
         </div>
