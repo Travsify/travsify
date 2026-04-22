@@ -21,11 +21,10 @@ import {
   ArrowRight,
   ChevronRight,
   Database,
-  BarChart3,
-  ExternalLink
+  BarChart3
 } from 'lucide-react';
 import Link from 'next/link';
-import { API_URL, SHERPA_URL } from '@/utils/api';
+import { API_URL } from '@/utils/api';
 
 export default function OverviewPage() {
   const { user } = useAuth();
@@ -102,6 +101,7 @@ export default function OverviewPage() {
         </div>
       </div>
 
+      {/* Asset Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <SlateAssetCard 
           label="Naira Balance" 
@@ -117,48 +117,22 @@ export default function OverviewPage() {
           status="Ready to Use"
           trend="+0.5%"
         />
-        <a 
-          href={SHERPA_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-orange-600 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-orange-500 transition-all shadow-xl shadow-orange-600/20"
-        >
+        <div className="bg-slate-900 rounded-[32px] border border-white/5 p-8 flex flex-col justify-between">
            <div className="flex items-center justify-between mb-8">
-             <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Travel Intelligence</p>
-             <Globe size={16} className="text-white" />
+             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">System Status</p>
+             <Database size={16} className="text-blue-500" />
            </div>
-           <div className="space-y-1">
-             <h4 className="text-xl font-black text-white leading-tight">Check Travel Requirements</h4>
-             <p className="text-white/70 text-xs font-bold">Visas, Health & Entry Rules</p>
+           <div className="space-y-4">
+             <MetricRow label="Connection" value="Live" active />
+             <MetricRow label="Response Speed" value="Fast" />
+             <MetricRow label="Data Sync" value="100%" />
            </div>
-           <div className="mt-8 pt-6 border-t border-white/10">
-             <span className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
-               Launch Portal <ExternalLink size={12} />
-             </span>
+           <div className="mt-8 pt-6 border-t border-white/5">
+             <Link href="/dashboard/developers" className="text-[11px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2 hover:text-blue-300 transition-colors">
+               Developer Portal <ArrowRight size={12} />
+             </Link>
            </div>
-        </a>
-      </div>
-
-      <div className="bg-slate-900 rounded-[32px] border border-white/5 p-10 relative overflow-hidden group">
-         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/5 blur-[100px] rounded-full translate-x-1/2" />
-         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-            <div className="space-y-4">
-               <h3 className="text-xl font-black text-white tracking-tight">System Status</h3>
-               <div className="flex flex-wrap gap-4">
-                  <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-2">
-                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Aviation API Live</span>
-                  </div>
-                  <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-2">
-                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Hotel Hub Sync</span>
-                  </div>
-               </div>
-            </div>
-            <Link href="/dashboard/developers" className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl font-black text-[12px] transition-all flex items-center justify-center gap-2">
-               View Developer Tools <ArrowRight size={16} />
-            </Link>
-         </div>
+        </div>
       </div>
 
       {/* Service Vertical Selectors */}
