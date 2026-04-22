@@ -1,185 +1,189 @@
 'use client';
 
+import { useState } from 'react';
 import { 
-  ScrollText, 
-  Search, 
   Globe, 
+  Search, 
+  Loader2, 
+  MapPin, 
+  ShieldCheck, 
   Clock, 
-  CheckCircle2, 
-  ArrowRight, 
   FileText,
   AlertCircle,
-  Zap,
-  Info,
-  ShieldCheck,
-  ExternalLink
+  CheckCircle2
 } from 'lucide-react';
-
-import { SHERPA_URL } from '@/utils/api';
-import Link from 'next/link';
+import { API_URL } from '@/utils/api';
 
 export default function VisaPage() {
-  const visaTypes = [
-    { id: '1', country: 'United Arab Emirates', type: '30-Day Tourist', fee: '$120.00', processing: '48-72 Hours', rating: '99% Success' },
-    { id: '2', country: 'Saudi Arabia', type: 'eVisa (Multiple Entry)', fee: '$165.00', processing: '24 Hours', rating: '100% Success' },
-    { id: '3', country: 'United Kingdom', type: 'Standard Visitor', fee: '$155.00', processing: '15 Working Days', rating: '95% Success' },
-    { id: '4', country: 'Turkey', type: 'eVisa', fee: '$60.00', processing: 'Instant', rating: '100% Success' },
-  ];
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any>(null);
+  const [search, setSearch] = useState({
+    nationality: 'NG',
+    destination: ''
+  });
+
+  const handleSearch = async () => {
+    if (!search.nationality || !search.destination) return;
+    setLoading(true);
+    setResults(null);
+    try {
+      const res = await fetch(`${API_URL}/demo/visa/requirements?nationality=${search.nationality.toUpperCase()}&destination=${search.destination.toUpperCase()}`);
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      console.error('Search failed', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="relative space-y-10 pb-20 animate-fade-up">
-      {/* Background Decor */}
-      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-
-      {/* Header */}
+    <div className="space-y-10 animate-in fade-in duration-700">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-orange-100 shadow-sm">
-            <Zap size={12} className="fill-orange-600" />
-            Shepper Intelligence Active
-          </div>
-          <h2 className="text-4xl font-black tracking-tight text-slate-900 mb-2 leading-none">
-            Global <span className="text-blue-600">eVisa</span> Engine
-          </h2>
-          <p className="text-slate-500 font-bold text-lg">
-            Automated visa processing and travel requirement intelligence from Shepper.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <a 
-            href={SHERPA_URL} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-8 py-4 bg-blue-600 text-white rounded-[24px] font-black text-[13px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-600/20 flex items-center justify-center gap-2 group"
-          >
-            Open Full Portal
-            <ExternalLink size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </a>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">e-Visas (Sherpa)</h1>
+          <p className="text-sm text-slate-400 font-medium">Visa requirement tracking and application status via Sherpa API.</p>
         </div>
       </div>
 
-      {/* Hero Search Card */}
-      <div className="bg-[#0f172a] rounded-[48px] p-12 text-white relative overflow-hidden group shadow-2xl shadow-black/20">
-        <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
-          <Globe size={180} />
-        </div>
-        <div className="relative z-10 max-w-3xl">
-          <h3 className="text-3xl font-black mb-4 tracking-tight leading-none text-blue-400">Where are you traveling to?</h3>
-          <p className="text-slate-400 text-lg font-medium mb-10 leading-relaxed">
-            Instantly check visa requirements, health regulations, and entry restrictions for any country in the world.
-          </p>
-          <div className="flex flex-col md:flex-row gap-4">
-             <div className="relative flex-1">
-               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
-               <input 
-                  type="text" 
-                  placeholder="Enter destination country..." 
-                  className="w-full pl-16 pr-8 py-5 bg-white/5 border border-white/10 rounded-3xl text-sm font-bold focus:ring-4 focus:ring-blue-500/20 transition-all outline-none"
-               />
-             </div>
-             <Link 
-               href="/demo?tab=visa" 
-               className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-3xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20 active:scale-95"
-             >
-               Check Requirements
-               <ArrowRight size={20} />
-             </Link>
+      {/* Search Bar Container */}
+      <div className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm flex flex-col md:flex-row gap-6 items-end">
+        <div className="flex-1 space-y-2 w-full">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nationality</label>
+          <div className="relative">
+            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+            <input 
+              type="text" 
+              placeholder="e.g. NG" 
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase"
+              value={search.nationality}
+              onChange={(e) => setSearch({...search, nationality: e.target.value})}
+            />
           </div>
         </div>
+        <div className="flex-1 space-y-2 w-full">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Destination</label>
+          <div className="relative">
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+            <input 
+              type="text" 
+              placeholder="e.g. AE or GB" 
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase"
+              value={search.destination}
+              onChange={(e) => setSearch({...search, destination: e.target.value})}
+            />
+          </div>
+        </div>
+        <button 
+          onClick={handleSearch}
+          disabled={loading}
+          className="bg-orange-600 text-white px-12 py-4 rounded-xl font-black text-sm shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 transition-all flex items-center gap-3 w-full md:w-auto justify-center"
+        >
+          {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
+          {loading ? 'Checking Sherpa...' : 'Check Requirements'}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-8">
-          {/* Featured Destinations Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {visaTypes.map((visa) => (
-              <div key={visa.id} className="group bg-white p-10 rounded-[40px] border border-slate-200/60 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700 -z-10 pointer-events-none" />
-                
-                <div className="flex justify-between items-start mb-10">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                    <Globe size={28} />
-                  </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                    <CheckCircle2 size={12} />
-                    {visa.rating}
-                  </div>
+      {/* Results Section */}
+      {results && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white p-10 rounded-[40px] border border-slate-200 shadow-sm relative overflow-hidden">
+              <div className="flex justify-between items-start mb-10">
+                <div className="w-16 h-16 rounded-2xl bg-slate-50 text-blue-600 flex items-center justify-center shadow-sm">
+                  <Globe size={32} />
                 </div>
-                
-                <h3 className="text-2xl font-black text-slate-900 mb-1 tracking-tight">{visa.country}</h3>
-                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-10">{visa.type}</p>
-                
+                <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  Powered by Sherpa
+                </div>
+              </div>
+              
+              <h3 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Visa Requirement</h3>
+              <p className="text-sm font-bold text-slate-500 mb-10">{search.nationality} → {search.destination}</p>
+              
+              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-8">
+                <p className="text-lg font-black text-slate-900 mb-2">
+                  {results.requirement || (results.visaRequired ? 'Visa Required' : 'Visa Not Required')}
+                </p>
+                <p className="text-[13px] text-slate-500 font-medium">
+                  {results.message || 'Please ensure you have all required documentation before traveling.'}
+                </p>
+              </div>
+
+              {results.visaRequired !== false && (
                 <div className="space-y-4 mb-10">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[13px] font-bold text-slate-500">Processing</span>
+                  <div className="flex items-center justify-between p-4 border-b border-slate-50">
+                    <span className="text-[13px] font-bold text-slate-500">Processing Time</span>
                     <span className="text-[13px] font-black text-slate-900 flex items-center gap-2">
-                      <Clock size={16} className="text-blue-600" />
-                      {visa.processing}
+                      <Clock size={16} className="text-orange-600" />
+                      {results.processingTime || '3-5 Working Days'}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[13px] font-bold text-slate-500">Starting Fee</span>
-                    <span className="text-2xl font-black text-blue-600 tracking-tight">{visa.fee}</span>
+                  <div className="flex items-center justify-between p-4 border-b border-slate-50">
+                    <span className="text-[13px] font-bold text-slate-500">Estimated Fee</span>
+                    <span className="text-2xl font-black text-slate-900 tracking-tight">
+                      {results.estimatedFee ? `₦${results.estimatedFee.toLocaleString()}` : 'Check API'}
+                    </span>
                   </div>
                 </div>
+              )}
 
-                <Link 
-                  href="/demo?tab=visa"
-                  className="w-full py-4.5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] hover:bg-blue-600 transition-all flex items-center justify-center gap-3 group/btn active:scale-95"
-                >
+              {results.visaRequired !== false && (
+                <button className="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-[13px] uppercase tracking-widest hover:bg-orange-600 transition-all shadow-xl hover:shadow-orange-600/20 active:scale-95">
                   Start Application
-                  <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-8">
-          {/* Security Banner */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-10 text-white shadow-xl shadow-blue-600/20">
-             <ShieldCheck size={40} className="mb-6 text-blue-200" />
-             <h4 className="text-xl font-black mb-4 tracking-tight leading-tight">Secured by Shepper</h4>
-             <p className="text-blue-100/70 text-[13px] font-bold leading-relaxed">
-               All applications are processed through the world's leading travel requirement intelligence network.
-             </p>
-          </div>
-
-          {/* Quick Support Card */}
-          <div className="bg-white rounded-[40px] border border-slate-200/60 p-10 shadow-sm">
-            <h3 className="text-lg font-black text-slate-900 mb-8 flex items-center gap-3">
-              <ScrollText size={22} className="text-blue-600" />
-              Document Prep
-            </h3>
-            <div className="space-y-6">
-              <PrepStep label="Passport Scan (High Res)" />
-              <PrepStep label="Recent Digital Photo" />
-              <PrepStep label="Flight Itinerary" />
-              <PrepStep label="Proof of Accommodation" />
+                </button>
+              )}
             </div>
-            <div className="mt-10 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-               <div className="flex items-center gap-3 text-orange-600 mb-2">
-                 <AlertCircle size={18} />
-                 <span className="text-[11px] font-black uppercase tracking-widest">Important</span>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-[#0A1629] rounded-[32px] p-8 text-white shadow-xl shadow-[#0A1629]/20 relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-8 opacity-10">
+                 <ShieldCheck size={100} />
                </div>
-               <p className="text-[11px] font-bold text-slate-500 leading-relaxed">
-                 Double-check your passport expiry. Most countries require at least 6 months validity.
+               <ShieldCheck size={32} className="mb-6 text-orange-500" />
+               <h4 className="text-xl font-black mb-3 tracking-tight">Sherpa Integration</h4>
+               <p className="text-slate-400 text-[13px] font-medium leading-relaxed">
+                 All visa rules and requirements are pulled live from the Sherpa API ensuring compliance with global travel regulations.
                </p>
             </div>
+
+            <div className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
+              <h3 className="text-base font-black text-slate-900 mb-6 flex items-center gap-3">
+                <FileText size={20} className="text-orange-600" />
+                Required Documents
+              </h3>
+              <div className="space-y-4">
+                <PrepStep label="Passport Scan (Min 6 months validity)" />
+                <PrepStep label="Recent Passport Photo" />
+                <PrepStep label="Flight Itinerary" />
+                <PrepStep label="Proof of Accommodation" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {!loading && !results && (
+        <div className="py-32 text-center bg-slate-50/50 rounded-[40px] border-2 border-dashed border-slate-200">
+          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+            <Globe size={40} className="text-slate-200" />
+          </div>
+          <h3 className="text-xl font-black text-slate-900 tracking-tight">Check Visa Requirements</h3>
+          <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-2">Enter the traveler's nationality and destination country code to fetch live requirements from Sherpa.</p>
+        </div>
+      )}
     </div>
   );
 }
 
 function PrepStep({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-4 group">
-      <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-        <CheckCircle2 size={16} />
+    <div className="flex items-center gap-3 group">
+      <div className="w-6 h-6 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors shrink-0">
+        <CheckCircle2 size={12} />
       </div>
-      <span className="text-[13px] font-bold text-slate-600">{label}</span>
+      <span className="text-[12px] font-bold text-slate-600 leading-tight">{label}</span>
     </div>
   );
 }
