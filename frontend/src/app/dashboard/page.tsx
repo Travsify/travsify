@@ -29,6 +29,7 @@ import {
   Share2,
   Lock,
   Code2,
+  Key,
   Eye,
   ArrowDownCircle,
   ArrowUpCircle
