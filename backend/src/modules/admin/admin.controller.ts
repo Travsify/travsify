@@ -15,7 +15,7 @@ export class AdminController {
   @Post('tenants')
   async create(@Body() data: Partial<Tenant>) {
     this.logger.log(`Admin: Creating new tenant ${data.name}`);
-    return this.tenantService.create(data);
+    return this.tenantService.create(data as any);
   }
 
   @Get('setup')
