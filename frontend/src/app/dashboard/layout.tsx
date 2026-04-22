@@ -30,13 +30,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuGroups = [
     {
+      label: 'MAIN HUB',
       items: [
-        { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-        { name: 'Packages', path: '/dashboard/packages', icon: <Layers size={20} /> },
-        { name: 'Bookings', path: '/dashboard/bookings', icon: <ScrollText size={20} /> },
-        { name: 'Calendar', path: '/dashboard/calendar', icon: <Calendar size={20} /> },
-        { name: 'Wallet', path: '/dashboard/wallets', icon: <Wallet size={20} /> },
-        { name: 'Developers', path: '/dashboard/developers', icon: <Code2 size={20} /> },
+        { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+        { name: 'Search & Book', path: '/dashboard/terminal', icon: <Search size={18} /> },
+        { name: 'My Bookings', path: '/dashboard/bookings', icon: <ScrollText size={18} /> },
+      ]
+    },
+    {
+      label: 'FINANCE',
+      items: [
+        { name: 'Wallet & Payments', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
+        { name: 'Transaction History', path: '/dashboard/ledger', icon: <Database size={18} /> },
+      ]
+    },
+    {
+      label: 'DEVELOPER TOOLS',
+      items: [
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
+        { name: 'Automation', path: '/dashboard/webhooks', icon: <Zap size={18} /> },
+        { name: 'System Logs', path: '/dashboard/logs', icon: <Activity size={18} /> },
+      ]
+    },
+    {
+      label: 'ACCOUNT',
+      items: [
+        { name: 'Verification', path: '/dashboard/kyc', icon: <ShieldCheck size={18} /> },
+        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     }
   ];
@@ -49,41 +69,48 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-600/20">
             <Share2 size={20} />
           </div>
-          <span className="text-2xl font-black tracking-tight text-slate-900">Travelie<span className="text-blue-500 text-[10px] ml-1 bg-blue-50 px-2 py-0.5 rounded-full align-middle">V 1.0</span></span>
+          <span className="text-2xl font-black tracking-tight text-slate-900">Skylink<span className="text-blue-500">.</span></span>
         </div>
         
-        <nav className="flex-1 px-6 py-4 space-y-2">
-          {menuGroups[0].items.map((item) => {
-            const isActive = pathname === item.path;
-            return (
-              <Link 
-                key={item.path} 
-                href={item.path}
-                className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-[15px] transition-all group ${
-                  isActive 
-                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' 
-                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <span className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-600 transition-colors'}>
-                  {item.icon}
-                </span>
-                {item.name}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-6 py-4 space-y-8 overflow-y-auto">
+          {menuGroups.map((group) => (
+            <div key={group.label} className="space-y-3">
+              <h3 className="px-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{group.label}</h3>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = pathname === item.path;
+                  return (
+                    <Link 
+                      key={item.path} 
+                      href={item.path}
+                      className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl font-bold text-[14px] transition-all group ${
+                        isActive 
+                          ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' 
+                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <span className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-600 transition-colors'}>
+                        {item.icon}
+                      </span>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className="p-8">
           <div className="bg-slate-50 rounded-[32px] p-6 border border-slate-100">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sandbox Active</span>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">System Live</span>
             </div>
-            <p className="text-[11px] text-slate-400 font-medium leading-relaxed mb-4">You are currently in test mode. Live booking requires KYC.</p>
-            <button className="w-full py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-blue-600 shadow-sm hover:shadow-md transition-all">
-              Verify Account
-            </button>
+            <p className="text-[11px] text-slate-400 font-medium leading-relaxed mb-4">You are currently using live API infrastructure.</p>
+            <Link href="/dashboard/docs" className="block w-full py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-center text-blue-600 shadow-sm hover:shadow-md transition-all">
+              API Docs
+            </Link>
           </div>
         </div>
       </aside>
