@@ -70,9 +70,8 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - Additional Visuals */}
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mt-24 relative z-10">
           <StatCard label="Global Airlines" value="All major" change="Real-time" delay="0" />
           <StatCard label="Hotel Properties" value="Worldwide" change="Live" delay="1" />
