@@ -117,7 +117,7 @@ export default function DocsPage() {
                   <h4 className="text-lg font-black text-slate-900 tracking-tight">/flights/search</h4>
                 </div>
                 <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
-                  The flight search endpoint allows you to query multiple NDC pipes and GDS providers simultaneously. It returns standardized flight offers with live pricing and rules.
+                  The flight search endpoint allows you to query multiple standardized airline networks and global direct-connect systems simultaneously. It returns unified flight offers with live pricing and rules.
                 </p>
 
                 <div className="space-y-6">
@@ -159,7 +159,7 @@ export default function DocsPage() {
                         <h6 className="text-xs font-black uppercase tracking-widest">Multi-Source</h6>
                       </div>
                       <p className="text-[11px] font-medium text-slate-500 leading-relaxed">
-                        Query results aggregated from 400+ airlines across NDC and GDS networks.
+                        Query results aggregated from 400+ airlines across our global distribution network.
                       </p>
                     </div>
                   </div>

@@ -6,10 +6,10 @@ import { Activity, Search, Filter, Terminal, ChevronRight, ChevronDown, CheckCir
 export default function LogsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [logs] = useState([
-    { id: 'log_1', method: 'POST', endpoint: '/v1/flights/search', status: 200, latency: '142ms', time: 'Just now', provider: 'SML NDC' },
+    { id: 'log_1', method: 'POST', endpoint: '/v1/flights/search', status: 200, latency: '142ms', time: 'Just now', provider: 'Direct Connect' },
     { id: 'log_2', method: 'GET', endpoint: '/v1/wallet/balance', status: 200, latency: '12ms', time: '12s ago', provider: 'System' },
-    { id: 'log_3', method: 'POST', endpoint: '/v1/visa/requirements', status: 403, latency: '84ms', time: '2m ago', provider: 'Sherpa' },
-    { id: 'log_4', method: 'GET', endpoint: '/v1/hotels/search', status: 200, latency: '312ms', time: '5m ago', provider: 'LiteAPI' },
+    { id: 'log_3', method: 'POST', endpoint: '/v1/visa/requirements', status: 403, latency: '84ms', time: '2m ago', provider: 'International' },
+    { id: 'log_4', method: 'GET', endpoint: '/v1/hotels/search', status: 200, latency: '312ms', time: '5m ago', provider: 'Global Network' },
     { id: 'log_5', method: 'POST', endpoint: '/v1/bookings/confirm', status: 200, latency: '842ms', time: '10m ago', provider: 'System' }
   ]);
 

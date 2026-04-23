@@ -90,8 +90,8 @@ export default function FlightsPage() {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       <div className="flex flex-col">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Flights (NDC)</h1>
-        <p className="text-sm text-slate-400 font-medium">Manage SML/Aviation bookings and real-time inventory.</p>
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Flights</h1>
+        <p className="text-sm text-slate-400 font-medium">Direct connection to over 400+ airlines for real-time inventory and instant ticketing.</p>
       </div>
 
       {/* Search Bar Container */}
@@ -254,7 +254,7 @@ export default function FlightsPage() {
             className="bg-orange-600 text-white px-12 py-4 rounded-xl font-black text-sm shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 transition-all flex items-center gap-3 w-full md:w-auto justify-center"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
-            {loading ? 'Searching SML...' : 'Search Inventory'}
+            {loading ? 'Searching Inventory...' : 'Search Inventory'}
           </button>
         </div>
       </div>
@@ -271,7 +271,7 @@ export default function FlightsPage() {
                   </div>
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black rounded-lg uppercase tracking-widest">{flight.airline || 'SML NDC'}</span>
+                      <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black rounded-lg uppercase tracking-widest">{flight.airline || 'Direct Connect'}</span>
                       {tripType === 'round_trip' && (
                         <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[9px] font-black rounded uppercase tracking-widest">
                           {itIdx === 0 ? 'Outbound' : 'Return'}
@@ -325,8 +325,8 @@ export default function FlightsPage() {
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
               <Plane size={40} className="text-slate-200" />
             </div>
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Search SML Inventory</h3>
-            <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-2">Use the comprehensive search above to find one-way, round-trip, or multi-city flights across our global NDC network.</p>
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Find Flights</h3>
+            <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-2">Use the comprehensive search above to find one-way, round-trip, or multi-city flights across our global direct-connect network.</p>
           </div>
         )}
       </div>

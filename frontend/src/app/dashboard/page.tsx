@@ -80,7 +80,7 @@ export default function OverviewPage() {
     return (
       <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
         <Loader2 className="w-10 h-10 text-orange-600 animate-spin" />
-        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify NDC...</p>
+        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify...</p>
       </div>
     );
   }
@@ -291,7 +291,7 @@ export default function OverviewPage() {
       <div className="space-y-6">
         <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Travel Verticals <span className="text-slate-400 font-medium">(Inventory Management)</span></h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights (NDC)" sub="Manage NDC aviation bookings, fares and ticketing." color="blue" /></Link>
+          <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights" sub="Direct airline connections, live fares and ticketing." color="blue" /></Link>
           <Link href="/dashboard/hotels"><VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Global property management and live rate tracking." color="orange" /></Link>
           <Link href="/dashboard/transfers"><VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Global airport pickup and car rental logistics." color="emerald" /></Link>
           <Link href="/dashboard/tours"><VerticalCard icon={<Globe className="text-purple-600" />} label="Tours" sub="Global curated experiences and sightseeing tours." color="purple" /></Link>

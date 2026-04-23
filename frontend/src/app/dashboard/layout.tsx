@@ -50,7 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     {
       label: 'TRAVEL VERTICALS',
       items: [
-        { name: 'Flights (NDC)', path: '/dashboard/flights', icon: <Plane size={18} /> },
+        { name: 'Flights', path: '/dashboard/flights', icon: <Plane size={18} /> },
         { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
         { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
         { name: 'Tours', path: '/dashboard/tours', icon: <Globe size={18} /> },
@@ -85,14 +85,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
-      {/* Sidebar - Travsify NDC Dark Navy */}
+      {/* Sidebar - Travsify Dark Navy */}
       <aside className="w-64 bg-[#0A1629] flex flex-col fixed h-full z-50 shadow-2xl">
         <div className="p-6 mb-4 flex items-center gap-3">
           <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
             <Globe size={18} />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-black tracking-tight text-white leading-none">Travsify NDC</span>
+            <span className="text-lg font-black tracking-tight text-white leading-none">Travsify</span>
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">API Platform</span>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main className="flex-1 ml-64 min-h-screen">
-        {/* Top Header - Travsify NDC White */}
+        {/* Top Header - Travsify White */}
         <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-8">
           <div className="flex flex-col">
             <h1 className="text-xl font-black text-slate-900 tracking-tight">Control Center</h1>

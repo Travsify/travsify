@@ -49,8 +49,8 @@ export default function HotelsPage() {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       <div className="flex flex-col">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Hotels (LiteAPI)</h1>
-        <p className="text-sm text-slate-400 font-medium">Property management and live rate tracking via LiteAPI.</p>
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Hotels</h1>
+        <p className="text-sm text-slate-400 font-medium">Access to 1.2M+ properties with live rates and instant booking.</p>
       </div>
 
       {/* Search Bar Container */}
@@ -127,7 +127,7 @@ export default function HotelsPage() {
             className="bg-orange-600 text-white px-12 py-4 rounded-xl font-black text-sm shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 transition-all flex items-center gap-3 w-full md:w-auto justify-center"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
-            {loading ? 'Searching LiteAPI...' : 'Search Inventory'}
+            {loading ? 'Searching Hotels...' : 'Search Inventory'}
           </button>
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function HotelsPage() {
                 <span className="text-xs font-black text-slate-900">{hotel.rating || (4 + Math.random()).toFixed(1)}</span>
               </div>
               <div className="absolute top-4 left-4 px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
-                LiteAPI
+                Direct Rates
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
                 <p className="text-white/90 text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5">
@@ -182,7 +182,7 @@ export default function HotelsPage() {
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
               <Hotel size={40} className="text-slate-200" />
             </div>
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Search LiteAPI Inventory</h3>
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Find Hotels</h3>
             <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-2">Enter a city to fetch live availability and rates across 1.2M+ global properties.</p>
           </div>
         )}

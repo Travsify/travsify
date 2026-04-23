@@ -105,7 +105,7 @@ export default function TerminalPage() {
                 alt="Result"
               />
               <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-xl">
-                {res.provider || 'LIVE INVENTORY'}
+                {res.provider ? 'DIRECT CONNECT' : 'DIRECT CONNECT'}
               </div>
               {res.price && (
                 <div className="absolute bottom-6 right-6 px-5 py-3 bg-orange-600 text-white rounded-2xl text-xl font-black shadow-xl shadow-orange-600/20">
