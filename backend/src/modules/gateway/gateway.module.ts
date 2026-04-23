@@ -7,8 +7,11 @@ import { NdcModule } from '../ndc/ndc.module';
 import { DemoModule } from '../demo/demo.module';
 import { ApiKeysModule } from '../api-keys/api-keys.module';
 
+import { UsersModule } from '../users/users.module';
+import { WalletModule } from '../wallet/wallet.module';
+
 @Module({
-  imports: [TenantModule, NdcModule, DemoModule, ApiKeysModule],
+  imports: [TenantModule, NdcModule, DemoModule, ApiKeysModule, UsersModule, WalletModule],
   controllers: [GatewayController, WebhooksController],
   providers: [CheckoutService],
 })

@@ -56,6 +56,7 @@ export class GatewayController {
     @Query('checkin') checkin: string,
     @Query('checkout') checkout: string,
     @Query('adults') adults: string,
+    @Query('currency') currency: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
     return this.liteApiService.searchHotels({
@@ -63,7 +64,7 @@ export class GatewayController {
       checkin,
       checkout,
       adults: parseInt(adults) || 1,
-    }, tenant.hotelMarkup);
+    }, tenant.hotelMarkup, currency || 'NGN');
   }
 
   @Get('search/visa')
@@ -71,9 +72,10 @@ export class GatewayController {
     @Headers('x-api-key') apiKey: string,
     @Query('destination') destination: string,
     @Query('nationality') nationality: string,
+    @Query('currency') currency: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.shepperService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup);
+    return this.shepperService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup, currency || 'NGN');
   }
 
   @Post('search/transfers')
@@ -82,23 +84,23 @@ export class GatewayController {
     @Body() criteria: any,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    // Aligning with demo controller payload handling
     return this.mozioService.searchTransfers({
       pickupAddress: criteria.pickup || criteria.pickupAddress || 'Heathrow Airport (LHR)',
       dropoffAddress: criteria.dropoff || criteria.dropoffAddress || 'Central London',
       pickupDatetime: criteria.time || criteria.pickupDatetime || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       passengers: criteria.passengers || 1,
       currency: criteria.currency || 'USD',
-    }, tenant.hotelMarkup);
+    }, tenant.hotelMarkup, criteria.currency || 'USD');
   }
 
   @Get('search/tours')
   async searchTours(
     @Headers('x-api-key') apiKey: string,
     @Query('location') location: string,
+    @Query('currency') currency: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.gygService.getTours(location, tenant.hotelMarkup);
+    return this.gygService.getTours(location, tenant.hotelMarkup, currency || 'USD');
   }
 
   @Post('search/insurance')
@@ -113,7 +115,7 @@ export class GatewayController {
       endDate: criteria.endDate || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       age: criteria.age || 30,
       citizenship: criteria.citizenship || 'NG',
-    }, tenant.insuranceMarkup);
+    }, tenant.insuranceMarkup, criteria.currency || 'USD');
   }
 
   @Get('search/all')

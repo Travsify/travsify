@@ -25,7 +25,9 @@ import {
   Database,
   Zap,
   Activity,
-  Globe
+  Globe,
+  ChevronDown,
+  Wallet
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -139,42 +141,141 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main className="flex-1 ml-64 min-h-screen">
-        {/* Top Header - Travsify White */}
-        <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-8">
+        {/* Top Header - Travsify Premium White */}
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-10">
           <div className="flex flex-col">
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">Control Center</h1>
-            <p className="text-[11px] text-slate-400 font-medium">Real-time overview of your business</p>
+            <h1 className="text-2xl font-black text-[#0A1629] tracking-tighter">Control Center</h1>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Live System Analytics</p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
+            {/* Global Controls */}
             <div className="flex items-center gap-4">
-              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 outline-none">
-                <option value="NGN">NGN</option>
-                <option value="USD">USD</option>
-              </select>
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600">
-                <Calendar size={14} className="text-slate-400" />
+              {/* Currency Selector */}
+              <div className="relative group">
+                <button className="flex items-center gap-2 px-5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black text-[#0A1629] hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
+                  {currency}
+                  <ChevronDown size={14} className="text-slate-400 group-hover:rotate-180 transition-transform duration-300" />
+                </button>
+                <div className="absolute right-0 mt-2 w-32 bg-white rounded-2xl shadow-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 z-50">
+                  {['NGN', 'USD'].map((c) => (
+                    <button 
+                      key={c}
+                      onClick={() => setCurrency(c)}
+                      className={`w-full text-left px-4 py-2 text-xs font-black hover:bg-slate-50 transition-colors ${currency === c ? 'text-[#FF6B00]' : 'text-slate-600'}`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Date Range - Premium Display */}
+              <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-2.5 text-xs font-black text-slate-700 shadow-inner shadow-slate-100/50">
+                <Calendar size={15} className="text-[#FF6B00]" />
                 <span>{dateRange}</span>
               </div>
             </div>
             
-            <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
-              <button className="relative p-2 text-slate-400 hover:text-slate-900">
-                <Bell size={20} />
-                <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-500 rounded-full border-2 border-white text-[8px] font-black text-white flex items-center justify-center">3</div>
-              </button>
-              <Link href="/dashboard/settings">
-                <div className="flex items-center gap-3 cursor-pointer group hover:bg-slate-50 p-2 -mr-2 rounded-xl transition-colors">
-                  <div className="text-right">
-                    <p className="text-xs font-black text-slate-900 leading-none">{user?.businessName || 'Travsify Partner'}</p>
-                    <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase">{user?.role || 'Admin'}</p>
+            <div className="flex items-center gap-6 border-l border-slate-200 pl-8">
+              {/* Notifications */}
+              <div className="relative group">
+                <button className="relative p-2.5 text-slate-400 hover:text-[#0A1629] bg-slate-50 rounded-xl border border-transparent hover:border-slate-200 transition-all">
+                  <Bell size={22} />
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#FF6B00] rounded-full border-2 border-white text-[9px] font-black text-white flex items-center justify-center shadow-lg shadow-orange-600/30">3</div>
+                </button>
+                
+                {/* Notification Dropdown */}
+                <div className="absolute right-0 mt-4 w-80 bg-white rounded-[32px] shadow-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+                  <div className="p-6 border-b border-slate-50 bg-slate-50/50">
+                    <h3 className="text-sm font-black text-[#0A1629] uppercase tracking-widest">Recent Alerts</h3>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-sm uppercase">
-                    {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
+                  <div className="max-h-96 overflow-y-auto">
+                    {[
+                      { title: 'New Flight Booking', time: '2 mins ago', icon: <Plane size={14} />, color: 'bg-blue-50 text-blue-600' },
+                      { title: 'Wallet Threshold Alert', time: '1 hour ago', icon: <Wallet size={14} />, color: 'bg-orange-50 text-[#FF6B00]' },
+                      { title: 'System Maintenance', time: '5 hours ago', icon: <Activity size={14} />, color: 'bg-slate-50 text-slate-600' },
+                    ].map((n, i) => (
+                      <div key={i} className="p-5 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 group/item">
+                        <div className="flex gap-4">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${n.color}`}>
+                            {n.icon}
+                          </div>
+                          <div>
+                            <p className="text-[13px] font-black text-[#0A1629] mb-1">{n.title}</p>
+                            <p className="text-[11px] text-slate-400 font-medium">{n.time}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-600 transition-colors" />
+                  <div className="p-4 bg-slate-50 text-center">
+                    <button className="text-[11px] font-black text-[#FF6B00] uppercase tracking-widest hover:underline">View All Notifications</button>
+                  </div>
                 </div>
-              </Link>
+              </div>
+
+              {/* User Identity Menu */}
+              <div className="relative group">
+                <div className="flex items-center gap-4 cursor-pointer p-1 rounded-2xl transition-all">
+                  <div className="text-right hidden md:block">
+                    <p className="text-sm font-black text-[#0A1629] leading-tight">{user?.businessName || 'Travsify HQ'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Platform Admin</p>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#0A1629] flex items-center justify-center text-white font-black text-sm uppercase shadow-xl shadow-blue-900/20 relative group-hover:scale-105 transition-transform duration-300">
+                    {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow-sm" />
+                  </div>
+                  <ChevronDown size={14} className="text-slate-300 group-hover:rotate-180 transition-transform duration-300" />
+                </div>
+
+                {/* Profile Dropdown */}
+                <div className="absolute right-0 mt-4 w-64 bg-white rounded-[32px] shadow-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden py-2">
+                  <Link href="/dashboard/settings">
+                    <div className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group/link">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover/link:bg-blue-600 group-hover/link:text-white transition-all">
+                        <Settings size={18} />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-black text-[#0A1629]">Organization Profile</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Business Info</p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link href="/dashboard/settings">
+                    <div className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group/link">
+                      <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#FF6B00] flex items-center justify-center group-hover/link:bg-[#FF6B00] group-hover/link:text-white transition-all">
+                        <Layers size={18} />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-black text-[#0A1629]">Platform Settings</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">API & Security</p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link href="/dashboard/docs">
+                    <div className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group/link">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover/link:bg-emerald-600 group-hover/link:text-white transition-all">
+                        <Activity size={18} />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-black text-[#0A1629]">Help & Support</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">24/7 Assistance</p>
+                      </div>
+                    </div>
+                  </Link>
+                  <div className="mx-6 my-2 border-t border-slate-50" />
+                  <button onClick={logout} className="w-full flex items-center gap-4 px-6 py-4 hover:bg-rose-50 transition-colors group/link text-rose-600">
+                    <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover/link:bg-rose-600 group-hover/link:text-white transition-all">
+                      <LogOut size={18} />
+                    </div>
+                    <p className="text-[13px] font-black uppercase tracking-widest">Terminate Session</p>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </header>

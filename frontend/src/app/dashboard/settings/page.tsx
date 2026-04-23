@@ -88,9 +88,49 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-4xl space-y-10">
-      <div>
-        <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Platform Settings</h2>
-        <p className="text-slate-500 font-medium">Configure your profit margins and platform defaults.</p>
+      {/* Business Profile Section */}
+      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:bg-orange-50 transition-colors duration-1000 -z-10" />
+        
+        <div className="flex flex-col lg:flex-row items-center gap-10 relative z-10">
+          <div className="w-32 h-32 rounded-[40px] bg-[#0A1629] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-blue-900/30 shrink-0">
+            {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
+          </div>
+          <div className="flex-1 text-center lg:text-left">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4 justify-center lg:justify-start">
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight">{user?.businessName || 'Travsify HQ'}</h3>
+              <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 w-fit mx-auto lg:mx-0">
+                Verified Enterprise
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Administrator Email</p>
+                <p className="text-sm font-bold text-slate-700">{user?.email || 'admin@travsify.com'}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Role</p>
+                <p className="text-sm font-bold text-slate-700">{user?.role || 'Global Admin'}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account Status</p>
+                <p className="text-sm font-bold text-emerald-500 flex items-center gap-2 justify-center lg:justify-start">
+                  <CheckCircle2 size={14} /> Active & Secured
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <button className="px-8 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-10 border-t border-slate-100">
+        <h2 className="text-2xl font-black tracking-tight text-slate-900 mb-2">Inventory Markup Control</h2>
+        <p className="text-slate-500 text-sm font-medium">Define your profit margins for each travel vertical across the global network.</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
