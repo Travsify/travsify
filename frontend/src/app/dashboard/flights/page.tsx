@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Plane, Search, Calendar, MapPin, Loader2, Clock, Plus, Trash2, CheckCircle2 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
+import { AIRPORTS, Airport } from '@/utils/locations';
 
 export default function FlightsPage() {
   const apiKey = useApiKey();
@@ -16,6 +17,31 @@ export default function FlightsPage() {
     { origin: '', destination: '', date: '' }
   ]);
   const [returnDate, setReturnDate] = useState('');
+  
+  // Autocomplete state
+  const [activeInput, setActiveInput] = useState<{ index: number, field: 'origin' | 'destination' } | null>(null);
+  const [suggestions, setSuggestions] = useState<Airport[]>([]);
+
+  const handleAirportSearch = (index: number, field: 'origin' | 'destination', value: string) => {
+    updateSegment(index, field, value);
+    if (value.length >= 2) {
+      const filtered = AIRPORTS.filter(a => 
+        a.city.toLowerCase().includes(value.toLowerCase()) ||
+        a.iata.toLowerCase().includes(value.toLowerCase()) ||
+        a.name.toLowerCase().includes(value.toLowerCase())
+      ).slice(0, 6);
+      setSuggestions(filtered);
+      setActiveInput({ index, field });
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const selectAirport = (index: number, field: 'origin' | 'destination', airport: Airport) => {
+    updateSegment(index, field, airport.iata);
+    setSuggestions([]);
+    setActiveInput(null);
+  };
 
   const handleAddSegment = () => {
     setSegments([...segments, { origin: '', destination: '', date: '' }]);
@@ -117,10 +143,28 @@ export default function FlightsPage() {
                   <input 
                     type="text" 
                     placeholder="LOS" 
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase"
+                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase transition-all"
                     value={seg.origin}
-                    onChange={(e) => updateSegment(idx, 'origin', e.target.value)}
+                    onChange={(e) => handleAirportSearch(idx, 'origin', e.target.value)}
+                    onFocus={() => seg.origin.length >= 2 && handleAirportSearch(idx, 'origin', seg.origin)}
                   />
+                  {activeInput?.index === idx && activeInput?.field === 'origin' && suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                      {suggestions.map((airport) => (
+                        <button
+                          key={airport.iata}
+                          onClick={() => selectAirport(idx, 'origin', airport)}
+                          className="w-full px-5 py-4 text-left hover:bg-orange-600 group transition-all border-b border-slate-100 last:border-0 flex items-center justify-between"
+                        >
+                          <div>
+                            <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors">{airport.city} ({airport.iata})</p>
+                            <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors">{airport.name}</p>
+                          </div>
+                          <span className="text-[10px] font-black text-slate-300 group-hover:text-white/50 tracking-widest">{airport.country}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex-1 space-y-2 w-full">
@@ -130,10 +174,28 @@ export default function FlightsPage() {
                   <input 
                     type="text" 
                     placeholder="LHR" 
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase"
+                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase transition-all"
                     value={seg.destination}
-                    onChange={(e) => updateSegment(idx, 'destination', e.target.value)}
+                    onChange={(e) => handleAirportSearch(idx, 'destination', e.target.value)}
+                    onFocus={() => seg.destination.length >= 2 && handleAirportSearch(idx, 'destination', seg.destination)}
                   />
+                  {activeInput?.index === idx && activeInput?.field === 'destination' && suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                      {suggestions.map((airport) => (
+                        <button
+                          key={airport.iata}
+                          onClick={() => selectAirport(idx, 'destination', airport)}
+                          className="w-full px-5 py-4 text-left hover:bg-orange-600 group transition-all border-b border-slate-100 last:border-0 flex items-center justify-between"
+                        >
+                          <div>
+                            <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors">{airport.city} ({airport.iata})</p>
+                            <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors">{airport.name}</p>
+                          </div>
+                          <span className="text-[10px] font-black text-slate-300 group-hover:text-white/50 tracking-widest">{airport.country}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex-1 space-y-2 w-full">
