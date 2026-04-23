@@ -47,14 +47,18 @@ export class LiteApiService {
       const hotelIds = hotels.map((h: any) => h.id);
 
       // Step 2: Get live rates for these hotels using POST
-      const ratesResponse = await axios.post(`${this.baseUrl}/hotels/rates`, {
+      const requestBody = {
         hotelIds,
         checkin: params.checkin,
         checkout: params.checkout,
-        occupancies: [{ adults: params.adults || 2 }],
+        occupancies: [{ adults: Number(params.adults) || 2 }],
         currency: 'USD',
         guestNationality: countryCode,
-      }, {
+      };
+
+      this.logger.log(`Fetching rates for ${hotelIds.length} hotels with payload: ${JSON.stringify(requestBody)}`);
+
+      const ratesResponse = await axios.post(`${this.baseUrl}/hotels/rates`, requestBody, {
         headers: { 
           'X-API-Key': this.apiKey, 
           'Accept': 'application/json',
@@ -83,6 +87,9 @@ export class LiteApiService {
       return combined;
 
     } catch (error: any) {
+      if (error.response?.data) {
+        this.logger.error(`LiteAPI Error Response: ${JSON.stringify(error.response.data)}`);
+      }
       const errorMsg = error.response?.data?.message || error.message;
       this.logger.error(`Live Hotel search failed: ${errorMsg}`);
       // If we have an error but it's just "no results", return empty instead of throwing
