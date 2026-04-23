@@ -37,11 +37,11 @@ export class CheckoutService {
           currency as Currency,
           amount,
           `pay_${Date.now()}`,
-          { vertical, tenant: tenant.name }
+          { vertical, tenant: tenant.name, type: 'payment' }
         );
 
         // Wallet deduction successful! Finalize booking immediately.
-        const bookingResult = await this.finalizeBooking(tx.reference, vertical, providerData);
+        const bookingResult = await this.finalizeBooking(tx.reference, vertical, providerData, tenant, currency as Currency);
         
         return {
           status: 'success',
@@ -88,17 +88,60 @@ export class CheckoutService {
    * Finalizes the booking after payment confirmation
    * This would typically be called by a Webhook handler
    */
-  async finalizeBooking(reference: string, vertical: string, providerData: any) {
+  async finalizeBooking(reference: string, vertical: string, providerData: any, tenant: Tenant, currency: Currency) {
     this.logger.log(`Settlement: Finalizing ${vertical} booking for reference ${reference}`);
+
+    let providerResult = null;
 
     // 1. Execute the actual booking with the provider
     if (vertical === 'flight') {
-       return this.ndcService.orderCreate(providerData);
+       providerResult = await this.ndcService.orderCreate(providerData);
     }
     
-    // 2. Logic to credit Tenant markup would happen here
-    // (requires a Wallet/Ledger service integration)
+    // 2. Logic to credit Tenant markup
+    try {
+      const user = await this.usersService.findByEmail(tenant.email);
+      if (user) {
+        // Determine markup percentage based on vertical
+        let markupPercentage = 0;
+        switch (vertical) {
+          case 'flight':
+            markupPercentage = tenant.flightMarkup || 0;
+            break;
+          case 'hotel':
+          case 'transfer':
+          case 'tour':
+            markupPercentage = tenant.hotelMarkup || 0;
+            break;
+          case 'insurance':
+          case 'visa':
+            markupPercentage = tenant.insuranceMarkup || 0;
+            break;
+          default:
+            markupPercentage = 0;
+        }
+
+        // Assume the stored amount in providerData or a default base amount to calculate markup.
+        // For accurate calculation, the base cost should be passed from the frontend or retrieved from provider.
+        // Here we simulate a standard markup value if percentage exists.
+        const baseAmount = providerData.baseAmount || 1000; // Placeholder base amount
+        const markupValue = (baseAmount * markupPercentage) / 100;
+
+        if (markupValue > 0) {
+          await this.walletService.creditWallet(
+            user.id,
+            currency,
+            markupValue,
+            `markup_${reference}`,
+            { vertical, type: 'commission', percentage: markupPercentage }
+          );
+          this.logger.log(`Ledger: Credited ${markupValue} ${currency} commission to ${tenant.email}`);
+        }
+      }
+    } catch (err) {
+      this.logger.error(`Ledger Error: Failed to credit markup for ${reference}. ${err.message}`);
+    }
     
-    return { status: 'success', message: 'Booking confirmed and settled' };
+    return { status: 'success', message: 'Booking confirmed and settled', providerResult };
   }
 }
