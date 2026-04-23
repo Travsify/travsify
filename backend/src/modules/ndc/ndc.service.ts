@@ -62,7 +62,8 @@ export class NdcService {
     };
 
     const body = { ...this.getAuth(), ...searchParams };
-    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', body);
+    const action = 'http://tempuri.org/ISiteAvia/AeroSearch';
+    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', body, action, this.searchUrl);
     
     try {
       this.logger.log(`AeroSearch request: ${this.searchUrl} | ${searchCriteria.origin}->${searchCriteria.destination} | date=${searchCriteria.departureDate}`);
@@ -91,7 +92,7 @@ export class NdcService {
       }
     };
     const body = { ...this.getAuth(), ...prebookParams };
-    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', body);
+    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', body, 'http://tempuri.org/ISiteAvia/AeroPrebook', this.actionUrl);
     return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroPrebook', xmlRequest);
   }
 
@@ -118,7 +119,7 @@ export class NdcService {
       }
     };
     const body = { ...this.getAuth(), ...bookParams };
-    const xmlRequest = NdcUtils.createEnvelope('AeroBook', body);
+    const xmlRequest = NdcUtils.createEnvelope('AeroBook', body, 'http://tempuri.org/ISiteAvia/AeroBook', this.actionUrl);
     return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroBook', xmlRequest);
   }
 
@@ -132,7 +133,7 @@ export class NdcService {
       }
     };
     const body = { ...this.getAuth(), ...confirmParams };
-    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', body);
+    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', body, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', this.actionUrl);
     return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', xmlRequest);
   }
 
@@ -141,8 +142,7 @@ export class NdcService {
   private async sendSoapRequest(url: string, action: string, xml: string): Promise<any> {
     const response = await axios.post(url, xml, {
       headers: {
-        'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': `"${action}"`,
+        'Content-Type': `application/soap+xml; charset=utf-8; action="${action}"`,
       },
       timeout: 30000,
     });

@@ -15,10 +15,21 @@ export class NdcUtils {
   /**
    * Creates a SOAP 1.2 Envelope for XML.AGENCY API
    */
-  static createEnvelope(methodName: string, bodyContent: any): string {
-    const envelope = {
+  static createEnvelope(methodName: string, bodyContent: any, action?: string, endpoint?: string): string {
+    const envelope: any = {
       's:Envelope': {
-        '@_xmlns:s': 'http://schemas.xmlsoap.org/soap/envelope/',
+        '@_xmlns:s': 'http://www.w3.org/2003/05/soap-envelope',
+        '@_xmlns:a': 'http://www.w3.org/2005/08/addressing',
+        's:Header': {
+          'a:Action': {
+            '@_s:mustUnderstand': '1',
+            '#text': action || '',
+          },
+          'a:To': {
+            '@_s:mustUnderstand': '1',
+            '#text': endpoint || '',
+          },
+        },
         's:Body': {
           [methodName]: {
             '@_xmlns': 'http://tempuri.org/',
