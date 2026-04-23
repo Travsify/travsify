@@ -44,6 +44,12 @@ services:
         sync: false
       - key: DUFFEL_API_KEY
         sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: NDC_AGENT_ID
+        sync: false
+      - key: JWT_EXPIRATION
+        value: 24h
       - key: NDC_SITECITY_ENABLED
         value: "false"
 
