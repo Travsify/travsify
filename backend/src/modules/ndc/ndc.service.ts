@@ -16,8 +16,8 @@ export class NdcService {
   private readonly deviceId: string;
 
   constructor(private configService: ConfigService) {
-    this.searchUrl = this.configService.get<string>('NDC_API_SEARCH_URL') || 'http://search-api.xml.agency/SiteCity';
-    this.actionUrl = this.configService.get<string>('NDC_API_ACTION_URL') || 'http://api.city.travel/SiteCity';
+    this.searchUrl = this.configService.get<string>('NDC_API_SEARCH_URL') || 'https://search-api.xml.agency/SiteCity';
+    this.actionUrl = this.configService.get<string>('NDC_API_ACTION_URL') || 'https://api.city.travel/SiteCity';
     this.apiLogin = this.configService.get<string>('NDC_API_LOGIN') || 'test';
     this.apiPass = this.configService.get<string>('NDC_API_PASS') || 'test';
     this.apiToken = this.configService.get<string>('NDC_API_TOKEN') || '00000000-0000-0000-0000-000000000000';
@@ -140,23 +140,35 @@ export class NdcService {
   // --- END OF BOOKING METHODS ---
 
   private async sendSoapRequest(url: string, action: string, xml: string): Promise<any> {
-    const response = await axios.post(url, xml, {
-      headers: {
-        'Content-Type': `application/soap+xml; charset=utf-8; action="${action}"`,
-      },
-      timeout: 30000,
-    });
+    try {
+      this.logger.debug(`Sending SOAP request to ${url}...`);
+      const response = await axios.post(url, xml, {
+        headers: {
+          'Content-Type': `application/soap+xml; charset=utf-8; action="${action}"`,
+          'Accept': 'application/soap+xml, application/xml, text/xml, */*',
+        },
+        timeout: 45000,
+      });
 
-    const json = NdcUtils.xmlToJson(response.data);
-    const body = json.Envelope.Body;
-    const result = body[Object.keys(body)[0]];
-    const finalResult = result[Object.keys(result)[0]];
+      this.logger.debug(`SOAP response received. Status: ${response.status}`);
+      const json = NdcUtils.xmlToJson(response.data);
+      const body = json.Envelope.Body;
+      const result = body[Object.keys(body)[0]];
+      const finalResult = result[Object.keys(result)[0]];
 
-    if (finalResult.Success === 'false' || finalResult.Success === false) {
-      throw new Error(finalResult.ErrorString || 'Unknown API Error');
+      if (finalResult.Success === 'false' || finalResult.Success === false) {
+        throw new Error(finalResult.ErrorString || 'Unknown API Error');
+      }
+
+      return finalResult;
+    } catch (error) {
+      this.logger.error(`sendSoapRequest error: ${error.message}`);
+      if (error.response) {
+        this.logger.error(`Status: ${error.response.status}`);
+        this.logger.error(`Response data: ${typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data)}`);
+      }
+      throw error;
     }
-
-    return finalResult;
   }
 
   private formatDate(date: string): string {
