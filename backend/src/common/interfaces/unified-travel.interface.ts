@@ -22,6 +22,9 @@ export interface UnifiedFlight {
   segments: any[];
   price: UnifiedPrice;
   source: string;
+  isRefundable?: boolean;
+  fareRules?: string[];
+  cabin?: string;
 }
 
 export interface UnifiedHotel {

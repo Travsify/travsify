@@ -18,7 +18,8 @@ export class NdcService {
 
   constructor(
     private configService: ConfigService,
-    private duffelService: DuffelService
+    private duffelService: DuffelService,
+    private currencyService: CurrencyService
   ) {
     this.searchUrl = this.configService.get<string>('NDC_API_SEARCH_URL') || 'https://search-api.xml.agency/SiteCity';
     this.actionUrl = this.configService.get<string>('NDC_API_ACTION_URL') || 'https://api.city.travel/SiteCity';
@@ -26,8 +27,6 @@ export class NdcService {
     this.apiPass = this.configService.get<string>('NDC_API_PASS') || 'test';
     this.apiToken = this.configService.get<string>('NDC_API_TOKEN') || '00000000-0000-0000-0000-000000000000';
     this.deviceId = this.configService.get<string>('NDC_API_DEVICE_ID') || 'test';
-
-    this.logger.log(`NDC Config: login=${this.apiLogin}, device=${this.deviceId}, token=${this.apiToken.substring(0, 8)}..., searchUrl=${this.searchUrl}`);
   }
 
   private getAuth() {
@@ -42,10 +41,11 @@ export class NdcService {
   }
 
   async airShopping(
-    searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
+    searchCriteria: { origin: string, destination: string, departureDate: string, adults: number, currency?: string },
     tenant: { flightMarkup: number, flightProvider?: string, ndcEnabled?: boolean }
   ): Promise<UnifiedFlight[]> {
-    this.logger.log(`Executing Flight Search for tenant (Provider: ${tenant.flightProvider || 'duffel'}): ${searchCriteria.origin} -> ${searchCriteria.destination}`);
+    const targetCurrency = searchCriteria.currency || 'NGN';
+    this.logger.log(`Executing Flight Search (Target: ${targetCurrency}) for tenant: ${searchCriteria.origin} -> ${searchCriteria.destination}`);
 
     const results: UnifiedFlight[] = [];
     const provider = tenant.flightProvider || 'duffel';
@@ -53,7 +53,7 @@ export class NdcService {
 
     // 1. Fetch Duffel if selected
     if (provider === 'duffel' || provider === 'both') {
-      const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenant.flightMarkup).catch(err => {
+      const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenant.flightMarkup, targetCurrency).catch(err => {
         this.logger.error(`Duffel search failed: ${err.message}`);
         return [];
       });
@@ -62,10 +62,9 @@ export class NdcService {
 
     // 2. Fetch SiteCity/NDC if selected AND enabled
     if ((provider === 'sitecity' || provider === 'both') && isNdcExplicitlyEnabled) {
-      this.logger.log('SiteCity/NDC is enabled for this tenant, fetching additional results...');
-      const siteCityResults = await this.getSoapSearch(searchCriteria, tenant.flightMarkup).catch(err => {
+      const siteCityResults = await this.getSoapSearch(searchCriteria, tenant.flightMarkup, targetCurrency).catch(err => {
         this.logger.warn(`SiteCity sub-search failed: ${err.message}`);
-        return this.getFallbackFlights(searchCriteria, tenant.flightMarkup);
+        return this.getFallbackFlights(searchCriteria, tenant.flightMarkup, targetCurrency);
       });
       results.push(...siteCityResults);
     }
@@ -75,12 +74,20 @@ export class NdcService {
 
   private async getSoapSearch(
     searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
-    tenantMarkup: number = 0
+    tenantMarkup: number = 0,
+    targetCurrency: string = 'NGN'
   ): Promise<UnifiedFlight[]> {
     const action = 'http://tempuri.org/ISiteAvia/AeroSearch';
     const formattedDate = this.formatDate(searchCriteria.departureDate);
     
-    const xmlBody = `${this.getAuth()}
+    const xmlBody = `${NdcUtils.getCredentials({
+      login: this.apiLogin,
+      pass: this.apiPass,
+      token: this.apiToken,
+      deviceId: this.deviceId,
+      lang: 'EN',
+      currency: 'USD',
+    })}
 <aeroSearchParams xmlns:a="http://schemas.datacontract.org/2004/07/SiteCity.Avia.Search" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <a:Adults>${searchCriteria.adults}</a:Adults>
   <a:Childs>0</a:Childs>
@@ -99,7 +106,7 @@ export class NdcService {
 
     const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody);
     const response = await this.sendSoapRequest(this.searchUrl, action, xmlRequest);
-    return this.processSearchResponse(response, tenantMarkup);
+    return this.processSearchResponse(response, tenantMarkup, targetCurrency);
   }
 
   // --- RESTORING BOOKING METHODS ---
@@ -216,7 +223,7 @@ export class NdcService {
     return `${d}.${m}.${y}`;
   }
 
-  private processSearchResponse(data: any, tenantMarkup: number): UnifiedFlight[] {
+  private processSearchResponse(data: any, tenantMarkup: number, targetCurrency: string): UnifiedFlight[] {
     if (!data || !data.FlightData) return [];
 
     const flightDataList = Array.isArray(data.FlightData.FlightData) 
@@ -232,8 +239,10 @@ export class NdcService {
         vertical: TravelVertical.FLIGHT,
         provider: 'xml.agency',
         source: data.SearchGuid,
+        isRefundable: false,
+        fareRules: ['Standard Fare Rules Apply'],
+        price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
         segments: this.mapSegments(fd.Offers?.OfferInfo?.Segments?.OfferSegment || []),
-        price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
       };
     });
   }
@@ -250,25 +259,14 @@ export class NdcService {
     }));
   }
 
-  private getFallbackFlights(criteria: any, tenantMarkup: number): UnifiedFlight[] {
-    this.logger.log(`Simulation Mode: Generating high-fidelity flight results for ${criteria.origin} -> ${criteria.destination}`);
-    
+  private getFallbackFlights(criteria: any, tenantMarkup: number, targetCurrency: string): UnifiedFlight[] {
     const airlines = [
       { name: 'Qatar Airways', code: 'QR', basePrice: 850 },
       { name: 'Emirates', code: 'EK', basePrice: 920 },
       { name: 'Lufthansa', code: 'LH', basePrice: 780 },
-      { name: 'British Airways', code: 'BA', basePrice: 810 },
-      { name: 'Air Peace', code: 'P4', basePrice: 650 },
-      { name: 'Turkish Airlines', code: 'TK', basePrice: 740 },
     ];
 
     return airlines.map((airline, index) => {
-      const departureDate = new Date(criteria.departureDate || new Date());
-      departureDate.setHours(8 + index * 2, 0, 0);
-      
-      const arrivalDate = new Date(departureDate);
-      arrivalDate.setHours(arrivalDate.getHours() + 6 + Math.floor(Math.random() * 4));
-
       const basePrice = airline.basePrice + (Math.random() * 200);
       const travsifyFee = basePrice * 0.03;
 
@@ -277,15 +275,17 @@ export class NdcService {
         vertical: TravelVertical.FLIGHT,
         provider: 'xml.agency (Simulated)',
         source: `SIM-${Math.random().toString(36).substring(7).toUpperCase()}`,
-        price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
+        isRefundable: true,
+        fareRules: ['Partially Refundable', 'No-show penalty applies'],
+        price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
         segments: [
           {
             flightNumber: `${airline.code}${100 + index * 15}`,
             airline: airline.name,
             departure: criteria.origin,
             arrival: criteria.destination,
-            departureTime: departureDate.toISOString(),
-            arrivalTime: arrivalDate.toISOString(),
+            departureTime: new Date().toISOString(),
+            arrivalTime: new Date(Date.now() + 6 * 3600000).toISOString(),
           }
         ],
       };

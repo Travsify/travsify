@@ -44,6 +44,7 @@ export class GatewayController {
       destination: firstSegment.destination || criteria.destination || 'LHR',
       departureDate: firstSegment.departureDate || criteria.departureDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       adults: criteria.adults || 1,
+      currency: criteria.currency || 'NGN',
     };
     return this.ndcService.airShopping(searchCriteria, tenant);
   }

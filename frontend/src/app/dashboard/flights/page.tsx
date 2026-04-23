@@ -384,6 +384,18 @@ export default function FlightsPage() {
                           <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mt-2">{flight.segments[flight.segments.length - 1].arrival}</p>
                         </div>
                       </div>
+
+                      {/* Fare Rules & Refundability */}
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${flight.isRefundable ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-50 text-slate-400 border border-slate-100'}`}>
+                          {flight.isRefundable ? 'Refundable' : 'Non-Refundable'}
+                        </span>
+                        {(flight.fareRules || []).map((rule: string, rIdx: number) => (
+                          <span key={rIdx} className="px-3 py-1 bg-slate-50 text-slate-500 border border-slate-100 rounded-lg text-[9px] font-bold uppercase tracking-widest">
+                            {rule}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ) : (
