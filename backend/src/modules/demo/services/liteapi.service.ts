@@ -32,62 +32,74 @@ export class LiteApiService {
     this.logger.log(`Live Hotel search (v3.0): ${cityName} (${countryCode})`);
     
     try {
-      // Step 1: Get list of hotels in the city
+      // Step 1: Get list of hotels in the city for static data (names, images)
       const hotelsResponse = await axios.get(`${this.baseUrl}/data/hotels`, {
         headers: { 'X-API-Key': this.apiKey, 'Accept': 'application/json' },
-        params: { countryCode, cityName, limit: 10 },
+        params: { countryCode, cityName, limit: 15 },
         timeout: 10000,
       });
 
-      const hotels = hotelsResponse.data.data;
-      this.logger.log(`Found ${hotels?.length || 0} hotels for ${cityName}`);
+      const hotels = hotelsResponse.data.data || [];
+      this.logger.log(`Fetched metadata for ${hotels.length} hotels in ${cityName}`);
       
-      if (!hotels || hotels.length === 0) {
-        return [];
-      }
+      if (hotels.length === 0) return [];
 
-      const hotelIds = hotels.map((h: any) => h.id).join(',');
+      const hotelIds = hotels.map((h: any) => h.id);
 
-      // Step 2: Get live rates for these hotels
-      const ratesResponse = await axios.get(`${this.baseUrl}/hotels/rates`, {
-        headers: { 'X-API-Key': this.apiKey, 'Accept': 'application/json' },
-        params: {
-          hotelIds,
-          checkin: params.checkin,
-          checkout: params.checkout,
-          adults: params.adults || 1,
-          currency: 'USD',
-          guestNationality: 'US',
+      // Step 2: Get live rates for these hotels using POST
+      const ratesResponse = await axios.post(`${this.baseUrl}/hotels/rates`, {
+        hotelIds,
+        checkin: params.checkin,
+        checkout: params.checkout,
+        occupancies: [{ adults: params.adults || 2 }],
+        currency: 'USD',
+        guestNationality: countryCode,
+      }, {
+        headers: { 
+          'X-API-Key': this.apiKey, 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         },
-        timeout: 15000,
+        timeout: 20000,
       });
 
-      const rates = ratesResponse.data.data || [];
-      this.logger.log(`Found ${rates.length} rates for the hotel batch`);
+      const ratesData = ratesResponse.data.data || [];
+      this.logger.log(`Fetched live rates for ${ratesData.length} hotels`);
       
       // Combine static data with rates
       const combined = hotels.map((hotel: any) => {
-        const hotelRate = rates.find((r: any) => r.hotelId === hotel.id);
-        if (!hotelRate) return null;
-        return this.mapToUnified(hotel, hotelRate, tenantMarkup, targetCurrency);
+        const hotelRateData = ratesData.find((r: any) => r.hotelId === hotel.id);
+        if (!hotelRateData || !hotelRateData.roomTypes?.length) return null;
+        
+        // Use the cheapest available room rate
+        const cheapestRoom = hotelRateData.roomTypes[0];
+        const rate = cheapestRoom.rates?.[0];
+        if (!rate) return null;
+
+        return this.mapToUnified(hotel, rate, tenantMarkup, targetCurrency);
       }).filter(Boolean) as UnifiedHotel[];
 
-      this.logger.log(`Returning ${combined.length} combined hotel results`);
+      this.logger.log(`Returning ${combined.length} live hotels with rates`);
       return combined;
 
     } catch (error: any) {
-      this.logger.error(`Live Hotel search failed for ${cityName}: ${error.response?.data?.message || error.message}`);
-      throw new Error(`Live Hotel API Search Failed: ${error.response?.data?.message || error.message}`);
+      const errorMsg = error.response?.data?.message || error.message;
+      this.logger.error(`Live Hotel search failed: ${errorMsg}`);
+      // If we have an error but it's just "no results", return empty instead of throwing
+      if (error.response?.status === 404 || errorMsg.toLowerCase().includes('no results')) {
+        return [];
+      }
+      throw new Error(`Live Hotel API Search Failed: ${errorMsg}`);
     }
   }
 
   private getCountryCode(city: string): string {
     const lowerCity = city.toLowerCase();
-    if (lowerCity.includes('lagos') || lowerCity.includes('abuja') || lowerCity.includes('portharcourt') || lowerCity.includes('kano')) return 'NG';
+    if (lowerCity.includes('lagos') || lowerCity.includes('abuja') || lowerCity.includes('port harcourt') || lowerCity.includes('kano')) return 'NG';
     if (lowerCity.includes('dubai') || lowerCity.includes('abu dhabi')) return 'AE';
     if (lowerCity.includes('london') || lowerCity.includes('manchester')) return 'GB';
     if (lowerCity.includes('new york') || lowerCity.includes('miami') || lowerCity.includes('houston')) return 'US';
-    return 'NG'; // Default to Nigeria as primary target market
+    return 'NG'; // Default to Nigeria
   }
 
   // Legacy method for DemoController
@@ -103,16 +115,18 @@ export class LiteApiService {
   }
 
   private mapToUnified(hotel: any, rate: any, tenantMarkup: number, targetCurrency: string): UnifiedHotel {
+    // Correctly extract price from v3.0 rate structure
     const basePrice = rate.retailRate?.total?.[0]?.amount || rate.total || 100;
     const travsifyFee = basePrice * 0.05;
+    
     return {
       id: hotel.id,
       vertical: TravelVertical.HOTEL,
       provider: 'LiteAPI',
       name: hotel.name,
-      location: hotel.city,
+      location: hotel.city || hotel.address || 'Lagos',
       stars: hotel.stars || 4,
-      amenities: hotel.facilityIds ? ['WiFi', 'Pool', 'Parking', 'Gym'] : [], // Mapping complex facility IDs would need a lookup table
+      amenities: hotel.facilityIds ? ['WiFi', 'Pool', 'Parking', 'Gym'] : [],
       image: hotel.main_photo || hotel.thumbnail || 'https://images.unsplash.com/photo-1566073171639-4d9ff100c971?auto=format&fit=crop&w=800&q=80',
       price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
     };
