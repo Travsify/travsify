@@ -22,6 +22,7 @@ import {
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
 import { useAuth } from '@/context/AuthContext';
+import LocationInput from '@/components/LocationInput';
 
 export default function ToursPage() {
   const apiKey = useApiKey();
@@ -94,19 +95,12 @@ export default function ToursPage() {
       <div className="bg-white p-8 rounded-[40px] border border-slate-200 shadow-2xl shadow-slate-200/50 flex flex-col md:flex-row gap-8 items-end relative overflow-hidden group">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:bg-orange-50 transition-colors duration-1000 -z-10" />
         
-        <div className="flex-1 space-y-3 w-full relative z-10">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Destination City</label>
-          <div className="relative">
-            <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-            <input 
-              type="text" 
-              placeholder="e.g. Dubai" 
-              className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border-2 border-transparent rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50 uppercase"
-              value={search.city}
-              onChange={(e) => setSearch({...search, city: e.target.value})}
-            />
-          </div>
-        </div>
+        <LocationInput 
+          label="Destination City"
+          placeholder="e.g. Dubai"
+          value={search.city}
+          onChange={(val) => setSearch({...search, city: val})}
+        />
         <div className="flex-1 space-y-3 w-full relative z-10">
           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Preferred Date</label>
           <div className="relative">

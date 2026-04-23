@@ -27,6 +27,7 @@ import {
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
 import { useAuth } from '@/context/AuthContext';
+import LocationInput from '@/components/LocationInput';
 
 export default function InsurancePage() {
   const apiKey = useApiKey();
@@ -90,19 +91,12 @@ export default function InsurancePage() {
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:bg-orange-50 transition-colors duration-1000 -z-10" />
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-          <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Destination</label>
-            <div className="relative">
-              <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-              <input 
-                type="text" 
-                placeholder="Country (e.g. USA)" 
-                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border-2 border-transparent rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50 uppercase"
-                value={search.destination}
-                onChange={(e) => setSearch({...search, destination: e.target.value})}
-              />
-            </div>
-          </div>
+          <LocationInput 
+            label="Destination"
+            placeholder="Country (e.g. USA)"
+            value={search.destination}
+            onChange={(val) => setSearch({...search, destination: val})}
+          />
           <div className="space-y-3">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Start Date</label>
             <div className="relative">

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DemoController } from './demo.controller';
+import { LocationController } from './location.controller';
 import { NdcModule } from '../ndc/ndc.module';
 import { LiteApiService } from './services/liteapi.service';
 import { ShepperService } from './services/shepper.service';
@@ -11,7 +12,7 @@ import { StripeService } from './services/stripe.service';
 
 @Module({
   imports: [NdcModule],
-  controllers: [DemoController],
+  controllers: [DemoController, LocationController],
   providers: [
     LiteApiService,
     ShepperService,

@@ -20,6 +20,8 @@ import {
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
 import { useAuth } from '@/context/AuthContext';
+import LocationInput from '@/components/LocationInput';
+import { Navigation } from 'lucide-react';
 
 export default function TransfersPage() {
   const apiKey = useApiKey();
@@ -82,32 +84,19 @@ export default function TransfersPage() {
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50 group-hover:bg-blue-50 transition-colors duration-1000 -z-10" />
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-          <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Pickup Location</label>
-            <div className="relative">
-              <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-              <input 
-                type="text" 
-                placeholder="Airport or Address" 
-                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border-2 border-transparent rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50" 
-                value={search.pickup}
-                onChange={(e) => setSearch({...search, pickup: e.target.value})}
-              />
-            </div>
-          </div>
-          <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Drop-off Point</label>
-            <div className="relative">
-              <Navigation className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-              <input 
-                type="text" 
-                placeholder="Hotel or Address" 
-                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border-2 border-transparent rounded-2xl font-black text-slate-900 focus:outline-none focus:border-blue-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50" 
-                value={search.dropoff}
-                onChange={(e) => setSearch({...search, dropoff: e.target.value})}
-              />
-            </div>
-          </div>
+          <LocationInput 
+            label="Pickup Location"
+            placeholder="Airport or Address"
+            value={search.pickup}
+            onChange={(val) => setSearch({...search, pickup: val})}
+          />
+          <LocationInput 
+            label="Drop-off Point"
+            placeholder="Hotel or Address"
+            icon={Navigation}
+            value={search.dropoff}
+            onChange={(val) => setSearch({...search, dropoff: val})}
+          />
           <div className="space-y-3">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Pickup Time</label>
             <div className="relative">
