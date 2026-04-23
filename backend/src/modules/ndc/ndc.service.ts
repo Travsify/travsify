@@ -45,25 +45,28 @@ export class NdcService {
     searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
     tenantMarkup: number = 0
   ): Promise<UnifiedFlight[]> {
-    this.logger.log(`Executing Multi-Provider Search: ${searchCriteria.origin} -> ${searchCriteria.destination}`);
+    this.logger.log(`Executing Flight Search: ${searchCriteria.origin} -> ${searchCriteria.destination}`);
 
-    // Call both providers in parallel
-    const [duffelResults, siteCityResults] = await Promise.all([
-      this.duffelService.searchFlights(searchCriteria, tenantMarkup).catch(err => {
-        this.logger.error(`Duffel sub-search failed: ${err.message}`);
-        return [];
-      }),
-      this.getSoapSearch(searchCriteria, tenantMarkup).catch(err => {
-        this.logger.warn(`SiteCity sub-search failed (possibly IP issue): ${err.message}`);
-        // If SiteCity fails (e.g. IP error), fallback to simulation
-        return this.getFallbackFlights(searchCriteria, tenantMarkup);
-      })
-    ]);
+    // Call Duffel (Our active live provider)
+    const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenantMarkup).catch(err => {
+      this.logger.error(`Duffel search failed: ${err.message}`);
+      return [];
+    });
 
-    const combined = [...duffelResults, ...siteCityResults];
-    this.logger.log(`Search completed. Duffel: ${duffelResults.length}, SiteCity: ${siteCityResults.length}. Total: ${combined.length}`);
+    // Check if SiteCity/NDC is explicitly enabled (default to false until whitelisted)
+    const isNdcEnabled = this.configService.get<string>('NDC_SITECITY_ENABLED') === 'true';
     
-    return combined;
+    if (isNdcEnabled) {
+      this.logger.log('SiteCity/NDC is enabled, fetching additional results...');
+      const siteCityResults = await this.getSoapSearch(searchCriteria, tenantMarkup).catch(err => {
+        this.logger.warn(`SiteCity sub-search failed: ${err.message}`);
+        return this.getFallbackFlights(searchCriteria, tenantMarkup);
+      });
+      return [...duffelResults, ...siteCityResults];
+    }
+
+    this.logger.log(`Returning only Duffel results (${duffelResults.length}). SiteCity is currently disabled pending whitelisting.`);
+    return duffelResults;
   }
 
   private async getSoapSearch(

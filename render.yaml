@@ -44,6 +44,8 @@ services:
         sync: false
       - key: DUFFEL_API_KEY
         sync: false
+      - key: NDC_SITECITY_ENABLED
+        value: "false"
 
   # Frontend Service
   - type: web
