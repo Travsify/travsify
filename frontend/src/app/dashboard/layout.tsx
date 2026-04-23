@@ -26,8 +26,7 @@ import {
   Zap,
   Activity,
   Globe,
-  ChevronDown,
-  Wallet
+  ChevronDown
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

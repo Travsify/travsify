@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Plane, User, Mail, Phone, CreditCard, ChevronLeft, Loader2, CheckCircle2, ShieldCheck, Info } from 'lucide-react';

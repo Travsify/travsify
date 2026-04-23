@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { 
   Car, 
   Search, 
@@ -341,5 +344,4 @@ export default function TransfersPage() {
       </div>
     </div>
   );
-}
 }
