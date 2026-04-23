@@ -69,21 +69,16 @@ export default function OverviewPage() {
     }
   };
 
-  const ngnWallet = wallets.find(w => w.currency === 'NGN') || { balance: 0 };
-  const usdWallet = wallets.find(w => w.currency === 'USD') || { balance: 0 };
-  const totalRevenue = transactions.filter(t => t.type === 'CREDIT' && t.currency === currency).reduce((acc, curr) => acc + Number(curr.amount), 0);
-  const totalBookingsCount = bookings.length;
-  const recentBookings = bookings.slice(0, 5);
-  const recentTransactions = transactions.slice(0, 5);
+  const verticalStats = {
+    flight: bookings.filter(b => b.vertical === 'flight').length,
+    hotel: bookings.filter(b => b.vertical === 'hotel').length,
+    transfer: bookings.filter(b => b.vertical === 'transfer').length,
+    visa: bookings.filter(b => b.vertical === 'visa').length,
+    insurance: bookings.filter(b => b.vertical === 'insurance').length,
+    experience: bookings.filter(b => b.vertical === 'experience').length,
+  };
 
-  if (loading) {
-    return (
-      <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
-        <Loader2 className="w-10 h-10 text-orange-600 animate-spin" />
-        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify...</p>
-      </div>
-    );
-  }
+  const getPercent = (count: number) => totalBookingsCount > 0 ? `${Math.round((count / totalBookingsCount) * 100)}%` : '0%';
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -165,7 +160,12 @@ export default function OverviewPage() {
           <div className="relative w-48 h-48 mb-8">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
               <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#F1F5F9" strokeWidth="3.5"></circle>
-              {totalBookingsCount > 0 && <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#2563EB" strokeWidth="3.5" strokeDasharray="100 100" strokeDashoffset="0"></circle>}
+              {totalBookingsCount > 0 && (
+                <>
+                  <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#2563EB" strokeWidth="3.5" strokeDasharray={`${(verticalStats.flight / totalBookingsCount) * 100} 100`} strokeDashoffset="0"></circle>
+                  <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#F97316" strokeWidth="3.5" strokeDasharray={`${(verticalStats.hotel / totalBookingsCount) * 100} 100`} strokeDashoffset={`-${(verticalStats.flight / totalBookingsCount) * 100}`}></circle>
+                </>
+              )}
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-black text-slate-900 leading-none">{totalBookingsCount}</span>
@@ -173,14 +173,16 @@ export default function OverviewPage() {
             </div>
           </div>
           <div className="w-full space-y-3">
-            <VerticalLegend color="#2563EB" label="Flights" percent={totalBookingsCount > 0 ? "100%" : "0%"} value={totalBookingsCount} />
-            <VerticalLegend color="#F97316" label="Hotels" percent="0%" value="0" />
-            <VerticalLegend color="#10B981" label="Transfers" percent="0%" value="0" />
-            <VerticalLegend color="#8B5CF6" label="e-Visas" percent="0%" value="0" />
-            <VerticalLegend color="#6366F1" label="Insurance" percent="0%" value="0" />
+            <VerticalLegend color="#2563EB" label="Flights" percent={getPercent(verticalStats.flight)} value={verticalStats.flight} />
+            <VerticalLegend color="#F97316" label="Hotels" percent={getPercent(verticalStats.hotel)} value={verticalStats.hotel} />
+            <VerticalLegend color="#10B981" label="Transfers" percent={getPercent(verticalStats.transfer)} value={verticalStats.transfer} />
+            <VerticalLegend color="#8B5CF6" label="e-Visas" percent={getPercent(verticalStats.visa)} value={verticalStats.visa} />
+            <VerticalLegend color="#6366F1" label="Insurance" percent={getPercent(verticalStats.insurance)} value={verticalStats.insurance} />
+            <VerticalLegend color="#FF6B00" label="Experiences" percent={getPercent(verticalStats.experience)} value={verticalStats.experience} />
           </div>
         </div>
       </div>
+
 
       {/* ─── ROW 3: HEALTH & ACTIVITY ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
