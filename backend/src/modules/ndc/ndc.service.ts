@@ -157,8 +157,11 @@ export class NdcService {
 
       if (body.Fault) {
         const fault = body.Fault;
-        const reason = fault.Reason?.Text || 'Unknown Reason';
-        const code = fault.Code?.Value || 'Unknown Code';
+        const reasonObj = fault.Reason?.Text || fault.Reason || 'Unknown Reason';
+        const reason = typeof reasonObj === 'string' ? reasonObj : JSON.stringify(reasonObj);
+        const codeObj = fault.Code?.Value || fault.Code || 'Unknown Code';
+        const code = typeof codeObj === 'string' ? codeObj : JSON.stringify(codeObj);
+        
         this.logger.error(`SOAP Fault Received: [${code}] ${reason}`);
         if (fault.Detail) {
            this.logger.error(`Fault Detail: ${JSON.stringify(fault.Detail)}`);

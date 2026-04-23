@@ -4,7 +4,7 @@ export class NdcUtils {
   private static builder = new XMLBuilder({
     ignoreAttributes: false,
     format: true,
-    suppressEmptyNode: true,
+    attributeNamePrefix: '@_',
   });
 
   private static parser = new XMLParser({
