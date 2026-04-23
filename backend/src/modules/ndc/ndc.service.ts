@@ -22,6 +22,8 @@ export class NdcService {
     this.apiPass = this.configService.get<string>('NDC_API_PASS') || 'test';
     this.apiToken = this.configService.get<string>('NDC_API_TOKEN') || '00000000-0000-0000-0000-000000000000';
     this.deviceId = this.configService.get<string>('NDC_API_DEVICE_ID') || 'test';
+
+    this.logger.log(`NDC Config: login=${this.apiLogin}, device=${this.deviceId}, token=${this.apiToken.substring(0, 8)}..., searchUrl=${this.searchUrl}`);
   }
 
   private getAuth() {
