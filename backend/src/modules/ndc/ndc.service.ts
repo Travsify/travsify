@@ -141,8 +141,7 @@ export class NdcService {
   private async sendSoapRequest(url: string, action: string, xml: string): Promise<any> {
     const response = await axios.post(url, xml, {
       headers: {
-        'Content-Type': 'application/soap+xml; charset=utf-8',
-        'action': action,
+        'Content-Type': `application/soap+xml; charset=utf-8; action="${action}"`,
       },
       timeout: 30000,
     });
