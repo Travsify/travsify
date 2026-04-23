@@ -61,12 +61,12 @@ export class NdcService {
   <a:PartnerName i:nil="true" />
 </aeroSearchParams>`;
 
-    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody, action, this.searchUrl);
+    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody);
     
     try {
       this.logger.log(`AeroSearch request: ${this.searchUrl} | ${searchCriteria.origin}->${searchCriteria.destination} | date=${searchCriteria.departureDate}`);
       this.logger.debug(`SOAP XML:\n${xmlRequest}`);
-      const response = await this.sendSoapRequest(this.searchUrl, 'http://tempuri.org/ISiteAvia/AeroSearch', xmlRequest);
+      const response = await this.sendSoapRequest(this.searchUrl, action, xmlRequest);
       return this.processSearchResponse(response, tenantMarkup);
     } catch (error) {
       this.logger.error(`AeroSearch failed: ${error.message}`);
@@ -91,7 +91,7 @@ export class NdcService {
     };
     const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(prebookParams)}`;
     const action = 'http://tempuri.org/ISiteAvia/AeroPrebook';
-    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', xmlBody, action, this.actionUrl);
+    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', xmlBody);
     return this.sendSoapRequest(this.actionUrl, action, xmlRequest);
   }
 
@@ -119,7 +119,7 @@ export class NdcService {
     };
     const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(bookParams)}`;
     const action = 'http://tempuri.org/ISiteAvia/AeroBook';
-    const xmlRequest = NdcUtils.createEnvelope('AeroBook', xmlBody, action, this.actionUrl);
+    const xmlRequest = NdcUtils.createEnvelope('AeroBook', xmlBody);
     return this.sendSoapRequest(this.actionUrl, action, xmlRequest);
   }
 
@@ -134,8 +134,8 @@ export class NdcService {
     };
     const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(confirmParams)}`;
     const action = 'http://tempuri.org/ISiteBookInfo/ConfirmBook';
-    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', xmlBody, action, this.actionUrl);
-    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', xmlRequest);
+    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', xmlBody);
+    return this.sendSoapRequest(this.actionUrl, action, xmlRequest);
   }
 
   // --- END OF BOOKING METHODS ---
@@ -146,7 +146,7 @@ export class NdcService {
       const response = await axios.post(url, xml, {
         headers: {
           'Content-Type': `application/soap+xml; charset=utf-8; action="${action}"`,
-          'Accept': 'application/soap+xml, application/xml, text/xml, */*',
+          'Accept': 'application/soap+xml',
         },
         timeout: 45000,
       });

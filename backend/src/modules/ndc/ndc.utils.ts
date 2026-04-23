@@ -15,14 +15,10 @@ export class NdcUtils {
   /**
    * Creates a SOAP 1.2 Envelope for XML.AGENCY API using a template for reliability
    */
-  static createEnvelope(methodName: string, bodyContent: string, action: string, endpoint: string): string {
+  static createEnvelope(methodName: string, bodyContent: string): string {
     // Use a template for the Envelope to ensure strict WCF compliance
     return `<?xml version="1.0" encoding="utf-8"?>
-<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
-  <s:Header>
-    <a:Action s:mustUnderstand="1">${action}</a:Action>
-    <a:To s:mustUnderstand="1">${endpoint}</a:To>
-  </s:Header>
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope">
   <s:Body>
     <${methodName} xmlns="http://tempuri.org/">
       ${bodyContent}
