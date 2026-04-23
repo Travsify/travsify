@@ -65,10 +65,17 @@ export class NdcService {
     const xmlRequest = NdcUtils.createEnvelope('AeroSearch', body);
     
     try {
+      this.logger.log(`AeroSearch request: ${this.searchUrl} | ${searchCriteria.origin}->${searchCriteria.destination} | date=${searchCriteria.departureDate}`);
+      this.logger.debug(`SOAP XML:\n${xmlRequest}`);
       const response = await this.sendSoapRequest(this.searchUrl, 'http://tempuri.org/ISiteAvia/AeroSearch', xmlRequest);
       return this.processSearchResponse(response, tenantMarkup);
     } catch (error) {
       this.logger.error(`AeroSearch failed: ${error.message}`);
+      if (error.response) {
+        this.logger.error(`Status: ${error.response.status}`);
+        this.logger.error(`Response body: ${typeof error.response.data === 'string' ? error.response.data.substring(0, 1000) : JSON.stringify(error.response.data).substring(0, 1000)}`);
+      }
+      this.logger.error(`Request URL: ${this.searchUrl}, Login: ${this.apiLogin}, Token: ${this.apiToken.substring(0, 8)}...`);
       return this.getFallbackFlights(searchCriteria, tenantMarkup);
     }
   }
