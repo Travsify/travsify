@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Plane, User, Mail, Phone, CreditCard, ChevronLeft, Loader2, CheckCircle2, ShieldCheck, Info } from 'lucide-react';
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const apiKey = useApiKey();
   
@@ -277,5 +277,17 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-32">
+        <Loader2 className="animate-spin text-blue-600" size={48} />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }

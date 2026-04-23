@@ -2,17 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UnifiedTransfer, TravelVertical } from '../../../common/interfaces/unified-travel.interface';
 import { PricingEngine } from '../../../common/utils/pricing.util';
+import { CurrencyService } from '../../../common/services/currency.service';
 
 @Injectable()
 export class MozioService {
   private readonly logger = new Logger(MozioService.name);
   private readonly affiliateId: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private currencyService: CurrencyService
+  ) {
     this.affiliateId = this.configService.get<string>('MOZIO_AFFILIATE_ID') || 'travsify';
   }
 
-  async getTransferOptions(location: string, tenantMarkup: number = 0): Promise<UnifiedTransfer[]> {
+  async getTransferOptions(location: string, tenantMarkup: number = 0, targetCurrency: string = 'USD'): Promise<UnifiedTransfer[]> {
     this.logger.log(`Mozio: Fetching transfer options for ${location}`);
     
     const basePrice = 45;
@@ -24,7 +28,7 @@ export class MozioService {
       provider: 'Mozio',
       vehicleType: 'Private Sedan',
       capacity: 4,
-      price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
+      price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
       bookingUrl: `https://www.mozio.com/en-us/?ref=${this.affiliateId}&location=${location}`,
     }];
   }

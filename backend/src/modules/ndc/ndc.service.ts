@@ -1,10 +1,11 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { CurrencyService } from '../../common/services/currency.service';
 import { ConfigService } from '@nestjs/config';
+import { DuffelService } from './duffel.service';
 import axios from 'axios';
 import { NdcUtils } from './ndc.utils';
 import { UnifiedFlight, TravelVertical } from '../../common/interfaces/unified-travel.interface';
 import { PricingEngine } from '../../common/utils/pricing.util';
-import { DuffelService } from './duffel.service';
 
 @Injectable()
 export class NdcService {

@@ -2,17 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UnifiedInsurance, TravelVertical } from '../../../common/interfaces/unified-travel.interface';
 import { PricingEngine } from '../../../common/utils/pricing.util';
+import { CurrencyService } from '../../../common/services/currency.service';
 
 @Injectable()
 export class SafetyWingService {
   private readonly logger = new Logger(SafetyWingService.name);
   private readonly partnerId: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private currencyService: CurrencyService
+  ) {
     this.partnerId = this.configService.get<string>('SAFETYWING_PARTNER_ID') || '26515160';
   }
 
-  async getInsuranceQuotes(tenantMarkup: number = 0): Promise<UnifiedInsurance[]> {
+  async getInsuranceQuotes(tenantMarkup: number = 0, targetCurrency: string = 'USD'): Promise<UnifiedInsurance[]> {
     this.logger.log('SafetyWing: Fetching insurance quotes');
     
     const basePrice = 42;
@@ -28,7 +32,7 @@ export class SafetyWingService {
         deductible: '$250',
         repatriation: 'Included',
       },
-      price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
+      price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
       bookingUrl: `https://safetywing.com/nomad-insurance?referenceID=${this.partnerId}`,
     }];
   }
