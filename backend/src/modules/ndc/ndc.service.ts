@@ -65,7 +65,7 @@ export class NdcService {
     if ((provider === 'sitecity' || provider === 'both') && isNdcExplicitlyEnabled) {
       const siteCityResults = await this.getSoapSearch(searchCriteria, tenant.flightMarkup, targetCurrency).catch(err => {
         this.logger.warn(`SiteCity sub-search failed: ${err.message}`);
-        return this.getFallbackFlights(searchCriteria, tenant.flightMarkup, targetCurrency);
+        throw new Error(`Live Flight API Search Failed: ${err.message}`);
       });
       results.push(...siteCityResults);
     }
@@ -306,50 +306,5 @@ export class NdcService {
     }));
   }
 
-  private getFallbackFlights(criteria: any, tenantMarkup: number, targetCurrency: string): UnifiedFlight[] {
-    const airlines = [
-      { name: 'Qatar Airways', code: 'QR', basePrice: 850, aircraft: 'Boeing 777-300ER' },
-      { name: 'Emirates', code: 'EK', basePrice: 920, aircraft: 'Airbus A380-800' },
-      { name: 'Lufthansa', code: 'LH', basePrice: 780, aircraft: 'Airbus A350-900' },
-    ];
-
-    return airlines.map((airline, index) => {
-      const basePrice = airline.basePrice + (Math.random() * 200);
-      const travsifyFee = basePrice * 0.03;
-      const durationHours = 5 + Math.floor(Math.random() * 8);
-      const durationMinutes = Math.floor(Math.random() * 60);
-
-      return {
-        id: `sim-${airline.code}-${index}-${Date.now()}`,
-        vertical: TravelVertical.FLIGHT,
-        provider: 'xml.agency (Simulated)',
-        source: `SIM-${Math.random().toString(36).substring(7).toUpperCase()}`,
-        isRefundable: index === 0,
-        fareRules: index === 0 
-          ? ['Refundable fare', `Changes allowed (Penalty: $50)`] 
-          : ['Non-refundable', 'Non-changeable'],
-        cabin: 'Economy',
-        baggageAllowance: '1x Checked (23kg)',
-        totalDuration: `${durationHours}h ${durationMinutes}m`,
-        price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
-        segments: [
-          {
-            flightNumber: `${airline.code}${100 + index * 15}`,
-            airline: airline.name,
-            airlineCode: airline.code,
-            operatingAirline: airline.name,
-            operatingAirlineCode: airline.code,
-            departure: criteria.origin,
-            arrival: criteria.destination,
-            departureTime: new Date().toISOString(),
-            arrivalTime: new Date(Date.now() + (durationHours * 3600000) + (durationMinutes * 60000)).toISOString(),
-            departureTerminal: 'T1',
-            arrivalTerminal: 'T3',
-            aircraft: airline.aircraft,
-            duration: `PT${durationHours}H${durationMinutes}M`,
-          }
-        ],
-      };
-    });
   }
 }

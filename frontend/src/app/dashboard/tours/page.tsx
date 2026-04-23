@@ -39,20 +39,34 @@ export default function ToursPage() {
     setLoading(true);
     setResults(null);
     try {
-      // Mocking a successful response for the UI demonstration
-      setTimeout(() => {
+      const res = await fetch(`${API_URL}/api/v1/search/tours?location=${encodeURIComponent(search.city)}&currency=${currency}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' }
+      });
+      const data = await res.json();
+      
+      // If the backend returns an array of tours, we'll just show the first one as the 'featured' result 
+      // since the UI is currently designed to show one featured result. 
+      // If no data, we throw an error to show the empty state.
+      if (Array.isArray(data) && data.length > 0) {
+        const topTour = data[0];
         setResults({
-          tourName: `${search.city} Premium Sightseeing Experience`,
-          duration: '6 Hours (Full-Day)',
-          estimatedFee: currency === 'USD' ? 120 : 185000,
+          id: topTour.id,
+          tourName: topTour.name || `${search.city} Premium Sightseeing Experience`,
+          duration: topTour.duration || '6 Hours (Full-Day)',
+          estimatedFee: topTour.price?.totalAmount || topTour.price || 0,
           availability: 'Instant Confirmation Available',
-          message: 'Explore the world\'s most iconic landmarks with priority access and professional guides.',
-          image: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`
+          message: topTour.description || 'Explore the world\'s most iconic landmarks with priority access and professional guides.',
+          image: topTour.image || `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`
         });
-        setLoading(false);
-      }, 1500);
+      } else {
+        throw new Error('No tours found');
+      }
     } catch (err) {
       console.error('Search failed', err);
+      // We no longer set fake results here, letting the UI show the empty/error state
+      setResults(null);
+    } finally {
       setLoading(false);
     }
   };
