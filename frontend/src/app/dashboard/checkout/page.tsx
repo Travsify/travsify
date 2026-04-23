@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
 
-export default function GlobalCheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, currency } = useAuth();
@@ -236,6 +236,19 @@ export default function GlobalCheckoutPage() {
   );
 }
 
+export default function GlobalCheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-12 h-12 text-[#FF6B00] animate-spin" />
+        <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Initializing Secure Checkout...</p>
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
 function InputGroup({ label, value, onChange, icon }: any) {
   return (
     <div className="space-y-3">
@@ -280,3 +293,6 @@ function SummaryRow({ label, value, color }: any) {
     </div>
   );
 }
+
+
+

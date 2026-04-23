@@ -17,7 +17,8 @@ import {
   Hotel,
   Car,
   ShieldCheck,
-  Ticket
+  Ticket,
+  Globe
 } from 'lucide-react';
 import Link from 'next/link';
 
