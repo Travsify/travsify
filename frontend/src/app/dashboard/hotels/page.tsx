@@ -31,18 +31,26 @@ export default function HotelsPage() {
   const [hotels, setHotels] = useState<any[]>([]);
   const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
   const [search, setSearch] = useState({
-    city: '',
-    checkIn: '',
-    checkOut: '',
+    city: 'Lagos',
+    checkIn: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    checkOut: new Date(Date.now() + 172800000).toISOString().split('T')[0],
     guests: 2,
     rooms: 1
   });
 
   const handleSearch = async () => {
-    if (!search.city) return;
+    if (!search.city || !search.checkIn || !search.checkOut) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/v1/search/hotels?city=${encodeURIComponent(search.city)}&currency=${currency}`, {
+      const queryParams = new URLSearchParams({
+        city: search.city,
+        checkin: search.checkIn,
+        checkout: search.checkOut,
+        adults: search.guests.toString(),
+        currency: currency || 'USD'
+      });
+      
+      const res = await fetch(`${API_URL}/api/v1/search/hotels?${queryParams.toString()}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' }
       });
