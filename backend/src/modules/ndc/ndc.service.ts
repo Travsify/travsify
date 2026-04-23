@@ -4,6 +4,7 @@ import axios from 'axios';
 import { NdcUtils } from './ndc.utils';
 import { UnifiedFlight, TravelVertical } from '../../common/interfaces/unified-travel.interface';
 import { PricingEngine } from '../../common/utils/pricing.util';
+import { DuffelService } from './duffel.service';
 
 @Injectable()
 export class NdcService {
@@ -15,7 +16,10 @@ export class NdcService {
   private readonly apiToken: string;
   private readonly deviceId: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private duffelService: DuffelService
+  ) {
     this.searchUrl = this.configService.get<string>('NDC_API_SEARCH_URL') || 'https://search-api.xml.agency/SiteCity';
     this.actionUrl = this.configService.get<string>('NDC_API_ACTION_URL') || 'https://api.city.travel/SiteCity';
     this.apiLogin = this.configService.get<string>('NDC_API_LOGIN') || 'test';
@@ -41,6 +45,31 @@ export class NdcService {
     searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
     tenantMarkup: number = 0
   ): Promise<UnifiedFlight[]> {
+    this.logger.log(`Executing Multi-Provider Search: ${searchCriteria.origin} -> ${searchCriteria.destination}`);
+
+    // Call both providers in parallel
+    const [duffelResults, siteCityResults] = await Promise.all([
+      this.duffelService.searchFlights(searchCriteria, tenantMarkup).catch(err => {
+        this.logger.error(`Duffel sub-search failed: ${err.message}`);
+        return [];
+      }),
+      this.getSoapSearch(searchCriteria, tenantMarkup).catch(err => {
+        this.logger.warn(`SiteCity sub-search failed (possibly IP issue): ${err.message}`);
+        // If SiteCity fails (e.g. IP error), fallback to simulation
+        return this.getFallbackFlights(searchCriteria, tenantMarkup);
+      })
+    ]);
+
+    const combined = [...duffelResults, ...siteCityResults];
+    this.logger.log(`Search completed. Duffel: ${duffelResults.length}, SiteCity: ${siteCityResults.length}. Total: ${combined.length}`);
+    
+    return combined;
+  }
+
+  private async getSoapSearch(
+    searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
+    tenantMarkup: number = 0
+  ): Promise<UnifiedFlight[]> {
     const action = 'http://tempuri.org/ISiteAvia/AeroSearch';
     const formattedDate = this.formatDate(searchCriteria.departureDate);
     
@@ -62,21 +91,8 @@ export class NdcService {
 </aeroSearchParams>`;
 
     const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody);
-    
-    try {
-      this.logger.log(`AeroSearch request: ${this.searchUrl} | ${searchCriteria.origin}->${searchCriteria.destination} | date=${searchCriteria.departureDate}`);
-      this.logger.debug(`SOAP XML:\n${xmlRequest}`);
-      const response = await this.sendSoapRequest(this.searchUrl, action, xmlRequest);
-      return this.processSearchResponse(response, tenantMarkup);
-    } catch (error) {
-      this.logger.error(`AeroSearch failed: ${error.message}`);
-      if (error.response) {
-        this.logger.error(`Status: ${error.response.status}`);
-        this.logger.error(`Response body: ${typeof error.response.data === 'string' ? error.response.data.substring(0, 1000) : JSON.stringify(error.response.data).substring(0, 1000)}`);
-      }
-      this.logger.error(`Request URL: ${this.searchUrl}, Login: ${this.apiLogin}, Token: ${this.apiToken.substring(0, 8)}...`);
-      return this.getFallbackFlights(searchCriteria, tenantMarkup);
-    }
+    const response = await this.sendSoapRequest(this.searchUrl, action, xmlRequest);
+    return this.processSearchResponse(response, tenantMarkup);
   }
 
   // --- RESTORING BOOKING METHODS ---
