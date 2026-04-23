@@ -128,101 +128,104 @@ export default function ToursPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-20">
           <div className="lg:col-span-2 space-y-10">
             <div 
-              onClick={() => setSelectedTour(results)}
-              className="bg-white p-10 rounded-[48px] border border-slate-200 shadow-2xl shadow-slate-100 relative overflow-hidden group cursor-pointer hover:shadow-blue-900/10 transition-all"
-            >
-              <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50/50 rounded-bl-[100px] -z-0" />
-              
-              <div className="flex justify-between items-start mb-12 relative z-10">
-                <div className="w-20 h-20 rounded-3xl bg-[#0A1629] text-[#FF6B00] flex items-center justify-center shadow-xl shadow-blue-900/20 group-hover:scale-110 transition-transform duration-700">
-                  <Globe size={40} />
-                </div>
-                <div className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live Availability
-                </div>
+      {/* Tours Results Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-10 pb-20">
+        {results ? (
+          <div 
+            onClick={() => setSelectedTour(results)}
+            className="group bg-white rounded-[48px] border border-slate-100 overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(10,22,41,0.12)] hover:-translate-y-2 transition-all duration-700 flex flex-col relative cursor-pointer"
+          >
+            {/* Live Badge */}
+            <div className="absolute top-8 left-8 z-20">
+              <div className="px-4 py-2.5 bg-white/90 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/50">
+                <div className="w-2 h-2 bg-[#FF6B00] rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Live Experience</span>
               </div>
-              
-              <div className="space-y-4 relative z-10">
-                <h3 className="text-4xl font-black text-slate-900 tracking-tighter leading-tight">{results.tourName}</h3>
-                <p className="text-sm font-black text-[#FF6B00] uppercase tracking-[0.3em]">{search.city} {search.date && `• ${search.date}`}</p>
-              </div>
-              
-              <div className="p-8 bg-slate-50 rounded-[32px] border border-slate-100 my-12 relative z-10 group-hover:bg-blue-50/50 transition-colors">
-                <p className="text-xl font-black text-slate-900 mb-3 tracking-tight">
-                  {results.availability}
-                </p>
-                <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                  {results.message}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
-                <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Duration</span>
-                    <p className="text-sm font-black text-slate-900 flex items-center gap-2">
-                      <Clock size={16} className="text-[#FF6B00]" />
-                      {results.duration}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-6 bg-[#0A1629] rounded-2xl border border-blue-900/20">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Starting Price</span>
-                    <div className="flex items-baseline gap-1">
-                       <span className="text-sm font-black text-white">{currency === 'USD' ? '$' : '₦'}</span>
-                       <p className="text-3xl font-black text-white tracking-tighter">
-                        {results.estimatedFee.toLocaleString()}
-                       </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Checkout logic
-                }}
-                className="w-full py-6 bg-[#FF6B00] text-white rounded-[24px] font-black text-sm uppercase tracking-widest hover:scale-[1.02] transition-all shadow-2xl shadow-orange-600/30 active:scale-95 group/btn"
-              >
-                Book Experience <ChevronRight size={18} className="inline-block ml-2 group-hover/btn:translate-x-2 transition-transform" />
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            <div className="bg-[#0A1629] rounded-[40px] p-10 text-white shadow-2xl shadow-blue-900/30 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 transition-opacity duration-1000 rotate-12">
-                 <Globe size={200} />
-               </div>
-               <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-[#FF6B00] mb-8 border border-white/10 group-hover:scale-110 transition-transform">
-                 <Globe size={32} />
-               </div>
-               <h4 className="text-2xl font-black mb-4 tracking-tight">Global Inventory</h4>
-               <p className="text-slate-400 text-sm font-medium leading-relaxed">
-                 Access thousands of tours, attractions, and sightseeing experiences globally with real-time {currency} pricing and direct-connect availability.
-               </p>
             </div>
 
-            <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-xl shadow-slate-100">
-              <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-4">
-                <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
-                  <FileText size={22} className="text-[#FF6B00]" />
+            {/* Provider Badge */}
+            <div className="absolute top-8 right-8 z-20">
+              <div className="px-4 py-2.5 bg-[#0A1629]/80 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/10">
+                <span className="text-[10px] font-black text-white uppercase tracking-widest opacity-80">GETYOURGUIDE</span>
+              </div>
+            </div>
+            
+            {/* Hero Image */}
+            <div className="relative h-80 shrink-0 overflow-hidden">
+              <img 
+                src={results.image || `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`} 
+                alt={results.tourName} 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 flex items-end p-8">
+                 <p className="text-white text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3">
+                   <MapPin size={16} className="text-[#FF6B00]" />
+                   {search.city}
+                 </p>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="p-10 flex flex-col flex-1 relative">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100">
+                  {results.duration}
                 </div>
-                Inclusions
+                <div className="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                  Instant Confirmation
+                </div>
+              </div>
+
+              <h3 className="text-2xl font-black text-slate-900 leading-[1.2] group-hover:text-[#FF6B00] transition-colors duration-300 tracking-tight mb-4 line-clamp-2">
+                {results.tourName}
               </h3>
-              <div className="space-y-6">
-                <PrepStep label="Professional Multilingual Guide" />
-                <PrepStep label="Private Hotel Pickup & Drop-off" />
-                <PrepStep label="VIP Skip-the-line Access" />
-                <PrepStep label="Refreshments & Local Delicacies" />
-                <PrepStep label="100% Flexible Cancellation" />
+              
+              <p className="text-sm text-slate-400 font-medium leading-relaxed mb-8 line-clamp-2">
+                {results.message}
+              </p>
+
+              {/* Price Section */}
+              <div className="mt-auto pt-8 border-t border-slate-50 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Exclusive Rate</p>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-sm font-bold text-slate-300 line-through">
+                      {currency} {(results.estimatedFee * 1.12).toLocaleString()}
+                    </span>
+                    <span className="text-3xl font-black text-[#0A1629]">
+                      {currency} {results.estimatedFee.toLocaleString()}
+                    </span>
+                  </div>
+                  <p className="text-[9px] font-bold text-green-500 uppercase tracking-tighter mt-2 flex items-center gap-1.5">
+                    <CheckCircle2 size={12} /> Best Price Guaranteed
+                  </p>
+                </div>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(results.bookingUrl || '#', '_blank');
+                  }}
+                  className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
+                >
+                  <ChevronRight size={24} />
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        ) : !loading && (
+          <div className="lg:col-span-2 2xl:col-span-3 py-40 text-center bg-white rounded-[60px] border-2 border-dashed border-slate-100 relative overflow-hidden shadow-sm">
+             <div className="relative z-10">
+              <div className="w-40 h-40 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-10 group hover:scale-110 transition-transform duration-700">
+                <Ticket size={64} className="text-slate-200 group-hover:text-[#FF6B00] transition-colors" />
+              </div>
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight">Discover Curated Tours</h3>
+              <p className="text-base text-slate-400 font-medium max-w-lg mx-auto mt-4 leading-relaxed px-10">
+                Enter your destination city to fetch live sightseeing tours and experiences directly from GetYourGuide.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Tour Details Modal */}
       {selectedTour && (
