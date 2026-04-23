@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class CurrencyService {
   // Static rates for demonstration, can be updated from an external API in production
-  private rates = {
+  private rates: Record<string, number> = {
     USD: 1,
     NGN: 1550, // Updated to a more recent market average
     EUR: 0.92,
