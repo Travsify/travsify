@@ -88,123 +88,168 @@ export default function FlightsPage() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700">
-      <div className="flex flex-col">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Flights</h1>
-        <p className="text-sm text-slate-400 font-medium">Direct connection to over 400+ airlines for real-time inventory and instant ticketing.</p>
+    <div className="space-y-10 animate-in fade-in duration-700 pb-20">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+              <Plane size={24} />
+            </div>
+            Flights
+          </h1>
+          <p className="text-sm text-slate-400 font-medium mt-2">Direct connection to over 400+ airlines for real-time inventory and instant ticketing.</p>
+        </div>
+        <div className="flex gap-2">
+          <span className="px-4 py-2 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-emerald-100 flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live Inventory
+          </span>
+        </div>
       </div>
 
       {/* Search Bar Container */}
-      <div className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm flex flex-col gap-6">
+      <div className="bg-white p-10 rounded-[40px] border border-slate-200 shadow-2xl shadow-slate-200/50 flex flex-col gap-8 relative overflow-hidden group">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:bg-orange-50 transition-colors duration-1000" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 group-hover:bg-blue-50 transition-colors duration-1000" />
         
         {/* Trip Type & Filters */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
-          <div className="flex bg-slate-100 p-1 rounded-xl w-fit">
-            <button 
-              onClick={() => { setTripType('one_way'); setSegments([segments[0]]); }}
-              className={`px-6 py-2.5 text-[11px] font-black uppercase tracking-widest rounded-lg transition-all ${tripType === 'one_way' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-900'}`}
-            >
-              One Way
-            </button>
-            <button 
-              onClick={() => { setTripType('round_trip'); setSegments([segments[0]]); }}
-              className={`px-6 py-2.5 text-[11px] font-black uppercase tracking-widest rounded-lg transition-all ${tripType === 'round_trip' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-900'}`}
-            >
-              Round Trip
-            </button>
-            <button 
-              onClick={() => { setTripType('multi_city'); }}
-              className={`px-6 py-2.5 text-[11px] font-black uppercase tracking-widest rounded-lg transition-all ${tripType === 'multi_city' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-900'}`}
-            >
-              Multi-City
-            </button>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-100 pb-8 relative z-10">
+          <div className="flex bg-slate-100/80 backdrop-blur-md p-1.5 rounded-2xl w-fit border border-slate-200/50">
+            {[
+              { id: 'one_way', label: 'One Way' },
+              { id: 'round_trip', label: 'Round Trip' },
+              { id: 'multi_city', label: 'Multi-City' }
+            ].map((t) => (
+              <button 
+                key={t.id}
+                onClick={() => { 
+                  setTripType(t.id); 
+                  if (t.id !== 'multi_city') setSegments([segments[0]]); 
+                }}
+                className={`px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-xl transition-all duration-300 ${tripType === t.id ? 'bg-white text-blue-600 shadow-xl shadow-blue-600/10' : 'text-slate-400 hover:text-slate-900'}`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-2">
+          
+          <div className="flex items-center gap-6">
             <button 
               onClick={() => setDirectOnly(!directOnly)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-3 px-5 py-3 rounded-xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100"
             >
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${directOnly ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300'}`}>
-                {directOnly && <CheckCircle2 size={12} />}
+              <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${directOnly ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 bg-white'}`}>
+                {directOnly && <CheckCircle2 size={12} strokeWidth={4} />}
               </div>
-              <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest">Direct Flights Only</span>
+              <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest">Direct Only</span>
             </button>
+            
+            <div className="h-8 w-px bg-slate-100 hidden lg:block" />
+            
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Cabin:</span>
+              <select className="bg-transparent text-[11px] font-black text-slate-900 uppercase tracking-widest outline-none cursor-pointer">
+                <option>Economy</option>
+                <option>Premium</option>
+                <option>Business</option>
+                <option>First</option>
+              </select>
+            </div>
           </div>
         </div>
 
         {/* Segments */}
-        <div className="space-y-4">
+        <div className="space-y-6 relative z-10">
           {segments.map((seg, idx) => (
-            <div key={idx} className="flex flex-col md:flex-row gap-4 items-end relative">
-              <div className="flex-1 space-y-2 w-full">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Origin {tripType === 'multi_city' ? idx + 1 : ''}</label>
+            <div key={idx} className="flex flex-col lg:flex-row gap-6 items-end group/seg">
+              <div className="flex-1 space-y-3 w-full">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" /> Origin {tripType === 'multi_city' ? idx + 1 : ''}
+                </label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                  <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/seg:text-blue-500 transition-colors" size={20} />
                   <input 
                     type="text" 
-                    placeholder="LOS" 
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase transition-all"
+                    placeholder="Lagos (LOS)" 
+                    className="w-full pl-14 pr-6 py-4.5 bg-slate-50 rounded-2xl font-black text-slate-900 border-2 border-transparent outline-none focus:ring-0 focus:border-blue-500/20 focus:bg-white uppercase transition-all shadow-inner shadow-slate-100/50"
                     value={seg.origin}
                     onChange={(e) => handleAirportSearch(idx, 'origin', e.target.value)}
                     onFocus={() => seg.origin.length >= 2 && handleAirportSearch(idx, 'origin', seg.origin)}
                   />
                   {activeInput?.index === idx && activeInput?.field === 'origin' && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="absolute top-full left-0 right-0 mt-3 bg-white/95 backdrop-blur-2xl border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="p-4 bg-slate-50 border-b border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Matching Locations</p>
+                      </div>
                       {suggestions.map((airport) => (
                         <button
                           key={airport.iata}
                           onClick={() => selectAirport(idx, 'origin', airport)}
-                          className="w-full px-5 py-4 text-left hover:bg-orange-600 group transition-all border-b border-slate-100 last:border-0 flex items-center justify-between"
+                          className="w-full px-6 py-5 text-left hover:bg-blue-600 group transition-all border-b border-slate-50 last:border-0 flex items-center justify-between"
                         >
                           <div>
                             <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors">{airport.city} ({airport.iata})</p>
                             <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors">{airport.name}</p>
                           </div>
-                          <span className="text-[10px] font-black text-slate-300 group-hover:text-white/50 tracking-widest">{airport.country}</span>
+                          <div className="flex flex-col items-end">
+                             <span className="text-[10px] font-black text-blue-600 group-hover:text-white/80 tracking-widest uppercase">{airport.country}</span>
+                             <div className="w-8 h-px bg-blue-100 group-hover:bg-white/20 mt-1" />
+                          </div>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex-1 space-y-2 w-full">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Destination {tripType === 'multi_city' ? idx + 1 : ''}</label>
+              
+              <div className="flex-1 space-y-3 w-full">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" /> Destination {tripType === 'multi_city' ? idx + 1 : ''}
+                </label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                  <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/seg:text-orange-500 transition-colors" size={20} />
                   <input 
                     type="text" 
-                    placeholder="LHR" 
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 uppercase transition-all"
+                    placeholder="London (LHR)" 
+                    className="w-full pl-14 pr-6 py-4.5 bg-slate-50 rounded-2xl font-black text-slate-900 border-2 border-transparent outline-none focus:ring-0 focus:border-orange-500/20 focus:bg-white uppercase transition-all shadow-inner shadow-slate-100/50"
                     value={seg.destination}
                     onChange={(e) => handleAirportSearch(idx, 'destination', e.target.value)}
                     onFocus={() => seg.destination.length >= 2 && handleAirportSearch(idx, 'destination', seg.destination)}
                   />
                   {activeInput?.index === idx && activeInput?.field === 'destination' && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="absolute top-full left-0 right-0 mt-3 bg-white/95 backdrop-blur-2xl border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="p-4 bg-slate-50 border-b border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Matching Locations</p>
+                      </div>
                       {suggestions.map((airport) => (
                         <button
                           key={airport.iata}
                           onClick={() => selectAirport(idx, 'destination', airport)}
-                          className="w-full px-5 py-4 text-left hover:bg-orange-600 group transition-all border-b border-slate-100 last:border-0 flex items-center justify-between"
+                          className="w-full px-6 py-5 text-left hover:bg-orange-600 group transition-all border-b border-slate-50 last:border-0 flex items-center justify-between"
                         >
                           <div>
                             <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors">{airport.city} ({airport.iata})</p>
                             <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors">{airport.name}</p>
                           </div>
-                          <span className="text-[10px] font-black text-slate-300 group-hover:text-white/50 tracking-widest">{airport.country}</span>
+                          <div className="flex flex-col items-end">
+                             <span className="text-[10px] font-black text-orange-600 group-hover:text-white/80 tracking-widest uppercase">{airport.country}</span>
+                             <div className="w-8 h-px bg-orange-100 group-hover:bg-white/20 mt-1" />
+                          </div>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex-1 space-y-2 w-full">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Departure Date</label>
+
+              <div className="flex-1 space-y-3 w-full">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
+                  <Calendar size={12} className="text-blue-500" /> Departure Date
+                </label>
                 <div className="relative">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                  <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                   <input 
                     type="date" 
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-600"
+                    className="w-full pl-14 pr-6 py-4.5 bg-slate-50 rounded-2xl font-black text-slate-900 border-2 border-transparent outline-none focus:ring-0 focus:border-blue-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50 cursor-pointer"
                     value={seg.date}
                     onChange={(e) => updateSegment(idx, 'date', e.target.value)}
                   />
@@ -212,13 +257,15 @@ export default function FlightsPage() {
               </div>
 
               {tripType === 'round_trip' && idx === 0 && (
-                <div className="flex-1 space-y-2 w-full">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Return Date</label>
+                <div className="flex-1 space-y-3 w-full">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
+                    <Calendar size={12} className="text-indigo-500" /> Return Date
+                  </label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                    <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                     <input 
                       type="date" 
-                      className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl font-bold border-none outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-600"
+                      className="w-full pl-14 pr-6 py-4.5 bg-slate-50 rounded-2xl font-black text-slate-900 border-2 border-transparent outline-none focus:ring-0 focus:border-indigo-500/20 focus:bg-white transition-all shadow-inner shadow-slate-100/50 cursor-pointer"
                       value={returnDate}
                       onChange={(e) => setReturnDate(e.target.value)}
                     />
@@ -229,9 +276,9 @@ export default function FlightsPage() {
               {tripType === 'multi_city' && segments.length > 1 && (
                 <button 
                   onClick={() => handleRemoveSegment(idx)}
-                  className="w-14 h-[52px] bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center hover:bg-rose-100 transition-colors"
+                  className="w-16 h-[64px] bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-sm border border-rose-100"
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={20} />
                 </button>
               )}
             </div>
@@ -240,96 +287,153 @@ export default function FlightsPage() {
           {tripType === 'multi_city' && (
             <button 
               onClick={handleAddSegment}
-              className="flex items-center gap-2 px-4 py-3 text-[11px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 rounded-xl transition-colors w-fit"
+              className="flex items-center gap-3 px-6 py-4 text-[11px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 hover:bg-blue-600 hover:text-white rounded-2xl transition-all duration-300 w-fit shadow-sm"
             >
-              <Plus size={14} /> Add Another Flight
+              <Plus size={16} /> Add Another Destination
             </button>
           )}
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-slate-100">
+        <div className="flex justify-end pt-8 border-t border-slate-100 relative z-10">
           <button 
             onClick={handleSearch}
             disabled={loading}
-            className="bg-orange-600 text-white px-12 py-4 rounded-xl font-black text-sm shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 transition-all flex items-center gap-3 w-full md:w-auto justify-center"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-16 py-5 rounded-[24px] font-black text-sm shadow-2xl shadow-blue-600/30 hover:shadow-orange-600/30 hover:scale-[1.02] active:scale-95 transition-all duration-500 flex items-center gap-4 w-full md:w-auto justify-center group"
           >
-            {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
-            {loading ? 'Searching Inventory...' : 'Search Inventory'}
+            {loading ? <Loader2 className="animate-spin" size={22} /> : <Search size={22} className="group-hover:rotate-12 transition-transform" />}
+            {loading ? 'Analyzing Global Routes...' : 'Search Inventory'}
           </button>
         </div>
       </div>
 
+      {/* Results Filters (Quick Actions) */}
+      {flights.length > 0 && (
+        <div className="flex flex-wrap gap-3 animate-in fade-in slide-in-from-left-4 duration-700">
+          <button className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-blue-600 transition-all flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full" /> Cheapest
+          </button>
+          <button className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-indigo-600 transition-all flex items-center gap-2">
+            <div className="w-2 h-2 bg-indigo-600 rounded-full" /> Fastest
+          </button>
+          <button className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:border-orange-600 transition-all flex items-center gap-2">
+            <div className="w-2 h-2 bg-orange-600 rounded-full" /> Recommended
+          </button>
+        </div>
+      )}
+
       {/* Results */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-8">
         {flights.map((flight, i) => (
-          <div key={i} className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-xl transition-all group flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex-1 space-y-6 w-full">
-              {(flight.itineraries || [{}]).map((itin: any, itIdx: number) => (
-                <div key={itIdx} className="flex flex-col md:flex-row items-center gap-8 pb-6 border-b border-slate-50 last:border-0 last:pb-0">
-                  <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
-                    <Plane size={32} />
-                  </div>
-                  <div className="flex-1 w-full">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black rounded-lg uppercase tracking-widest">{flight.airline || 'Direct Connect'}</span>
-                      {tripType === 'round_trip' && (
-                        <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[9px] font-black rounded uppercase tracking-widest">
-                          {itIdx === 0 ? 'Outbound' : 'Return'}
-                        </span>
-                      )}
-                      {tripType === 'multi_city' && (
-                        <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[9px] font-black rounded uppercase tracking-widest">
-                          Flight {itIdx + 1}
-                        </span>
-                      )}
+          <div key={i} className="bg-white p-1 rounded-[40px] border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-700 group overflow-hidden relative">
+             {/* Left Accent Bar */}
+             <div className={`absolute top-0 left-0 bottom-0 w-2 ${i % 2 === 0 ? 'bg-blue-600' : 'bg-indigo-600'}`} />
+             
+             <div className="p-8 flex flex-col lg:flex-row items-center justify-between gap-10">
+              <div className="flex-1 space-y-8 w-full">
+                {(flight.segments || []).length > 0 ? (
+                  <div className="flex flex-col md:flex-row items-center gap-10">
+                    <div className="w-20 h-20 bg-slate-50 rounded-3xl flex flex-col items-center justify-center text-blue-600 shrink-0 border border-slate-100 group-hover:bg-blue-50 transition-colors">
+                      <Plane size={36} className="group-hover:rotate-12 transition-transform" />
+                      <span className="text-[8px] font-black uppercase tracking-widest mt-1">Direct</span>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
-                      <div className="text-center sm:text-left">
-                        <p className="text-3xl font-black text-slate-900 tracking-tight">{itin.segments?.[0]?.departure?.time || '10:45'}</p>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">{itin.segments?.[0]?.departure?.iataCode || segments[0].origin || 'LOS'}</p>
-                      </div>
-                      <div className="flex-1 w-full flex items-center gap-4">
-                        <div className="w-2 h-2 rounded-full bg-slate-200" />
-                        <div className="flex-1 h-px bg-slate-200 relative">
-                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 py-1 text-[9px] font-black text-slate-400 uppercase tracking-widest rounded-full border border-slate-100 shadow-sm">
-                            {directOnly ? 'Direct' : (itin.segments?.length > 1 ? `${itin.segments.length - 1} Stop(s)` : 'Non-stop')}
-                          </div>
+                    <div className="flex-1 w-full">
+                      <div className="flex items-center gap-4 mb-5">
+                        <span className={`px-4 py-1.5 ${i % 2 === 0 ? 'bg-blue-50 text-blue-600' : 'bg-indigo-50 text-indigo-600'} text-[10px] font-black rounded-xl uppercase tracking-widest border border-current/10`}>
+                          {flight.segments[0].airline || 'Direct Connect'}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{flight.segments[0].flightNumber}</span>
+                          <div className="w-1 h-1 bg-slate-200 rounded-full" />
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Economy</span>
                         </div>
-                        <div className="w-2 h-2 rounded-full bg-slate-200" />
                       </div>
-                      <div className="text-center sm:text-right">
-                        <p className="text-3xl font-black text-slate-900 tracking-tight">{itin.segments?.[itin.segments.length - 1]?.arrival?.time || '18:20'}</p>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">{itin.segments?.[itin.segments.length - 1]?.arrival?.iataCode || segments[0].destination || 'LHR'}</p>
+                      
+                      <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-14">
+                        <div className="text-center sm:text-left">
+                          <p className="text-4xl font-black text-slate-900 tracking-tighter">
+                            {flight.segments[0].departureTime ? new Date(flight.segments[0].departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:45'}
+                          </p>
+                          <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mt-2">{flight.segments[0].departure}</p>
+                        </div>
+                        
+                        <div className="flex-1 w-full max-w-[200px] flex flex-col items-center gap-2">
+                          <div className="flex items-center gap-3 w-full">
+                            <div className="w-2 h-2 rounded-full bg-slate-200" />
+                            <div className="flex-1 h-0.5 bg-slate-100 relative overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/50 to-blue-600/0 animate-shimmer" />
+                            </div>
+                            <div className="w-2 h-2 rounded-full bg-slate-200" />
+                          </div>
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">6h 45m</span>
+                        </div>
+                        
+                        <div className="text-center sm:text-right">
+                          <p className="text-4xl font-black text-slate-900 tracking-tighter">
+                            {flight.segments[flight.segments.length - 1].arrivalTime ? new Date(flight.segments[flight.segments.length - 1].arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '18:20'}
+                          </p>
+                          <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mt-2">{flight.segments[flight.segments.length - 1].arrival}</p>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                    <p className="text-xs font-medium text-slate-400">Flight route details unavailable</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col items-center lg:items-end gap-6 w-full lg:w-auto shrink-0 pt-10 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-100 lg:pl-10">
+                <div className="text-center lg:text-right">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Grand Total</p>
+                  <div className="flex items-baseline gap-1 justify-center lg:justify-end">
+                    <span className="text-sm font-black text-slate-900">₦</span>
+                    <p className="text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                      {(flight.price?.totalAmount || 1240000).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="mt-4 flex flex-col items-center lg:items-end gap-1.5">
+                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Instantly Ticketable
+                    </p>
+                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{flight.provider} Network Verified</p>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col items-center lg:items-end gap-6 w-full lg:w-auto shrink-0 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-100 lg:pl-8">
-              <div className="text-center lg:text-right">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Fare</p>
-                <p className="text-3xl font-black text-slate-900 tracking-tight">₦{(flight.price?.total || 1240000).toLocaleString()}</p>
-                <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-1 flex items-center justify-center lg:justify-end gap-1"><Clock size={10} /> Instantly Ticketable</p>
+                <button className="w-full bg-slate-900 text-white px-12 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 hover:shadow-2xl hover:shadow-orange-600/30 transition-all duration-500 active:scale-95 group">
+                  Select Offer <ChevronRight size={14} className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
-              <button className="w-full bg-slate-900 text-white px-10 py-4 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-orange-600 transition-all shadow-xl hover:shadow-orange-600/20 active:scale-95">
-                Select Fare
-              </button>
             </div>
           </div>
         ))}
 
         {!loading && flights.length === 0 && (
-          <div className="py-24 text-center bg-slate-50/50 rounded-[40px] border-2 border-dashed border-slate-200">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-              <Plane size={40} className="text-slate-200" />
+          <div className="py-32 text-center bg-slate-50/50 rounded-[48px] border-2 border-dashed border-slate-200/60 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-50/50 via-transparent to-transparent opacity-50" />
+            <div className="relative z-10">
+              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl shadow-slate-200/50 group hover:scale-110 transition-transform duration-700">
+                <Plane size={56} className="text-slate-200 group-hover:text-blue-200 transition-colors" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Explore the World</h3>
+              <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-4 leading-relaxed px-6">
+                Use our comprehensive terminal to search one-way, round-trip, or multi-city flights across our global direct-connect network.
+              </p>
+              <div className="mt-10 flex items-center justify-center gap-4">
+                <div className="px-4 py-2 bg-white rounded-xl border border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest shadow-sm">400+ Airlines</div>
+                <div className="px-4 py-2 bg-white rounded-xl border border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest shadow-sm">Live Inventory</div>
+              </div>
             </div>
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Find Flights</h3>
-            <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-2">Use the comprehensive search above to find one-way, round-trip, or multi-city flights across our global direct-connect network.</p>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+function ChevronRight(props: any) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m9 18 6-6-6-6"/>
+    </svg>
   );
 }

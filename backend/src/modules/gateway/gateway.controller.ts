@@ -38,12 +38,12 @@ export class GatewayController {
     @Body() criteria: any,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    const searchCriteria = criteria.origin ? criteria : {
-      origin: 'LOS',
-      destination: 'LHR',
-      departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      adults: 1,
-      ...criteria
+    const firstSegment = criteria.segments?.[0] || {};
+    const searchCriteria = {
+      origin: firstSegment.origin || criteria.origin || 'LOS',
+      destination: firstSegment.destination || criteria.destination || 'LHR',
+      departureDate: firstSegment.departureDate || criteria.departureDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      adults: criteria.adults || 1,
     };
     return this.ndcService.airShopping(searchCriteria, tenant);
   }
