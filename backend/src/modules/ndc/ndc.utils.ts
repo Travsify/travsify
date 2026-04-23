@@ -18,7 +18,7 @@ export class NdcUtils {
   static createEnvelope(methodName: string, bodyContent: any): string {
     const envelope = {
       's:Envelope': {
-        '@_xmlns:s': 'http://www.w3.org/2003/05/soap-envelope',
+        '@_xmlns:s': 'http://schemas.xmlsoap.org/soap/envelope/',
         's:Body': {
           [methodName]: {
             '@_xmlns': 'http://tempuri.org/',
