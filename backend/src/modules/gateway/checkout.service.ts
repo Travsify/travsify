@@ -100,42 +100,44 @@ export class CheckoutService {
     
     // 2. Logic to credit Tenant markup
     try {
-      const user = await this.usersService.findByEmail(tenant.email);
-      if (user) {
-        // Determine markup percentage based on vertical
-        let markupPercentage = 0;
-        switch (vertical) {
-          case 'flight':
-            markupPercentage = tenant.flightMarkup || 0;
-            break;
-          case 'hotel':
-          case 'transfer':
-          case 'tour':
-            markupPercentage = tenant.hotelMarkup || 0;
-            break;
-          case 'insurance':
-          case 'visa':
-            markupPercentage = tenant.insuranceMarkup || 0;
-            break;
-          default:
-            markupPercentage = 0;
-        }
+      if (tenant && currency) {
+        const user = await this.usersService.findByEmail(tenant.email);
+        if (user) {
+          // Determine markup percentage based on vertical
+          let markupPercentage = 0;
+          switch (vertical) {
+            case 'flight':
+              markupPercentage = tenant.flightMarkup || 0;
+              break;
+            case 'hotel':
+            case 'transfer':
+            case 'tour':
+              markupPercentage = tenant.hotelMarkup || 0;
+              break;
+            case 'insurance':
+            case 'visa':
+              markupPercentage = tenant.insuranceMarkup || 0;
+              break;
+            default:
+              markupPercentage = 0;
+          }
 
-        // Assume the stored amount in providerData or a default base amount to calculate markup.
-        // For accurate calculation, the base cost should be passed from the frontend or retrieved from provider.
-        // Here we simulate a standard markup value if percentage exists.
-        const baseAmount = providerData.baseAmount || 1000; // Placeholder base amount
-        const markupValue = (baseAmount * markupPercentage) / 100;
+          // Assume the stored amount in providerData or a default base amount to calculate markup.
+          // For accurate calculation, the base cost should be passed from the frontend or retrieved from provider.
+          // Here we simulate a standard markup value if percentage exists.
+          const baseAmount = providerData.baseAmount || 1000; // Placeholder base amount
+          const markupValue = (baseAmount * markupPercentage) / 100;
 
-        if (markupValue > 0) {
-          await this.walletService.creditWallet(
-            user.id,
-            currency,
-            markupValue,
-            `markup_${reference}`,
-            { vertical, type: 'commission', percentage: markupPercentage }
-          );
-          this.logger.log(`Ledger: Credited ${markupValue} ${currency} commission to ${tenant.email}`);
+          if (markupValue > 0) {
+            await this.walletService.creditWallet(
+              user.id,
+              currency,
+              markupValue,
+              `markup_${reference}`,
+              { vertical, type: 'commission', percentage: markupPercentage }
+            );
+            this.logger.log(`Ledger: Credited ${markupValue} ${currency} commission to ${tenant.email}`);
+          }
         }
       }
     } catch (err) {
