@@ -11,7 +11,7 @@ export class DuffelService {
   private readonly apiUrl = 'https://api.duffel.com/air/offer_requests';
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('DUFFEL_API_KEY');
+    this.apiKey = this.configService.get<string>('DUFFEL_API_KEY') || '';
   }
 
   async searchFlights(
