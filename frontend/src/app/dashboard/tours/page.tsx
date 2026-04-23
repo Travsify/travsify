@@ -124,11 +124,6 @@ export default function ToursPage() {
       </div>
 
       {/* Results Section */}
-      {results && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-20">
-          <div className="lg:col-span-2 space-y-10">
-            <div 
-      {/* Tours Results Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-10 pb-20">
         {results ? (
           <div 
