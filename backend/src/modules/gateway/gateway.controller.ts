@@ -65,7 +65,8 @@ export class GatewayController {
       checkin,
       checkout,
       adults: parseInt(adults) || 1,
-    }, tenant.hotelMarkup, currency || 'NGN');
+      currency: currency || 'NGN',
+    }, tenant.hotelMarkup);
   }
 
   @Get('search/visa')
@@ -76,7 +77,7 @@ export class GatewayController {
     @Query('currency') currency: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.shepperService.getVisaRequirements({ destination, nationality }, tenant.insuranceMarkup, currency || 'NGN');
+    return this.shepperService.getVisaRequirements({ destination, nationality, currency: currency || 'NGN' }, tenant.insuranceMarkup);
   }
 
   @Post('search/transfers')
@@ -91,7 +92,7 @@ export class GatewayController {
       pickupDatetime: criteria.time || criteria.pickupDatetime || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       passengers: criteria.passengers || 1,
       currency: criteria.currency || 'USD',
-    }, tenant.hotelMarkup, criteria.currency || 'USD');
+    }, tenant.hotelMarkup);
   }
 
   @Get('search/tours')
@@ -116,7 +117,8 @@ export class GatewayController {
       endDate: criteria.endDate || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       age: criteria.age || 30,
       citizenship: criteria.citizenship || 'NG',
-    }, tenant.insuranceMarkup, criteria.currency || 'USD');
+      currency: criteria.currency || 'USD',
+    }, tenant.insuranceMarkup);
   }
 
   @Get('search/all')

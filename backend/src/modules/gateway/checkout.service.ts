@@ -88,7 +88,7 @@ export class CheckoutService {
    * Finalizes the booking after payment confirmation
    * This would typically be called by a Webhook handler
    */
-  async finalizeBooking(reference: string, vertical: string, providerData: any, tenant: Tenant, currency: Currency) {
+  async finalizeBooking(reference: string, vertical: string, providerData: any, tenant?: Tenant, currency?: Currency) {
     this.logger.log(`Settlement: Finalizing ${vertical} booking for reference ${reference}`);
 
     let providerResult = null;
