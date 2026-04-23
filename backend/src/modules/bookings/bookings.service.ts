@@ -154,6 +154,55 @@ export class BookingsService {
     }
   }
 
+  async createManagedBooking(userId: string, data: {
+    vertical: string,
+    provider: string,
+    itemId: string,
+    itemName: string,
+    pax: any,
+    amount: number,
+    currency: string,
+    paymentMethod: string
+  }): Promise<Booking> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) throw new BadRequestException('User not found');
+
+    const walletCurrency = data.currency.toUpperCase() === 'NGN' ? Currency.NGN : Currency.USD;
+
+    try {
+      // 1. Debit Wallet
+      await this.walletService.debitWallet(
+        userId,
+        walletCurrency,
+        data.amount,
+        `Managed Booking Payment: ${data.itemName} (${data.vertical})`,
+      );
+
+      // 2. Create Managed Booking Record
+      const booking = this.bookingRepository.create({
+        userId,
+        totalPrice: data.amount,
+        currency: data.currency,
+        vertical: data.vertical,
+        status: BookingStatus.FULFILLMENT_PENDING,
+        fulfillmentType: 'manual',
+        passengerDetails: data.pax,
+        flightDetails: { 
+          itemName: data.itemName, 
+          provider: data.provider, 
+          itemId: data.itemId,
+          paxDetails: data.pax
+        },
+      });
+
+      return await this.bookingRepository.save(booking);
+
+    } catch (error: any) {
+      this.logger.error(`Managed booking failed: ${error.message}`);
+      throw new InternalServerErrorException(error.message || 'Payment processing failed');
+    }
+  }
+
   async getUserBookings(userId: string): Promise<Booking[]> {
     return this.bookingRepository.find({ where: { userId }, order: { createdAt: 'DESC' } });
   }

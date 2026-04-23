@@ -251,7 +251,8 @@ export default function HotelsPage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = `/dashboard/hotels/checkout?id=${hotel.id}&price=${hotel.price.totalAmount}&currency=${currency}`;
+                    const url = `/dashboard/checkout?vertical=hotel&provider=LiteAPI&id=${hotel.id}&name=${encodeURIComponent(hotel.name)}&price=${hotel.price.totalAmount}&currency=${currency}`;
+                    window.location.href = url;
                   }}
                   className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
                 >

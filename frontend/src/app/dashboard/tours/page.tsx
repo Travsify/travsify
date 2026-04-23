@@ -198,7 +198,8 @@ export default function ToursPage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.open(results.bookingUrl || '#', '_blank');
+                    const url = `/dashboard/checkout?vertical=experience&provider=GetYourGuide&id=${results.id}&name=${encodeURIComponent(results.tourName)}&price=${results.estimatedFee}&currency=${currency}`;
+                    window.location.href = url;
                   }}
                   className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
                 >
@@ -322,7 +323,13 @@ export default function ToursPage() {
                       <span className="text-5xl font-black tracking-tighter">{selectedTour.estimatedFee.toLocaleString()}</span>
                     </div>
                     
-                    <button className="w-full py-5 bg-[#FF6B00] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-600/30">
+                    <button 
+                      onClick={() => {
+                        const url = `/dashboard/checkout?vertical=experience&provider=GetYourGuide&id=${selectedTour.id}&name=${encodeURIComponent(selectedTour.tourName)}&price=${selectedTour.estimatedFee}&currency=${currency}`;
+                        window.location.href = url;
+                      }}
+                      className="w-full py-5 bg-[#FF6B00] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-600/30"
+                    >
                       Book This Tour
                     </button>
                     <p className="text-center text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-6">Instant Confirmation Guaranteed</p>

@@ -40,6 +40,15 @@ export class BookingsController {
   }
 
   /**
+   * Create a managed booking (Hotel, Tour, Transfer, etc.)
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('create-managed')
+  async createManaged(@Request() req: any, @Body() bookingData: any) {
+    return this.bookingsService.createManagedBooking(req.user.id, bookingData);
+  }
+
+  /**
    * Get user booking history
    */
   @UseGuards(JwtAuthGuard)

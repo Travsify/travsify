@@ -8,6 +8,8 @@ export enum BookingStatus {
   TICKETED = 'ticketed',
   FAILED = 'failed',
   CANCELLED = 'cancelled',
+  FULFILLMENT_PENDING = 'fulfillment_pending',
+  FULFILLED = 'fulfilled',
 }
 
 @Entity('bookings')
@@ -39,6 +41,15 @@ export class Booking {
 
   @Column()
   currency: string;
+
+  @Column({ default: 'flight' })
+  vertical: string;
+
+  @Column({ nullable: true })
+  voucherUrl: string;
+
+  @Column({ default: 'automated' })
+  fulfillmentType: 'manual' | 'automated';
 
   @Column({ type: 'jsonb', nullable: true })
   flightDetails: any;

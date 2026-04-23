@@ -187,7 +187,11 @@ export default function InsurancePage() {
                 </div>
 
                 <button 
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const url = `/dashboard/checkout?vertical=insurance&provider=SafetyWing&id=${plan.id}&name=${encodeURIComponent(plan.planName)}&price=${plan.price?.totalAmount}&currency=${currency}`;
+                    window.location.href = url;
+                  }}
                   className="w-full mt-10 py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] transition-all duration-500 flex items-center justify-center gap-3 relative z-10 active:scale-95 shadow-2xl hover:shadow-orange-600/30 group/btn"
                 >
                   Issue Policy

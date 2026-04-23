@@ -301,7 +301,10 @@ export default function TransfersPage() {
                       <span className="text-4xl font-black text-slate-900 tracking-tighter">{(selectedRide.price?.totalAmount || 0).toLocaleString()}</span>
                     </div>
                     <button 
-                      onClick={() => window.location.href = `/dashboard/transfers/checkout?id=${selectedRide.id}&price=${selectedRide.price?.totalAmount}&currency=${currency}`}
+                      onClick={() => {
+                        const url = `/dashboard/checkout?vertical=transfer&provider=Mozio&id=${selectedRide.id}&name=${encodeURIComponent(selectedRide.type)}&price=${selectedRide.price?.totalAmount}&currency=${currency}`;
+                        window.location.href = url;
+                      }}
                       className="w-full py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] shadow-xl hover:shadow-orange-600/30 transition-all active:scale-95"
                     >
                       Confirm Selection
