@@ -16,26 +16,32 @@ export class MozioService {
     this.affiliateId = this.configService.get<string>('MOZIO_AFFILIATE_ID') || 'travsify';
   }
 
-  async getTransferOptions(location: string, tenantMarkup: number = 0, targetCurrency: string = 'USD'): Promise<UnifiedTransfer[]> {
-    this.logger.log(`Mozio: Fetching transfer options for ${location}`);
+  async getTransferOptions(params: any, tenantMarkup: number = 0, targetCurrency: string = 'USD'): Promise<UnifiedTransfer[]> {
+    const pickup = params.pickupAddress || 'London Heathrow (LHR)';
+    const dropoff = params.dropoffAddress || 'Central London';
+    this.logger.log(`Mozio: Fetching live-link options for ${pickup} → ${dropoff}`);
     
-    const basePrice = 45;
-    const travsifyFee = 10;
+    const vehicles = [
+      { type: 'Private Sedan', capacity: 3, base: 55, image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000' },
+      { type: 'Executive Van', capacity: 7, base: 95, image: 'https://images.unsplash.com/photo-1559297434-fae8a1916a79?auto=format&fit=crop&q=80&w=1000' },
+      { type: 'Luxury Limo', capacity: 4, base: 180, image: 'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&q=80&w=1000' }
+    ];
 
-    return [{
+    return vehicles.map(v => ({
       id: `mozio-${Math.random().toString(36).substring(7)}`,
       vertical: TravelVertical.TRANSFER,
       provider: 'Mozio',
-      vehicleType: 'Private Sedan',
-      capacity: 4,
-      price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
-      bookingUrl: `https://www.mozio.com/en-us/?ref=${this.affiliateId}&location=${location}`,
-    }];
+      vehicleType: v.type,
+      capacity: v.capacity,
+      image: v.image,
+      price: PricingEngine.calculate(v.base, v.base * 0.15, tenantMarkup, 'USD', targetCurrency, this.currencyService),
+      bookingUrl: `https://www.mozio.com/en-us/?ref=${this.affiliateId}&pickup_address=${encodeURIComponent(pickup)}&destination_address=${encodeURIComponent(dropoff)}`,
+    }));
   }
 
   // Legacy methods for DemoController
   async searchTransfers(params: any, tenantMarkup: number = 0) {
-    return this.getTransferOptions(params.pickupAddress || 'London', tenantMarkup);
+    return this.getTransferOptions(params, tenantMarkup);
   }
 
   async getTransferStatus(searchId: string) {
