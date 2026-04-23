@@ -13,32 +13,25 @@ export class NdcUtils {
   });
 
   /**
-   * Creates a SOAP 1.2 Envelope for XML.AGENCY API
+   * Creates a SOAP 1.2 Envelope for XML.AGENCY API using a template for reliability
    */
-  static createEnvelope(methodName: string, bodyContent: any, action?: string, endpoint?: string): string {
-    const envelope: any = {
-      's:Envelope': {
-        '@_xmlns:s': 'http://www.w3.org/2003/05/soap-envelope',
-        '@_xmlns:a': 'http://www.w3.org/2005/08/addressing',
-        's:Header': {
-          'a:Action': {
-            '@_s:mustUnderstand': '1',
-            '#text': action || '',
-          },
-          'a:To': {
-            '@_s:mustUnderstand': '1',
-            '#text': endpoint || '',
-          },
-        },
-        's:Body': {
-          [methodName]: {
-            '@_xmlns': 'http://tempuri.org/',
-            ...bodyContent
-          }
-        }
-      }
-    };
-    return this.builder.build(envelope);
+  static createEnvelope(methodName: string, bodyContent: any, action: string, endpoint: string): string {
+    // Generate the body XML from the object
+    const bodyXml = this.builder.build(bodyContent);
+
+    // Use a template for the Envelope to ensure strict WCF compliance
+    return `<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+  <s:Header>
+    <a:Action s:mustUnderstand="1">${action}</a:Action>
+    <a:To s:mustUnderstand="1">${endpoint}</a:To>
+  </s:Header>
+  <s:Body>
+    <${methodName} xmlns="http://tempuri.org/">
+      ${bodyXml}
+    </${methodName}>
+  </s:Body>
+</s:Envelope>`;
   }
 
   /**
@@ -51,7 +44,10 @@ export class NdcUtils {
         '@_xmlns:i': 'http://www.w3.org/2001/XMLSchema-instance',
         'a:ApiLogin': auth.login,
         'a:ApiPassword': auth.pass,
-        'a:AuthExtendedData': { '@_i:nil': 'true' },
+        'a:AuthExtendedData': {
+          '@_i:nil': 'true',
+          '#text': ''
+        },
         'a:Currency': auth.currency || 'USD',
         'a:DeviceId': auth.deviceId || 'test',
         'a:Language': auth.lang || 'EN',

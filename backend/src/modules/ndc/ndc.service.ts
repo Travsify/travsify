@@ -56,8 +56,14 @@ export class NdcService {
             'a:IATATo': searchCriteria.destination,
           }
         },
-        'a:ExtendedParams': { '@_i:nil': 'true' },
-        'a:PartnerName': { '@_i:nil': 'true' },
+        'a:ExtendedParams': { 
+          '@_i:nil': 'true',
+          '#text': ''
+        },
+        'a:PartnerName': { 
+          '@_i:nil': 'true',
+          '#text': ''
+        },
       }
     };
 
