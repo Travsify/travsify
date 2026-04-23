@@ -40,15 +40,15 @@ export class LiteApiService {
       });
 
       const hotels = hotelsResponse.data.data;
+      this.logger.log(`Found ${hotels?.length || 0} hotels for ${cityName}`);
+      
       if (!hotels || hotels.length === 0) {
-        this.logger.warn(`No hotels found for ${cityName} (${countryCode})`);
         return [];
       }
 
       const hotelIds = hotels.map((h: any) => h.id).join(',');
 
       // Step 2: Get live rates for these hotels
-      // Note: checkin/checkout dates should be in YYYY-MM-DD
       const ratesResponse = await axios.get(`${this.baseUrl}/hotels/rates`, {
         headers: { 'X-API-Key': this.apiKey, 'Accept': 'application/json' },
         params: {
@@ -56,20 +56,24 @@ export class LiteApiService {
           checkin: params.checkin,
           checkout: params.checkout,
           adults: params.adults || 1,
-          currency: 'USD', // Always fetch in USD for consistent pricing engine calculation
+          currency: 'USD',
           guestNationality: 'US',
         },
         timeout: 15000,
       });
 
       const rates = ratesResponse.data.data || [];
+      this.logger.log(`Found ${rates.length} rates for the hotel batch`);
       
       // Combine static data with rates
-      return hotels.map((hotel: any) => {
+      const combined = hotels.map((hotel: any) => {
         const hotelRate = rates.find((r: any) => r.hotelId === hotel.id);
         if (!hotelRate) return null;
         return this.mapToUnified(hotel, hotelRate, tenantMarkup, targetCurrency);
       }).filter(Boolean) as UnifiedHotel[];
+
+      this.logger.log(`Returning ${combined.length} combined hotel results`);
+      return combined;
 
     } catch (error: any) {
       this.logger.error(`Live Hotel search failed for ${cityName}: ${error.response?.data?.message || error.message}`);
