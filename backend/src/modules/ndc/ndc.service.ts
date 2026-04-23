@@ -305,6 +305,4 @@ export class NdcService {
       duration: s.Duration || null,
     }));
   }
-
-  }
 }
