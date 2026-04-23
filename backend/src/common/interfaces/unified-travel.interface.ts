@@ -25,6 +25,8 @@ export interface UnifiedFlight {
   isRefundable?: boolean;
   fareRules?: string[];
   cabin?: string;
+  baggageAllowance?: string;
+  totalDuration?: string;
 }
 
 export interface UnifiedHotel {

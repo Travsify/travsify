@@ -42,7 +42,7 @@ export class NdcService {
   }
 
   async airShopping(
-    searchCriteria: { origin: string, destination: string, departureDate: string, adults: number, currency?: string },
+    searchCriteria: { origin: string, destination: string, departureDate: string, adults: number, currency?: string, cabinClass?: string },
     tenant: { flightMarkup: number, flightProvider?: string, ndcEnabled?: boolean }
   ): Promise<UnifiedFlight[]> {
     const targetCurrency = searchCriteria.currency || 'NGN';
@@ -54,7 +54,7 @@ export class NdcService {
 
     // 1. Fetch Duffel if selected
     if (provider === 'duffel' || provider === 'both') {
-      const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenant.flightMarkup, targetCurrency).catch(err => {
+      const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenant.flightMarkup, targetCurrency, searchCriteria.cabinClass).catch(err => {
         this.logger.error(`Duffel search failed: ${err.message}`);
         return [];
       });
@@ -235,15 +235,54 @@ export class NdcService {
       const basePrice = parseFloat(fd.TotalPrice);
       const travsifyFee = basePrice * 0.03;
 
+      // Extract cabin class from the offer data
+      const cabin = fd.FlightClass || fd.CabinClass || 'Economy';
+      const formattedCabin = cabin.charAt(0).toUpperCase() + cabin.slice(1).toLowerCase();
+
+      // Extract baggage from offer
+      const baggageAllowance = fd.BaggageInfo || fd.Baggage || '1x Checked (23kg)';
+
+      // Compute total duration from segments
+      const segments = this.mapSegments(fd.Offers?.OfferInfo?.Segments?.OfferSegment || []);
+      let totalDuration = '';
+      if (segments.length > 0 && segments[0].departureTime && segments[segments.length - 1].arrivalTime) {
+        const dep = new Date(segments[0].departureTime).getTime();
+        const arr = new Date(segments[segments.length - 1].arrivalTime).getTime();
+        const diff = arr - dep;
+        if (diff > 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          totalDuration = `${hours}h ${minutes}m`;
+        }
+      }
+
+      // Extract fare rules / refundability
+      const isRefundable = fd.IsRefundable === true || fd.IsRefundable === 'true';
+      const fareRules: string[] = [];
+      if (fd.FareRules) {
+        fareRules.push(fd.FareRules);
+      }
+      if (isRefundable) {
+        fareRules.push('Refundable fare');
+      } else {
+        fareRules.push('Non-refundable');
+      }
+      if (fd.PenaltyInfo) {
+        fareRules.push(`Penalty: ${fd.PenaltyInfo}`);
+      }
+
       return {
         id: fd.OfferCode,
         vertical: TravelVertical.FLIGHT,
         provider: 'xml.agency',
         source: data.SearchGuid,
-        isRefundable: false,
-        fareRules: ['Standard Fare Rules Apply'],
+        isRefundable,
+        fareRules,
+        cabin: formattedCabin,
+        baggageAllowance,
+        totalDuration,
         price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
-        segments: this.mapSegments(fd.Offers?.OfferInfo?.Segments?.OfferSegment || []),
+        segments,
       };
     });
   }
@@ -253,40 +292,61 @@ export class NdcService {
     return segList.map(s => ({
       flightNumber: s.FlightNum,
       airline: s.MarketingAirline,
+      airlineCode: s.MarketingAirlineCode || s.MarketingAirline?.substring(0, 2) || null,
+      operatingAirline: s.OperatingAirline || s.MarketingAirline,
+      operatingAirlineCode: s.OperatingAirlineCode || null,
       departure: s.Departure.Iata,
       arrival: s.Arrival.Iata,
       departureTime: s.Departure.Date,
       arrivalTime: s.Arrival.Date,
+      departureTerminal: s.Departure.Terminal || null,
+      arrivalTerminal: s.Arrival.Terminal || null,
+      aircraft: s.AircraftType || s.Aircraft || null,
+      duration: s.Duration || null,
     }));
   }
 
   private getFallbackFlights(criteria: any, tenantMarkup: number, targetCurrency: string): UnifiedFlight[] {
     const airlines = [
-      { name: 'Qatar Airways', code: 'QR', basePrice: 850 },
-      { name: 'Emirates', code: 'EK', basePrice: 920 },
-      { name: 'Lufthansa', code: 'LH', basePrice: 780 },
+      { name: 'Qatar Airways', code: 'QR', basePrice: 850, aircraft: 'Boeing 777-300ER' },
+      { name: 'Emirates', code: 'EK', basePrice: 920, aircraft: 'Airbus A380-800' },
+      { name: 'Lufthansa', code: 'LH', basePrice: 780, aircraft: 'Airbus A350-900' },
     ];
 
     return airlines.map((airline, index) => {
       const basePrice = airline.basePrice + (Math.random() * 200);
       const travsifyFee = basePrice * 0.03;
+      const durationHours = 5 + Math.floor(Math.random() * 8);
+      const durationMinutes = Math.floor(Math.random() * 60);
 
       return {
         id: `sim-${airline.code}-${index}-${Date.now()}`,
         vertical: TravelVertical.FLIGHT,
         provider: 'xml.agency (Simulated)',
         source: `SIM-${Math.random().toString(36).substring(7).toUpperCase()}`,
-        isRefundable: true,
-        fareRules: ['Partially Refundable', 'No-show penalty applies'],
+        isRefundable: index === 0,
+        fareRules: index === 0 
+          ? ['Refundable fare', `Changes allowed (Penalty: $50)`] 
+          : ['Non-refundable', 'Non-changeable'],
+        cabin: 'Economy',
+        baggageAllowance: '1x Checked (23kg)',
+        totalDuration: `${durationHours}h ${durationMinutes}m`,
         price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD', targetCurrency, this.currencyService),
         segments: [
           {
             flightNumber: `${airline.code}${100 + index * 15}`,
             airline: airline.name,
+            airlineCode: airline.code,
+            operatingAirline: airline.name,
+            operatingAirlineCode: airline.code,
             departure: criteria.origin,
             arrival: criteria.destination,
             departureTime: new Date().toISOString(),
-            arrivalTime: new Date(Date.now() + 6 * 3600000).toISOString(),
+            arrivalTime: new Date(Date.now() + (durationHours * 3600000) + (durationMinutes * 60000)).toISOString(),
+            departureTerminal: 'T1',
+            arrivalTerminal: 'T3',
+            aircraft: airline.aircraft,
+            duration: `PT${durationHours}H${durationMinutes}M`,
           }
         ],
       };

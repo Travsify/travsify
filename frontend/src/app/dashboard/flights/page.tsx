@@ -12,7 +12,11 @@ import {
   Trash2, 
   CheckCircle2, 
   X,
-  ChevronRight as ChevronIcon 
+  ChevronRight as ChevronIcon,
+  Luggage,
+  ShieldCheck,
+  Info,
+  ArrowRight
 } from 'lucide-react';
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
@@ -27,6 +31,7 @@ export default function FlightsPage() {
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
   const [tripType, setTripType] = useState('one_way');
   const [directOnly, setDirectOnly] = useState(false);
+  const [cabinClass, setCabinClass] = useState('economy');
   
   const [segments, setSegments] = useState([
     { origin: '', destination: '', date: '' }
@@ -86,7 +91,8 @@ export default function FlightsPage() {
           departureDate: seg.date || new Date(Date.now() + 86400000).toISOString().split('T')[0]
         })),
         ...(tripType === 'round_trip' ? { returnDate } : {}),
-        adults: 1
+        adults: 1,
+        cabinClass,
       };
 
       const res = await fetch(`${API_URL}/api/v1/search/flights`, {
@@ -166,11 +172,15 @@ export default function FlightsPage() {
             
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Cabin:</span>
-              <select className="bg-transparent text-[11px] font-black text-slate-900 uppercase tracking-widest outline-none cursor-pointer">
-                <option>Economy</option>
-                <option>Premium</option>
-                <option>Business</option>
-                <option>First</option>
+              <select 
+                value={cabinClass}
+                onChange={(e) => setCabinClass(e.target.value)}
+                className="bg-transparent text-[11px] font-black text-slate-900 uppercase tracking-widest outline-none cursor-pointer"
+              >
+                <option value="economy">Economy</option>
+                <option value="premium_economy">Premium</option>
+                <option value="business">Business</option>
+                <option value="first">First</option>
               </select>
             </div>
           </div>
@@ -373,10 +383,11 @@ export default function FlightsPage() {
                         <span className={`px-4 py-1.5 ${i % 2 === 0 ? 'bg-blue-50 text-[#0A1629]' : 'bg-orange-50 text-[#FF6B00]'} text-[10px] font-black rounded-xl uppercase tracking-widest border border-current/10`}>
                           {flight.segments[0].airline || 'Direct Connect'}
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{flight.segments[0].flightNumber}</span>
                           <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Economy</span>
+                          <span className="text-[9px] font-black text-[#FF6B00] uppercase tracking-widest">{flight.cabin || 'Economy'}</span>
+                          {flight.totalDuration && <><div className="w-1 h-1 bg-slate-200 rounded-full" /><span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1"><Clock size={9} />{flight.totalDuration}</span></>}
                         </div>
                       </div>
                       
@@ -409,11 +420,21 @@ export default function FlightsPage() {
                         </div>
                       </div>
 
-                      {/* Fare Rules & Refundability */}
+                      {/* Fare Rules, Baggage & Refundability */}
                       <div className="mt-6 flex flex-wrap gap-2">
                         <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${flight.isRefundable ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-50 text-slate-400 border border-slate-100'}`}>
                           {flight.isRefundable ? 'Refundable' : 'Non-Refundable'}
                         </span>
+                        {flight.baggageAllowance && (
+                          <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                            <Luggage size={10} /> {flight.baggageAllowance}
+                          </span>
+                        )}
+                        {flight.segments[0]?.aircraft && (
+                          <span className="px-3 py-1 bg-slate-50 text-slate-500 border border-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                            {flight.segments[0].aircraft}
+                          </span>
+                        )}
                         <span className="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-lg text-[9px] font-black uppercase tracking-widest cursor-help">
                           Click for Details
                         </span>
@@ -485,7 +506,7 @@ export default function FlightsPage() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight">Itinerary Details</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{selectedFlight.provider} Direct Connection</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{selectedFlight.provider} • {selectedFlight.cabin || 'Economy'} Class{selectedFlight.totalDuration ? ` • ${selectedFlight.totalDuration}` : ''}</p>
                 </div>
               </div>
               <button 
@@ -537,9 +558,11 @@ export default function FlightsPage() {
                             </div>
                           </div>
                           
-                          <div className="flex flex-col items-center lg:items-end text-center lg:text-right">
-                             <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black uppercase rounded-lg border border-blue-100 mb-2">{seg.airline}</span>
+                          <div className="flex flex-col items-center lg:items-end text-center lg:text-right gap-1">
+                             <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black uppercase rounded-lg border border-blue-100">{seg.airline}</span>
                              <p className="text-[11px] font-black text-slate-900 tracking-widest">{seg.flightNumber}</p>
+                             {seg.aircraft && <p className="text-[9px] font-bold text-slate-400">{seg.aircraft}</p>}
+                             {seg.operatingAirline && seg.operatingAirline !== seg.airline && <p className="text-[8px] font-bold text-orange-500 uppercase">Op. by {seg.operatingAirline}</p>}
                           </div>
                           
                           <div className="flex items-center gap-6 lg:flex-row-reverse">
@@ -564,6 +587,30 @@ export default function FlightsPage() {
                   </div>
                 );
               })}
+
+              {/* Fare Rules & Baggage Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 border-t border-slate-100">
+                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                  <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2"><ShieldCheck size={14} className="text-emerald-500" /> Fare Conditions</h4>
+                  <div className="space-y-3">
+                    {(selectedFlight.fareRules || []).map((rule: string, ri: number) => (
+                      <div key={ri} className="flex items-center gap-3">
+                        <div className={`w-1.5 h-1.5 rounded-full ${rule.toLowerCase().includes('non-') ? 'bg-rose-400' : 'bg-emerald-400'}`} />
+                        <span className="text-[11px] font-bold text-slate-600">{rule}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                  <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2"><Luggage size={14} className="text-indigo-500" /> Baggage & Cabin</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between"><span className="text-[11px] font-bold text-slate-500">Cabin Class</span><span className="text-[11px] font-black text-slate-900">{selectedFlight.cabin || 'Economy'}</span></div>
+                    <div className="flex items-center justify-between"><span className="text-[11px] font-bold text-slate-500">Baggage</span><span className="text-[11px] font-black text-slate-900">{selectedFlight.baggageAllowance || 'Check with airline'}</span></div>
+                    <div className="flex items-center justify-between"><span className="text-[11px] font-bold text-slate-500">Duration</span><span className="text-[11px] font-black text-slate-900">{selectedFlight.totalDuration || 'N/A'}</span></div>
+                    {selectedFlight.segments?.[0]?.aircraft && <div className="flex items-center justify-between"><span className="text-[11px] font-bold text-slate-500">Aircraft</span><span className="text-[11px] font-black text-slate-900">{selectedFlight.segments[0].aircraft}</span></div>}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="p-8 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-center justify-between gap-6">
