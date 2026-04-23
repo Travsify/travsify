@@ -1,5 +1,5 @@
 services:
-  # Backend Service
+  # Travsify Backend Orchestration Engine
   - type: web
     name: travsify-backend
     runtime: node
@@ -18,6 +18,22 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_EXPIRATION
+        value: 24h
+      
+      # Live Travel API Keys (Must be set in Render Dashboard)
+      - key: DUFFEL_API_KEY
+        sync: false
+      - key: LITEAPI_API_KEY
+        sync: false
+      - key: GETYOURGUIDE_API_KEY
+        sync: false
+      - key: MOZIO_API_KEY
+        sync: false
+      - key: SAFETYWING_PARTNER_ID
+        sync: false
+      
+      # NDC XML.AGENCY Credentials
       - key: NDC_API_SEARCH_URL
         sync: false
       - key: NDC_API_ACTION_URL
@@ -30,30 +46,14 @@ services:
         sync: false
       - key: NDC_API_DEVICE_ID
         sync: false
-      - key: LITEAPI_API_KEY
-        sync: false
-      - key: ATLYS_API_KEY
-        sync: false
-      - key: GETYOURGUIDE_API_KEY
-        sync: false
-      - key: MOZIO_API_KEY
-        sync: false
-      - key: SAFETYWING_PARTNER_ID
-        sync: false
+
+      # Financial Orchestration
       - key: FINCRA_API_KEY
-        sync: false
-      - key: DUFFEL_API_KEY
         sync: false
       - key: STRIPE_SECRET_KEY
         sync: false
-      - key: NDC_AGENT_ID
-        sync: false
-      - key: JWT_EXPIRATION
-        value: 24h
-      - key: NDC_SITECITY_ENABLED
-        value: "false"
 
-  # Frontend Service
+  # Travsify Premium Frontend (Next.js)
   - type: web
     name: travsify-frontend
     runtime: node
