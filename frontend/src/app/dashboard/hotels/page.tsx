@@ -177,7 +177,7 @@ export default function HotelsPage() {
             {/* Hero Image Container */}
             <div className="relative h-80 shrink-0 overflow-hidden">
               <img 
-                src={hotel.image || `https://images.unsplash.com/photo-${1566073771259-6a8506099945}?auto=format&fit=crop&q=80&w=1000`} 
+                src={hotel.image || `https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80`} 
                 alt={hotel.name || 'Hotel'} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
               />
