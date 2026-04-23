@@ -178,7 +178,7 @@ export default function TransfersPage() {
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Fixed Price</p>
                   <div className="flex items-baseline gap-1">
                      <span className="text-sm font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}</span>
-                     <p className="text-4xl font-black text-slate-900 tracking-tighter">{(ride.price || 0).toLocaleString()}</p>
+                     <p className="text-4xl font-black text-slate-900 tracking-tighter">{(ride.price?.totalAmount || 0).toLocaleString()}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -191,7 +191,7 @@ export default function TransfersPage() {
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  window.location.href = `/dashboard/transfers/checkout?id=${ride.id}&price=${ride.price}&currency=${currency}`;
+                  window.location.href = `/dashboard/transfers/checkout?id=${ride.id}&price=${ride.price?.totalAmount}&currency=${currency}`;
                 }}
                 className="w-full md:w-auto px-12 py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl hover:shadow-orange-600/30 active:scale-95 shrink-0 group/btn"
               >
@@ -309,10 +309,10 @@ export default function TransfersPage() {
                     <div className="flex items-baseline gap-2 mb-6">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fixed Fare:</span>
                       <span className="text-sm font-black text-[#FF6B00]">{currency === 'USD' ? '$' : '₦'}</span>
-                      <span className="text-4xl font-black text-slate-900 tracking-tighter">{(selectedRide.price || 0).toLocaleString()}</span>
+                      <span className="text-4xl font-black text-slate-900 tracking-tighter">{(selectedRide.price?.totalAmount || 0).toLocaleString()}</span>
                     </div>
                     <button 
-                      onClick={() => window.location.href = `/dashboard/transfers/checkout?id=${selectedRide.id}&price=${selectedRide.price}&currency=${currency}`}
+                      onClick={() => window.location.href = `/dashboard/transfers/checkout?id=${selectedRide.id}&price=${selectedRide.price?.totalAmount}&currency=${currency}`}
                       className="w-full py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] shadow-xl hover:shadow-orange-600/30 transition-all active:scale-95"
                     >
                       Confirm Selection

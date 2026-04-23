@@ -164,7 +164,7 @@ export default function InsurancePage() {
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-black text-slate-900 mb-2 relative z-10 tracking-tight">{plan.name || 'SafetyWing Global'}</h3>
+                <h3 className="text-2xl font-black text-slate-900 mb-2 relative z-10 tracking-tight">{plan.planName || 'SafetyWing Global'}</h3>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 relative z-10">Underwritten by SafetyWing Direct</p>
 
                 <div className="space-y-5 mb-10 relative z-10 flex-1">
@@ -187,7 +187,7 @@ export default function InsurancePage() {
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Premium</p>
                     <div className="flex items-baseline gap-1 justify-end">
                        <span className="text-sm font-black text-[#FF6B00]">{currency === 'USD' ? '$' : '₦'}</span>
-                       <p className="text-3xl font-black text-[#FF6B00] tracking-tighter">{(plan.premium || 0).toLocaleString()}</p>
+                       <p className="text-3xl font-black text-[#FF6B00] tracking-tighter">{(plan.price?.totalAmount || 0).toLocaleString()}</p>
                     </div>
                   </div>
                 </div>
@@ -330,7 +330,7 @@ export default function InsurancePage() {
                   <ShieldCheck size={28} className="text-[#FF6B00]" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{selectedPlan.name || 'SafetyWing Global'}</h3>
+                  <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{selectedPlan.planName || 'SafetyWing Global'}</h3>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">SafetyWing Direct Coverage</p>
                 </div>
               </div>
@@ -390,7 +390,7 @@ export default function InsurancePage() {
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Quote for {search.travelers} Traveler(s)</p>
                     <div className="flex items-baseline gap-2 mb-8">
                        <span className="text-sm font-black text-[#FF6B00]">{currency === 'USD' ? '$' : '₦'}</span>
-                       <span className="text-5xl font-black text-slate-900 tracking-tighter">{(selectedPlan.premium || 0).toLocaleString()}</span>
+                       <span className="text-5xl font-black text-slate-900 tracking-tighter">{(selectedPlan.price?.totalAmount || 0).toLocaleString()}</span>
                     </div>
                   </div>
 

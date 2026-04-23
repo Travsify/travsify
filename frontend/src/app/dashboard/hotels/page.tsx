@@ -192,13 +192,13 @@ export default function HotelsPage() {
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Rate</p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-sm font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}</span>
-                    <p className="text-4xl font-black text-slate-900 tracking-tighter">{(hotel.price || 0).toLocaleString()}</p>
+                    <p className="text-4xl font-black text-slate-900 tracking-tighter">{(hotel.price?.totalAmount || 0).toLocaleString()}</p>
                   </div>
                 </div>
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = `/dashboard/hotels/checkout?id=${hotel.id}&price=${hotel.price}&currency=${currency}`;
+                    window.location.href = `/dashboard/hotels/checkout?id=${hotel.id}&price=${hotel.price?.totalAmount}&currency=${currency}`;
                   }}
                   className="px-8 py-4 rounded-2xl bg-[#0A1629] text-white font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] transition-all shadow-xl hover:shadow-orange-600/20 active:scale-95 group/btn"
                 >
@@ -315,7 +315,7 @@ export default function HotelsPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-[10px] font-black text-slate-300 uppercase mb-1">Price per night</p>
-                          <p className="text-xl font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}{(selectedHotel.price * 0.4).toLocaleString()}</p>
+                          <p className="text-xl font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}{((selectedHotel.price?.totalAmount || 0) * 0.4).toLocaleString()}</p>
                         </div>
                       </div>
                     </div>
@@ -331,7 +331,7 @@ export default function HotelsPage() {
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Total Stay Price</p>
                     <div className="flex items-baseline gap-2 mb-8">
                       <span className="text-xl font-black text-[#FF6B00]">{currency === 'USD' ? '$' : '₦'}</span>
-                      <span className="text-5xl font-black tracking-tighter">{(selectedHotel.price || 0).toLocaleString()}</span>
+                      <span className="text-5xl font-black tracking-tighter">{(selectedHotel.price?.totalAmount || 0).toLocaleString()}</span>
                     </div>
                     
                     <div className="space-y-4 mb-8">
@@ -350,7 +350,7 @@ export default function HotelsPage() {
                     </div>
 
                     <button 
-                      onClick={() => window.location.href = `/dashboard/hotels/checkout?id=${selectedHotel.id}&price=${selectedHotel.price}&currency=${currency}`}
+                      onClick={() => window.location.href = `/dashboard/hotels/checkout?id=${selectedHotel.id}&price=${selectedHotel.price?.totalAmount}&currency=${currency}`}
                       className="w-full py-5 bg-[#FF6B00] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-600/30"
                     >
                       Instant Booking
