@@ -102,11 +102,27 @@ export class LiteApiService {
 
   private getCountryCode(city: string): string {
     const lowerCity = city.toLowerCase();
-    if (lowerCity.includes('lagos') || lowerCity.includes('abuja') || lowerCity.includes('port harcourt') || lowerCity.includes('kano')) return 'NG';
-    if (lowerCity.includes('dubai') || lowerCity.includes('abu dhabi')) return 'AE';
-    if (lowerCity.includes('london') || lowerCity.includes('manchester')) return 'GB';
-    if (lowerCity.includes('new york') || lowerCity.includes('miami') || lowerCity.includes('houston')) return 'US';
-    return 'NG'; // Default to Nigeria
+    
+    // Nigeria
+    if (lowerCity.includes('lagos') || lowerCity.includes('abuja') || lowerCity.includes('nigeria') || lowerCity.includes('ng')) return 'NG';
+    
+    // South Africa
+    if (lowerCity.includes('south africa') || lowerCity.includes('johannesburg') || lowerCity.includes('cape town') || lowerCity.includes('za')) return 'ZA';
+    
+    // USA
+    if (lowerCity.includes('usa') || lowerCity.includes('united states') || lowerCity.includes('san francisco') || lowerCity.includes('new york') || lowerCity.includes('miami') || lowerCity.includes('us')) return 'US';
+    
+    // UAE
+    if (lowerCity.includes('dubai') || lowerCity.includes('abu dhabi') || lowerCity.includes('uae') || lowerCity.includes('ae')) return 'AE';
+    
+    // UK
+    if (lowerCity.includes('london') || lowerCity.includes('manchester') || lowerCity.includes('uk') || lowerCity.includes('gb')) return 'GB';
+
+    // Europe
+    if (lowerCity.includes('paris') || lowerCity.includes('france') || lowerCity.includes('fr')) return 'FR';
+    if (lowerCity.includes('berlin') || lowerCity.includes('germany') || lowerCity.includes('de')) return 'DE';
+    
+    return 'US'; // Default to US for broader global results
   }
 
   // Legacy method for DemoController
