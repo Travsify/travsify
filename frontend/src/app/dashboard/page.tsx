@@ -69,6 +69,22 @@ export default function OverviewPage() {
     }
   };
 
+  const ngnWallet = wallets.find(w => w.currency === 'NGN') || { balance: 0 };
+  const usdWallet = wallets.find(w => w.currency === 'USD') || { balance: 0 };
+  const totalRevenue = transactions.filter(t => t.type === 'CREDIT' && t.currency === currency).reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalBookingsCount = bookings.length;
+  const recentBookings = bookings.slice(0, 5);
+  const recentTransactions = transactions.slice(0, 5);
+
+  if (loading) {
+    return (
+      <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
+        <Loader2 className="w-10 h-10 text-orange-600 animate-spin" />
+        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify...</p>
+      </div>
+    );
+  }
+
   const verticalStats = {
     flight: bookings.filter(b => b.vertical === 'flight').length,
     hotel: bookings.filter(b => b.vertical === 'hotel').length,
