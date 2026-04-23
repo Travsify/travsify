@@ -49,6 +49,7 @@ export interface UnifiedInsurance {
   coverageDetails: any;
   price: UnifiedPrice;
   bookingUrl: string;
+  image?: string;
 }
 
 export interface UnifiedVisa {
@@ -70,6 +71,7 @@ export interface UnifiedTransfer {
   capacity: number;
   price: UnifiedPrice;
   bookingUrl: string;
+  image?: string;
 }
 
 export interface UnifiedExperience {
@@ -81,4 +83,5 @@ export interface UnifiedExperience {
   duration: string;
   price: UnifiedPrice;
   bookingUrl: string;
+  image: string;
 }
