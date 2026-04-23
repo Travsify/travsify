@@ -71,17 +71,17 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
-          <div className="flex-1 relative perspective-1000">
-            {/* Animated Hero Image */}
-            <div className="relative z-10 w-full max-w-[600px] ml-auto animate-[bounce_6s_infinite]">
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/30 to-orange-500/30 blur-3xl -z-10 rounded-full" />
-              <img src="/hero_dashboard.png" alt="Travel API Dashboard" className="w-full h-auto rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.3)] border border-white/20 object-cover" />
+          <div className="flex-1 relative">
+            <div className="relative z-10 w-full max-w-[560px] ml-auto animate-[float_4s_ease-in-out_infinite]">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#0A2540]/20 to-[#FF7A00]/20 blur-3xl -z-10 rounded-full" />
+              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=800&q=80" alt="Aerial travel view" className="w-full h-[340px] rounded-[20px] shadow-[0_20px_50px_rgba(10,37,64,0.25)] border border-[#E5EAF0] object-cover" />
+              <div className="absolute -bottom-6 -right-6 bg-white rounded-[12px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E5EAF0] z-20 animate-[float_5s_ease-in-out_infinite]">
+                <div className="flex items-center gap-3"><div className="w-10 h-10 bg-[#FF7A00]/10 rounded-lg flex items-center justify-center"><Plane size={20} className="text-[#FF7A00]"/></div><div><p className="text-xs font-bold text-[#0A2540]">500+ Airlines</p><p className="text-[10px] text-[#5B6B7C]">Global Coverage</p></div></div>
+              </div>
+              <div className="absolute -top-4 -left-4 bg-white rounded-[12px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E5EAF0] z-20 animate-[float_6s_ease-in-out_infinite]">
+                <div className="flex items-center gap-3"><div className="w-10 h-10 bg-[#16A34A]/10 rounded-lg flex items-center justify-center"><CheckCircle2 size={20} className="text-[#16A34A]"/></div><div><p className="text-xs font-bold text-[#0A2540]">99.99% Uptime</p><p className="text-[10px] text-[#5B6B7C]">Enterprise SLA</p></div></div>
+              </div>
             </div>
-            {/* Mobile Mockup Overlay */}
-            <div className="absolute -bottom-12 -left-12 w-64 rounded-3xl p-2 shadow-2xl z-20 hidden md:block animate-[bounce_8s_infinite] bg-white/10 backdrop-blur-md border border-white/30">
-              <img src="/flight_search.png" alt="Mobile Flight Search" className="w-full h-auto rounded-2xl object-cover shadow-lg" />
-            </div>
-            <Plane className="absolute -top-12 right-20 text-blue-500 w-32 h-32 opacity-20 rotate-45 animate-pulse" />
           </div>
         </section>
 
@@ -289,9 +289,12 @@ export default function LandingPage() {
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Customer insights</li>
                 <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-600" /> Performance monitoring</li>
               </ul>
-              <div className="relative animate-[bounce_6s_infinite_reverse]">
-                <div className="absolute inset-0 bg-[#FF7A00]/100/20 blur-3xl -z-10 rounded-full" />
-                <img src="/analytics_chart.png" alt="Revenue Analytics Dashboard" className="w-full rounded-2xl shadow-2xl border border-white/20" />
+              <div className="relative animate-[float_6s_ease-in-out_infinite] rounded-[20px] overflow-hidden shadow-[0_20px_40px_rgba(10,37,64,0.15)] border border-[#E5EAF0]">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Analytics dashboard data" className="w-full h-[320px] object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#0A2540] to-transparent p-6">
+                  <p className="text-white font-bold text-sm">Revenue: $245,680</p>
+                  <p className="text-[#16A34A] text-xs font-bold">↑ +24.5% vs last month</p>
+                </div>
               </div>
             </div>
           </div>
@@ -373,9 +376,9 @@ export default function LandingPage() {
                   <div className="bg-white p-6 rounded-2xl border border-[#E5EAF0] shadow-sm">
                     <p className="text-sm font-medium text-slate-600 mb-6 leading-relaxed">"Travsify NDC helped us scale our platform globally with just one integration."</p>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-200" />
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="Adebayo" className="w-10 h-10 rounded-full object-cover" />
                       <div>
-                        <p className="text-xs font-black text-slate-900">Adebayo O.</p>
+                        <p className="text-xs font-black text-[#0A2540]">Adebayo O.</p>
                         <p className="text-[10px] text-[#5B6B7C] font-bold uppercase tracking-widest">CEO, TravelWings</p>
                       </div>
                     </div>
@@ -383,9 +386,9 @@ export default function LandingPage() {
                   <div className="bg-white p-6 rounded-2xl border border-[#E5EAF0] shadow-sm">
                     <p className="text-sm font-medium text-slate-600 mb-6 leading-relaxed">"Best API platform we've used. Reliable, fast and amazing support."</p>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-200" />
+                      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80" alt="Sarah" className="w-10 h-10 rounded-full object-cover" />
                       <div>
-                        <p className="text-xs font-black text-slate-900">Sarah K.</p>
+                        <p className="text-xs font-black text-[#0A2540]">Sarah K.</p>
                         <p className="text-[10px] text-[#5B6B7C] font-bold uppercase tracking-widest">CTO, TripWay</p>
                       </div>
                     </div>
@@ -401,7 +404,9 @@ export default function LandingPage() {
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-[#FF7A00] rounded-full" /> 1M+ Hotels</li>
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-[#16A34A] rounded-full" /> Thousands of routes</li>
                 </ul>
-                <div className="h-40 w-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-100 via-slate-50 to-transparent opacity-80 rounded-3xl" style={{ backgroundImage: 'radial-gradient(circle, #cbd5e1 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
+                <div className="rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E5EAF0]">
+                  <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80" alt="Global network coverage" className="w-full h-[200px] object-cover" />
+                </div>
               </div>
             </div>
           </div>
@@ -551,13 +556,12 @@ export default function LandingPage() {
                 Get API Access
               </Link>
             </div>
-            <div className="relative">
-              <div className="bg-slate-800 rounded-t-3xl rounded-bl-3xl p-6 border-t border-l border-r border-slate-700 h-[300px] overflow-hidden flex items-end justify-center relative">
-                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540] via-transparent to-transparent z-10" />
-                 {/* Decorative users working mockup */}
-                 <div className="w-full h-full relative z-0 animate-[bounce_5s_infinite]">
-                   <img src="/analytics_chart.png" alt="Revenue Analytics" className="w-full h-full object-cover rounded-xl border border-slate-700 shadow-2xl" />
-                 </div>
+            <div className="relative rounded-[20px] overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80" alt="Team building travel business" className="w-full h-[340px] object-cover rounded-[20px]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540] via-[#0A2540]/40 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                <div><p className="text-white text-xs font-bold">Revenue</p><p className="text-white text-2xl font-black">$245,680</p></div>
+                <div className="text-right"><p className="text-white text-xs font-bold">Success Rate</p><p className="text-[#16A34A] text-2xl font-black">98.2%</p></div>
               </div>
             </div>
           </div>
