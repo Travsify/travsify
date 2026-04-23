@@ -41,34 +41,26 @@ export class NdcService {
     searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
     tenantMarkup: number = 0
   ): Promise<UnifiedFlight[]> {
-    const searchParams = {
-      aeroSearchParams: {
-        '@_xmlns:a': 'http://schemas.datacontract.org/2004/07/SiteCity.Avia.Search',
-        '@_xmlns:i': 'http://www.w3.org/2001/XMLSchema-instance',
-        'a:Adults': searchCriteria.adults,
-        'a:Childs': 0,
-        'a:Infants': 0,
-        'a:FlightClass': 'Economy',
-        'a:SearchFlights': {
-          'a:SearchFlight': {
-            'a:Date': this.formatDate(searchCriteria.departureDate),
-            'a:IATAFrom': searchCriteria.origin,
-            'a:IATATo': searchCriteria.destination,
-          }
-        },
-        'a:ExtendedParams': { 
-          '@_i:nil': 'true',
-          '#text': ''
-        },
-        'a:PartnerName': { 
-          '@_i:nil': 'true',
-          '#text': ''
-        },
-      }
-    };
-
     const action = 'http://tempuri.org/ISiteAvia/AeroSearch';
-    const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(searchParams)}`;
+    const formattedDate = this.formatDate(searchCriteria.departureDate);
+    
+    const xmlBody = `${this.getAuth()}
+<aeroSearchParams xmlns:a="http://schemas.datacontract.org/2004/07/SiteCity.Avia.Search" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <a:Adults>${searchCriteria.adults}</a:Adults>
+  <a:Childs>0</a:Childs>
+  <a:Infants>0</a:Infants>
+  <a:FlightClass>Economy</a:FlightClass>
+  <a:SearchFlights>
+    <a:SearchFlight>
+      <a:Date>${formattedDate}</a:Date>
+      <a:IATAFrom>${searchCriteria.origin}</a:IATAFrom>
+      <a:IATATo>${searchCriteria.destination}</a:IATATo>
+    </a:SearchFlight>
+  </a:SearchFlights>
+  <a:ExtendedParams i:nil="true" />
+  <a:PartnerName i:nil="true" />
+</aeroSearchParams>`;
+
     const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody, action, this.searchUrl);
     
     try {
