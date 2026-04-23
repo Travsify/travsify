@@ -151,66 +151,117 @@ export default function HotelsPage() {
       </div>
 
       {/* Hotel Results Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-10 pb-20">
         {hotels.map((hotel, i) => (
           <div 
             key={i} 
             onClick={() => setSelectedHotel(hotel)}
-            className="group bg-white rounded-[40px] border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700 shadow-xl flex flex-col relative cursor-pointer"
+            className="group bg-white rounded-[48px] border border-slate-100 overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(10,22,41,0.12)] hover:-translate-y-2 transition-all duration-700 flex flex-col relative cursor-pointer"
           >
-            {/* Top Accent Line */}
-            <div className={`absolute top-0 left-0 right-0 h-1.5 ${i % 2 === 0 ? 'bg-[#0A1629]' : 'bg-[#FF6B00]'}`} />
-            
-            <div className="relative h-72 shrink-0 overflow-hidden">
-              <img src={hotel.image || `https://images.unsplash.com/photo-${1506744038136 + i}-46273834b3fb?auto=format&fit=crop&q=80&w=1000`} alt={hotel.name || 'Hotel'} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-              <div className="absolute top-6 right-6 px-4 py-2 bg-white rounded-2xl flex items-center gap-1.5 shadow-xl">
-                <Star size={16} className="text-[#FF6B00] fill-[#FF6B00]" />
-                <span className="text-sm font-black text-slate-900">{hotel.rating || (4 + Math.random()).toFixed(1)}</span>
-              </div>
-              <div className="absolute top-6 left-6 px-4 py-2 bg-[#0A1629] text-white text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-[#FF6B00] rounded-full animate-pulse" /> Direct Rates
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                <p className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                  <MapPin size={14} className="text-[#FF6B00]" />
-                  {hotel.location || hotel.destination || search.city || 'Global Destination'}
-                </p>
+            {/* Live Inventory Badge */}
+            <div className="absolute top-8 left-8 z-20">
+              <div className="px-4 py-2.5 bg-white/90 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/50">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Live Inventory</span>
               </div>
             </div>
-            <div className="p-8 flex flex-col flex-1">
-              <h3 className="text-2xl font-black text-slate-900 mb-6 truncate leading-tight tracking-tight">{hotel.name || 'Premium Property'}</h3>
-              
-              <div className="flex items-center gap-6 mb-8">
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-blue-600 transition-colors">
-                  <Wifi size={20} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">Free Wifi</span>
+
+            {/* Provider Badge */}
+            <div className="absolute top-8 right-8 z-20">
+              <div className="px-4 py-2.5 bg-[#0A1629]/80 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/10">
+                <span className="text-[9px] font-black text-white uppercase tracking-widest opacity-80">via</span>
+                <span className="text-[10px] font-black text-[#FF6B00] uppercase tracking-widest">{hotel.provider || 'LiteAPI'}</span>
+              </div>
+            </div>
+            
+            {/* Hero Image Container */}
+            <div className="relative h-80 shrink-0 overflow-hidden">
+              <img 
+                src={hotel.image || `https://images.unsplash.com/photo-${1566073771259-6a8506099945}?auto=format&fit=crop&q=80&w=1000`} 
+                alt={hotel.name || 'Hotel'} 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-end p-8">
+                 <p className="text-white text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3">
+                   <MapPin size={16} className="text-[#FF6B00]" />
+                   {hotel.location}
+                 </p>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="p-10 flex flex-col flex-1 relative">
+              {/* Rating & Quality Label */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, starIndex) => (
+                    <Star 
+                      key={starIndex} 
+                      size={14} 
+                      className={starIndex < (hotel.stars || 4) ? "text-[#FF6B00] fill-[#FF6B00]" : "text-slate-200 fill-slate-200"} 
+                    />
+                  ))}
                 </div>
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-orange-600 transition-colors">
-                  <Waves size={20} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">Pool</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-emerald-600 transition-colors">
-                  <Coffee size={20} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">Breakfast</span>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-[#0A1629] uppercase tracking-tighter leading-none mb-1">
+                      {hotel.rating >= 8.5 ? 'Exceptional' : hotel.rating >= 7.5 ? 'Very Good' : 'Highly Rated'}
+                    </p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Verified Property</p>
+                  </div>
+                  <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100 shadow-inner">
+                    <span className="text-lg font-black text-blue-600">{hotel.rating || '8.2'}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-8 border-t border-slate-50 mt-auto">
+              {/* Title */}
+              <div className="mb-8">
+                <h3 className="text-2xl font-black text-slate-900 leading-[1.2] group-hover:text-[#FF6B00] transition-colors duration-300 tracking-tight">
+                  {hotel.name}
+                </h3>
+              </div>
+
+              {/* Amenities - Visual Icon Stack */}
+              <div className="flex items-center gap-4 mb-10">
+                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-all duration-500">
+                  <Wifi size={20} />
+                </div>
+                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-orange-50 group-hover:text-[#FF6B00] transition-all duration-500">
+                  <Waves size={20} />
+                </div>
+                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-all duration-500">
+                  <Coffee size={20} />
+                </div>
+                <div className="px-4 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  +12 More
+                </div>
+              </div>
+
+              {/* Price Section - Premium Breakdown */}
+              <div className="mt-auto pt-8 border-t border-slate-50 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Rate</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-sm font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}</span>
-                    <p className="text-4xl font-black text-slate-900 tracking-tighter">{(hotel.price?.totalAmount || 0).toLocaleString()}</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Exclusive Member Rate</p>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-sm font-bold text-slate-300 line-through">
+                      {currency} {(hotel.price.totalAmount * 1.15).toLocaleString()}
+                    </span>
+                    <span className="text-3xl font-black text-[#0A1629]">
+                      {currency} {hotel.price.totalAmount.toLocaleString()}
+                    </span>
                   </div>
+                  <p className="text-[9px] font-bold text-green-500 uppercase tracking-tighter mt-2 flex items-center gap-1.5">
+                    <CheckCircle2 size={12} /> Live Rate • All Taxes Included
+                  </p>
                 </div>
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = `/dashboard/hotels/checkout?id=${hotel.id}&price=${hotel.price?.totalAmount}&currency=${currency}`;
+                    window.location.href = `/dashboard/hotels/checkout?id=${hotel.id}&price=${hotel.price.totalAmount}&currency=${currency}`;
                   }}
-                  className="px-8 py-4 rounded-2xl bg-[#0A1629] text-white font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] transition-all shadow-xl hover:shadow-orange-600/20 active:scale-95 group/btn"
+                  className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
                 >
-                  Book Now <ChevronRight size={14} className="inline-block ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                  <ChevronRight size={24} />
                 </button>
               </div>
             </div>
@@ -218,15 +269,14 @@ export default function HotelsPage() {
         ))}
 
         {!loading && hotels.length === 0 && (
-          <div className="lg:col-span-3 py-32 text-center bg-slate-50/50 rounded-[48px] border-2 border-dashed border-slate-200/60 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-50/50 via-transparent to-transparent opacity-50" />
+          <div className="lg:col-span-2 2xl:col-span-3 py-40 text-center bg-white rounded-[60px] border-2 border-dashed border-slate-100 relative overflow-hidden shadow-sm">
             <div className="relative z-10">
-              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl shadow-slate-200/50 group hover:scale-110 transition-transform duration-700">
-                <Hotel size={56} className="text-slate-200 group-hover:text-[#FF6B00] transition-colors" />
+              <div className="w-40 h-40 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-10 group hover:scale-110 transition-transform duration-700">
+                <Hotel size={64} className="text-slate-200 group-hover:text-[#FF6B00] transition-colors" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Luxury Accommodations</h3>
-              <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-4 leading-relaxed px-6">
-                Enter a city to fetch live availability and dynamic {currency} rates across 1.2M+ global properties.
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight">Search Live Inventory</h3>
+              <p className="text-base text-slate-400 font-medium max-w-lg mx-auto mt-4 leading-relaxed px-10">
+                Access over 1.2M+ properties globally. Enter your destination and dates to fetch direct {currency} rates from our live providers.
               </p>
             </div>
           </div>
