@@ -43,30 +43,34 @@ export class NdcService {
 
   async airShopping(
     searchCriteria: { origin: string, destination: string, departureDate: string, adults: number },
-    tenantMarkup: number = 0
+    tenant: { flightMarkup: number, flightProvider?: string, ndcEnabled?: boolean }
   ): Promise<UnifiedFlight[]> {
-    this.logger.log(`Executing Flight Search: ${searchCriteria.origin} -> ${searchCriteria.destination}`);
+    this.logger.log(`Executing Flight Search for tenant (Provider: ${tenant.flightProvider || 'duffel'}): ${searchCriteria.origin} -> ${searchCriteria.destination}`);
 
-    // Call Duffel (Our active live provider)
-    const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenantMarkup).catch(err => {
-      this.logger.error(`Duffel search failed: ${err.message}`);
-      return [];
-    });
+    const results: UnifiedFlight[] = [];
+    const provider = tenant.flightProvider || 'duffel';
+    const isNdcExplicitlyEnabled = tenant.ndcEnabled === true;
 
-    // Check if SiteCity/NDC is explicitly enabled (default to false until whitelisted)
-    const isNdcEnabled = this.configService.get<string>('NDC_SITECITY_ENABLED') === 'true';
-    
-    if (isNdcEnabled) {
-      this.logger.log('SiteCity/NDC is enabled, fetching additional results...');
-      const siteCityResults = await this.getSoapSearch(searchCriteria, tenantMarkup).catch(err => {
-        this.logger.warn(`SiteCity sub-search failed: ${err.message}`);
-        return this.getFallbackFlights(searchCriteria, tenantMarkup);
+    // 1. Fetch Duffel if selected
+    if (provider === 'duffel' || provider === 'both') {
+      const duffelResults = await this.duffelService.searchFlights(searchCriteria, tenant.flightMarkup).catch(err => {
+        this.logger.error(`Duffel search failed: ${err.message}`);
+        return [];
       });
-      return [...duffelResults, ...siteCityResults];
+      results.push(...duffelResults);
     }
 
-    this.logger.log(`Returning only Duffel results (${duffelResults.length}). SiteCity is currently disabled pending whitelisting.`);
-    return duffelResults;
+    // 2. Fetch SiteCity/NDC if selected AND enabled
+    if ((provider === 'sitecity' || provider === 'both') && isNdcExplicitlyEnabled) {
+      this.logger.log('SiteCity/NDC is enabled for this tenant, fetching additional results...');
+      const siteCityResults = await this.getSoapSearch(searchCriteria, tenant.flightMarkup).catch(err => {
+        this.logger.warn(`SiteCity sub-search failed: ${err.message}`);
+        return this.getFallbackFlights(searchCriteria, tenant.flightMarkup);
+      });
+      results.push(...siteCityResults);
+    }
+
+    return results;
   }
 
   private async getSoapSearch(

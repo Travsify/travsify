@@ -45,7 +45,7 @@ export class GatewayController {
       adults: 1,
       ...criteria
     };
-    return this.ndcService.airShopping(searchCriteria, tenant.flightMarkup);
+    return this.ndcService.airShopping(searchCriteria, tenant);
   }
 
   @Get('search/hotels')
@@ -119,7 +119,7 @@ export class GatewayController {
   async unifiedSearch(@Headers('x-api-key') apiKey: string, @Query('location') location: string) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
     const [flights, hotels, tours, transfers, insurance] = await Promise.all([
-      this.ndcService.airShopping({ origin: 'LOS', destination: location || 'LHR', departureDate: '2026-05-01', adults: 1 }, tenant.flightMarkup),
+      this.ndcService.airShopping({ origin: 'LOS', destination: location || 'LHR', departureDate: '2026-05-01', adults: 1 }, tenant),
       this.liteApiService.searchHotels({ city: location || 'London', checkin: '2026-05-01', checkout: '2026-05-05', adults: 1 }, tenant.hotelMarkup),
       this.gygService.getTours(location || 'London', tenant.hotelMarkup),
       this.mozioService.getTransferOptions(location || 'London', tenant.hotelMarkup),

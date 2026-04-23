@@ -23,6 +23,12 @@ export class Tenant {
   @Column({ type: 'float', default: 0 })
   insuranceMarkup: number;
 
+  @Column({ default: 'duffel' })
+  flightProvider: string; // 'duffel', 'sitecity', or 'both'
+
+  @Column({ default: false })
+  ndcEnabled: boolean; // SiteCity/NDC specifically
+
   @Column({ default: true })
   isActive: boolean;
 
