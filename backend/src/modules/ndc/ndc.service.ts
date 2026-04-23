@@ -67,9 +67,9 @@ export class NdcService {
       }
     };
 
-    const body = { ...this.getAuth(), ...searchParams };
     const action = 'http://tempuri.org/ISiteAvia/AeroSearch';
-    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', body, action, this.searchUrl);
+    const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(searchParams)}`;
+    const xmlRequest = NdcUtils.createEnvelope('AeroSearch', xmlBody, action, this.searchUrl);
     
     try {
       this.logger.log(`AeroSearch request: ${this.searchUrl} | ${searchCriteria.origin}->${searchCriteria.destination} | date=${searchCriteria.departureDate}`);
@@ -97,9 +97,10 @@ export class NdcService {
         'a:SearchGuid': searchGuid,
       }
     };
-    const body = { ...this.getAuth(), ...prebookParams };
-    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', body, 'http://tempuri.org/ISiteAvia/AeroPrebook', this.actionUrl);
-    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroPrebook', xmlRequest);
+    const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(prebookParams)}`;
+    const action = 'http://tempuri.org/ISiteAvia/AeroPrebook';
+    const xmlRequest = NdcUtils.createEnvelope('AeroPrebook', xmlBody, action, this.actionUrl);
+    return this.sendSoapRequest(this.actionUrl, action, xmlRequest);
   }
 
   async orderCreate(bookingData: { offerCode: string, searchGuid: string, passengers: any[], contact: any }): Promise<any> {
@@ -124,9 +125,10 @@ export class NdcService {
         },
       }
     };
-    const body = { ...this.getAuth(), ...bookParams };
-    const xmlRequest = NdcUtils.createEnvelope('AeroBook', body, 'http://tempuri.org/ISiteAvia/AeroBook', this.actionUrl);
-    return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteAvia/AeroBook', xmlRequest);
+    const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(bookParams)}`;
+    const action = 'http://tempuri.org/ISiteAvia/AeroBook';
+    const xmlRequest = NdcUtils.createEnvelope('AeroBook', xmlBody, action, this.actionUrl);
+    return this.sendSoapRequest(this.actionUrl, action, xmlRequest);
   }
 
   async orderChange(confirmData: { bookId: number, bookGuid: string, price: number }): Promise<any> {
@@ -138,8 +140,9 @@ export class NdcService {
         'a:Price': confirmData.price,
       }
     };
-    const body = { ...this.getAuth(), ...confirmParams };
-    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', body, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', this.actionUrl);
+    const xmlBody = `${this.getAuth()}${NdcUtils.jsonToXml(confirmParams)}`;
+    const action = 'http://tempuri.org/ISiteBookInfo/ConfirmBook';
+    const xmlRequest = NdcUtils.createEnvelope('ConfirmBook', xmlBody, action, this.actionUrl);
     return this.sendSoapRequest(this.actionUrl, 'http://tempuri.org/ISiteBookInfo/ConfirmBook', xmlRequest);
   }
 
