@@ -84,4 +84,5 @@ export interface UnifiedExperience {
   price: UnifiedPrice;
   bookingUrl: string;
   image: string;
+  rating?: number;
 }
