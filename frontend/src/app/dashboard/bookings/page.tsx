@@ -13,7 +13,11 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Plus
+  Plus,
+  Hotel,
+  Car,
+  ShieldCheck,
+  Ticket
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -53,6 +57,16 @@ export default function BookingsPage() {
     filter === 'all' || b.status.toLowerCase() === filter.toLowerCase()
   );
 
+  const getVerticalIcon = (vertical: string) => {
+    switch (vertical?.toLowerCase()) {
+      case 'hotel': return <Hotel size={18} className="text-blue-500" />;
+      case 'experience': return <Ticket size={18} className="text-orange-500" />;
+      case 'transfer': return <Car size={18} className="text-slate-500" />;
+      case 'insurance': return <ShieldCheck size={18} className="text-emerald-500" />;
+      default: return <Plane size={18} className="text-blue-600" />;
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
@@ -67,21 +81,21 @@ export default function BookingsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Flight Operations</h2>
-          <p className="text-slate-500 font-medium text-sm">Monitor and manage all issued tickets across the global network.</p>
+          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Global Operations</h2>
+          <p className="text-slate-500 font-medium text-sm">Monitor and manage all bookings across your unified travel network.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
             <input 
               type="text" 
-              placeholder="Search PNR, Airline or Route..." 
+              placeholder="Search Reference or Service..." 
               className="pl-11 pr-6 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-medium w-64 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-sm"
             />
           </div>
-          <Link href="/demo?tab=flights" className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
+          <Link href="/dashboard" className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
             <Plus size={18} />
-            New Booking
+            New Search
           </Link>
         </div>
       </div>
@@ -97,7 +111,7 @@ export default function BookingsPage() {
       {/* Filter Bar */}
       <div className="flex items-center justify-between bg-white p-2 rounded-[24px] border border-slate-100 shadow-sm">
         <div className="flex gap-1">
-          {['All', 'Ticketed', 'Pending', 'Failed', 'Cancelled'].map((t) => (
+          {['All', 'Ticketed', 'Fulfilled', 'Pending', 'Fulfillment_Pending', 'Failed'].map((t) => (
             <button 
               key={t}
               onClick={() => setFilter(t.toLowerCase())}
@@ -105,14 +119,10 @@ export default function BookingsPage() {
                 filter === t.toLowerCase() ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              {t}
+              {t.replace('_', ' ')}
             </button>
           ))}
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest">
-          <Filter size={14} />
-          More Filters
-        </button>
       </div>
 
       {/* Bookings Table */}
@@ -121,9 +131,9 @@ export default function BookingsPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">PNR / Airline</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Route & Date</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Pax / Amount</th>
+                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Vertical / Reference</th>
+                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Service & Provider</th>
+                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Date & Amount</th>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Status</th>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
               </tr>
@@ -133,17 +143,31 @@ export default function BookingsPage() {
                 filteredBookings.map((booking) => (
                   <tr key={booking.id} className="group hover:bg-slate-50/50 transition-all">
                     <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[14px] font-black text-blue-600 tracking-wider font-mono">{booking.pnr || 'RESERVED'}</span>
-                        <span className="text-[12px] font-bold text-slate-900">{booking.airline || 'Domestic Carrier'}</span>
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                          {getVerticalIcon(booking.vertical)}
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[14px] font-black text-blue-600 tracking-wider font-mono">{booking.id.substring(0, 8).toUpperCase()}</span>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{booking.vertical || 'FLIGHT'}</span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-[13px] font-bold text-slate-900">
-                          <MapPin size={12} className="text-slate-300" />
-                          {booking.origin} → {booking.destination}
+                          {booking.flightDetails?.itemName || booking.itemName || 'Unified Service'}
                         </div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 uppercase">
+                          {booking.flightDetails?.provider || 'Global Partner'}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[13px] font-bold text-slate-900">
+                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: booking.currency || 'USD' }).format(booking.totalPrice || booking.totalAmount)}
+                        </span>
                         <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
                           <Calendar size={12} className="text-slate-300" />
                           {new Date(booking.createdAt).toLocaleDateString()}
@@ -151,29 +175,12 @@ export default function BookingsPage() {
                       </div>
                     </td>
                     <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[13px] font-bold text-slate-900">
-                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: booking.currency || 'USD' }).format(booking.totalAmount)}
-                        </span>
-                        <span className="text-[11px] font-medium text-slate-400 uppercase tracking-widest">
-                          {booking.metadata?.passengers?.length || 1} Passenger(s)
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-8 py-6">
                       <StatusBadge status={booking.status} />
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex items-center justify-end gap-3">
-                        {booking.status === 'ticketed' && (
-                          <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Download Ticket">
-                            <Download size={18} />
-                          </button>
-                        )}
-                        <button className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all">
+                    <td className="px-8 py-6 text-right">
+                       <button className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all">
                           <ChevronRight size={18} />
-                        </button>
-                      </div>
+                       </button>
                     </td>
                   </tr>
                 ))
@@ -181,7 +188,7 @@ export default function BookingsPage() {
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Plane size={24} className="text-slate-300" />
+                      <Globe size={24} className="text-slate-300" />
                     </div>
                     <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No operations recorded</p>
                   </td>
@@ -190,40 +197,39 @@ export default function BookingsPage() {
             </tbody>
           </table>
         </div>
-        {filteredBookings.length > 0 && (
-          <div className="p-6 bg-slate-50/50 flex items-center justify-between border-t border-slate-50">
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Showing {filteredBookings.length} results</p>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 text-xs font-black text-slate-400 hover:text-slate-900 disabled:opacity-30" disabled>Previous</button>
-              <button className="px-4 py-2 text-xs font-black text-slate-900 hover:text-blue-600" disabled>Next</button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const normalizedStatus = status.toLowerCase();
+  
   const styles: any = {
     ticketed: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    fulfilled: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    confirmed: 'bg-blue-50 text-blue-600 border-blue-100',
     pending: 'bg-orange-50 text-orange-600 border-orange-100',
-    failed: 'bg-orange-50 text-orange-600 border-orange-100',
+    fulfillment_pending: 'bg-[#FF6B00]/10 text-[#FF6B00] border-[#FF6B00]/20',
+    failed: 'bg-rose-50 text-rose-600 border-rose-100',
     cancelled: 'bg-slate-50 text-slate-400 border-slate-200',
   };
 
   const icons: any = {
     ticketed: <CheckCircle2 size={12} />,
+    fulfilled: <CheckCircle2 size={12} />,
+    confirmed: <CheckCircle2 size={12} />,
     pending: <Clock size={12} />,
+    fulfillment_pending: <Loader2 size={12} className="animate-spin" />,
     failed: <AlertCircle size={12} />,
     cancelled: <AlertCircle size={12} />,
   };
 
-  const displayStatus = status.charAt(0).toUpperCase() + status.slice(1);
+  const displayStatus = status.replace('_', ' ').charAt(0).toUpperCase() + status.replace('_', ' ').slice(1);
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status.toLowerCase()] || styles.pending}`}>
-      {icons[status.toLowerCase()] || icons.pending}
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[normalizedStatus] || styles.pending}`}>
+      {icons[normalizedStatus] || icons.pending}
       {displayStatus}
     </span>
   );
