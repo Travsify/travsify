@@ -153,8 +153,13 @@ export class NdcService {
       this.logger.debug(`SOAP response received. Status: ${response.status}`);
       const json = NdcUtils.xmlToJson(response.data);
       const body = json.Envelope.Body;
+      this.logger.debug(`SOAP Body keys: ${Object.keys(body).join(', ')}`);
+      
       const result = body[Object.keys(body)[0]];
+      this.logger.debug(`Result keys: ${Object.keys(result).join(', ')}`);
+      
       const finalResult = result[Object.keys(result)[0]];
+      this.logger.debug(`Final result keys: ${Object.keys(finalResult).join(', ')}`);
 
       if (finalResult.Success === 'false' || finalResult.Success === false) {
         throw new Error(finalResult.ErrorString || 'Unknown API Error');
@@ -190,7 +195,7 @@ export class NdcService {
       return {
         id: fd.OfferCode,
         vertical: TravelVertical.FLIGHT,
-        provider: 'SME.ng',
+        provider: 'xml.agency',
         source: data.SearchGuid,
         segments: this.mapSegments(fd.Offers?.OfferInfo?.Segments?.OfferSegment || []),
         price: PricingEngine.calculate(basePrice, travsifyFee, tenantMarkup, 'USD'),
