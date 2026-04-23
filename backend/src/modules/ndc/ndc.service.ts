@@ -154,14 +154,22 @@ export class NdcService {
       const json = NdcUtils.xmlToJson(response.data);
       const body = json.Envelope.Body;
       this.logger.debug(`SOAP Body keys: ${Object.keys(body).join(', ')}`);
+
+      if (body.Fault) {
+        const fault = body.Fault;
+        const reason = fault.Reason?.Text || 'Unknown Reason';
+        const code = fault.Code?.Value || 'Unknown Code';
+        this.logger.error(`SOAP Fault Received: [${code}] ${reason}`);
+        if (fault.Detail) {
+           this.logger.error(`Fault Detail: ${JSON.stringify(fault.Detail)}`);
+        }
+        throw new Error(`SOAP Fault: ${reason}`);
+      }
       
       const result = body[Object.keys(body)[0]];
-      this.logger.debug(`Result keys: ${Object.keys(result).join(', ')}`);
-      
       const finalResult = result[Object.keys(result)[0]];
-      this.logger.debug(`Final result keys: ${Object.keys(finalResult).join(', ')}`);
 
-      if (finalResult.Success === 'false' || finalResult.Success === false) {
+      if (finalResult && (finalResult.Success === 'false' || finalResult.Success === false)) {
         throw new Error(finalResult.ErrorString || 'Unknown API Error');
       }
 
