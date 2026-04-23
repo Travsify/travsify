@@ -16,8 +16,9 @@ export class BookingsController {
    */
   @UseGuards(JwtAuthGuard)
   @Post('search')
-  async search(@Body() searchCriteria: any) {
-    return this.ndcService.airShopping(searchCriteria);
+  async search(@Request() req: any, @Body() searchCriteria: any) {
+    const tenant = req.user?.tenant || { flightMarkup: 0, flightProvider: 'duffel', ndcEnabled: false };
+    return this.ndcService.airShopping(searchCriteria, tenant);
   }
 
   /**
@@ -52,7 +53,8 @@ export class BookingsController {
    */
   @UseGuards(ApiKeyGuard)
   @Post('external/search')
-  async externalSearch(@Body() searchCriteria: any) {
-    return this.ndcService.airShopping(searchCriteria);
+  async externalSearch(@Request() req: any, @Body() searchCriteria: any) {
+    // For ApiKeyGuard, the req.user is the tenant object
+    return this.ndcService.airShopping(searchCriteria, req.user);
   }
 }

@@ -41,7 +41,8 @@ export class DemoController {
       departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       adults: 1,
     };
-    return this.ndcService.airShopping(searchCriteria);
+    const demoTenant = { flightMarkup: 0, flightProvider: 'duffel', ndcEnabled: false };
+    return this.ndcService.airShopping(searchCriteria, demoTenant);
   }
 
   // ─── 🏨 Hotels (LiteAPI) ─────────────────────────────────
