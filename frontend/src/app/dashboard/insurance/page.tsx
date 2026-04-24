@@ -41,6 +41,26 @@ export default function InsurancePage() {
     endDate: '',
     travelers: 1
   });
+  const [policies, setPolicies] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchPolicies();
+  }, []);
+
+  const fetchPolicies = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/bookings/my-bookings`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const allBookings = await res.json();
+        setPolicies(allBookings.filter((b: any) => b.vertical === 'insurance'));
+      }
+    } catch (err) {
+      console.error('Failed to fetch policies', err);
+    }
+  };
 
   const handleSearch = async () => {
     if (!search.destination || !search.startDate || !search.endDate) return;
@@ -230,28 +250,25 @@ export default function InsurancePage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <tbody className="divide-y divide-slate-50">
-                  {[
-                    { id: 'POL-VN-9283', pax: 'John Doe', plan: 'Global Direct', expiry: 'May 20, 2026', status: 'Active' },
-                    { id: 'POL-VN-1102', pax: 'Jane Smith', plan: 'Global Nomad', expiry: 'Apr 25, 2026', status: 'Expiring Soon' },
-                  ].map((policy) => (
+                  {policies.map((policy) => (
                     <tr key={policy.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer">
                       <td className="px-10 py-8">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black text-[#FF6B00] tracking-widest">{policy.id}</span>
-                          <span className="text-base font-black text-slate-900">{policy.pax}</span>
+                          <span className="text-[10px] font-black text-[#FF6B00] tracking-widest">{policy.pnr || policy.id.substring(0,8).toUpperCase()}</span>
+                          <span className="text-base font-black text-slate-900">{policy.passengerDetails?.[0]?.firstName || 'User'}</span>
                         </div>
                       </td>
                       <td className="px-10 py-8">
-                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">{policy.plan}</span>
+                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">{policy.flightDetails?.itemName || 'Global Shield'}</span>
                       </td>
                       <td className="px-10 py-8">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Expiration Date</span>
-                          <span className="text-sm font-bold text-slate-900">{policy.expiry}</span>
+                          <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Date Issued</span>
+                          <span className="text-sm font-bold text-slate-900">{new Date(policy.createdAt).toLocaleDateString()}</span>
                         </div>
                       </td>
                       <td className="px-10 py-8">
-                        <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border ${policy.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'}`}>
+                        <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border ${policy.status === 'TICKETED' || policy.status === 'FULFILLED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'}`}>
                           {policy.status}
                         </span>
                       </td>
@@ -262,6 +279,11 @@ export default function InsurancePage() {
                       </td>
                     </tr>
                   ))}
+                  {policies.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-10 py-20 text-center text-slate-400 text-sm font-black uppercase tracking-widest">No active policies found</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -283,13 +305,13 @@ export default function InsurancePage() {
             <div className="space-y-8 relative z-10">
               <div className="p-6 rounded-[24px] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
                 <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2">Open Claims</p>
-                <p className="text-4xl font-black tracking-tighter text-white">02</p>
+                <p className="text-4xl font-black tracking-tighter text-white">00</p>
               </div>
               <div className="p-6 rounded-[24px] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
                 <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2">Total Payouts (YTD)</p>
                 <div className="flex items-baseline gap-1">
-                   <span className="text-sm font-black text-slate-400">{currency === 'USD' ? '$' : '₦'}</span>
-                   <p className="text-4xl font-black tracking-tighter text-white">2,450,000</p>
+                   <span className="text-sm font-black text-slate-400">{currency === 'NGN' ? '₦' : '$'}</span>
+                   <p className="text-4xl font-black tracking-tighter text-white">0</p>
                 </div>
               </div>
               <button className="w-full py-5 bg-[#FF6B00] text-white rounded-[20px] font-black text-sm hover:scale-[1.02] transition-all shadow-2xl shadow-orange-600/40 active:scale-95 group/btn">

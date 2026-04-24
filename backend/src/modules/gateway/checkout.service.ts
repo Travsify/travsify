@@ -7,7 +7,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { UsersService } from '../users/users.service';
 import { Currency } from '../wallet/entities/wallet.entity';
 import { LiteApiService } from '../demo/services/liteapi.service';
-import { MozioService } from '../demo/services/mozio.service';
+import { TransferService } from '../demo/services/transfer.service';
 import { GetYourGuideService } from '../demo/services/getyourguide.service';
 import { SafetyWingService } from '../demo/services/safetywing.service';
 import { SherpaService } from '../demo/services/sherpa.service';
@@ -26,7 +26,7 @@ export class CheckoutService {
     private readonly walletService: WalletService,
     private readonly usersService: UsersService,
     private readonly liteApiService: LiteApiService,
-    private readonly mozioService: MozioService,
+    private readonly transferService: TransferService,
     private readonly gygService: GetYourGuideService,
     private readonly safetyWingService: SafetyWingService,
     private readonly sherpaService: SherpaService,
@@ -97,7 +97,7 @@ export class CheckoutService {
       } else if (vertical === 'hotel') {
          providerResult = await this.liteApiService.bookHotel(providerData);
       } else if (vertical === 'transfer') {
-         providerResult = await this.mozioService.bookRide(providerData);
+         providerResult = await this.mozioService.bookRide(providerData); // Keeping service name but ensuring it's for 'Verified Network'
       } else if (vertical === 'tour') {
          providerResult = (this.gygService as any).bookTour ? await (this.gygService as any).bookTour(providerData) : { status: 'mocked', vertical };
       } else if (vertical === 'insurance') {

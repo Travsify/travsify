@@ -5,21 +5,21 @@ import { PricingEngine } from '../../../common/utils/pricing.util';
 import { CurrencyService } from '../../../common/services/currency.service';
 
 @Injectable()
-export class MozioService {
-  private readonly logger = new Logger(MozioService.name);
-  private readonly affiliateId: string;
+export class TransferService {
+  private readonly logger = new Logger(TransferService.name);
+  private readonly partnerId: string;
 
   constructor(
     private configService: ConfigService,
     private currencyService: CurrencyService
   ) {
-    this.affiliateId = this.configService.get<string>('MOZIO_AFFILIATE_ID') || 'travsify';
+    this.partnerId = this.configService.get<string>('TRANSFER_PARTNER_ID') || 'travsify';
   }
 
   async getTransferOptions(params: any, tenantMarkup: number = 0, targetCurrency: string = 'USD'): Promise<UnifiedTransfer[]> {
     const pickup = params.pickupAddress || 'London Heathrow (LHR)';
     const dropoff = params.dropoffAddress || 'Central London';
-    this.logger.log(`Mozio: Fetching live-link options for ${pickup} → ${dropoff}`);
+    this.logger.log(`Transfer: Fetching live-link options for ${pickup} → ${dropoff}`);
     
     const vehicles = [
       { type: 'Private Sedan', capacity: 3, base: 55, image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000' },
@@ -28,28 +28,27 @@ export class MozioService {
     ];
 
     return vehicles.map(v => ({
-      id: `mozio-${Math.random().toString(36).substring(7)}`,
+      id: `ride-${Math.random().toString(36).substring(7)}`,
       vertical: TravelVertical.TRANSFER,
-      provider: 'Mozio',
+      provider: 'Verified Network',
       vehicleType: v.type,
       capacity: v.capacity,
       image: v.image,
       price: PricingEngine.calculate(v.base, v.base * 0.15, tenantMarkup, 'USD', targetCurrency, this.currencyService),
-      bookingUrl: `https://www.mozio.com/en-us/?ref=${this.affiliateId}&pickup_address=${encodeURIComponent(pickup)}&destination_address=${encodeURIComponent(dropoff)}`,
+      bookingUrl: `https://www.travsify.com/transfers/?ref=${this.partnerId}&pickup_address=${encodeURIComponent(pickup)}&destination_address=${encodeURIComponent(dropoff)}`,
     }));
   }
 
-  // Legacy methods for DemoController
   async searchTransfers(params: any, tenantMarkup: number = 0) {
     return this.getTransferOptions(params, tenantMarkup);
   }
 
   async bookRide(data: any) {
-    this.logger.log(`Mozio: Executing booking for ride ${data.rideId}`);
+    this.logger.log(`Transfer: Executing booking for ride ${data.rideId}`);
     return { 
       status: 'success', 
       bookingReference: `RIDE-${Math.random().toString(36).substring(7).toUpperCase()}`,
-      provider: 'Mozio' 
+      provider: 'Verified Network' 
     };
   }
 }

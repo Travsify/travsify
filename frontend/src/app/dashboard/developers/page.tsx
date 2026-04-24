@@ -32,10 +32,24 @@ export default function DevelopersPage() {
   const [rotating, setRotating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'keys' | 'logs' | 'webhooks' | 'docs'>('keys');
+  const [apiStats, setApiStats] = useState<any>(null);
 
   useEffect(() => {
     fetchTenantData();
+    fetchApiStats();
   }, []);
+
+  const fetchApiStats = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/developer/logs/stats`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) setApiStats(await res.json());
+    } catch (err) {
+      console.error('Failed to fetch api stats:', err);
+    }
+  };
 
   const fetchTenantData = async () => {
     const token = localStorage.getItem('token');
@@ -102,11 +116,11 @@ export default function DevelopersPage() {
                 Build the next generation of travel tools. Connect your software directly to our global booking infrastructure.
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-               <StatMetric label="Monthly Requests" value="1.2M" trend="Live" />
-               <StatMetric label="Avg. Latency" value="124ms" trend="Optimal" />
-               <StatMetric label="Uptime" value="100%" trend="Stable" />
-            </div>
+             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+                <StatMetric label="Total Requests" value={apiStats?.total?.toLocaleString() || '0'} trend="Live" />
+                <StatMetric label="Avg. Latency" value={`${apiStats?.avgLatency || 0}ms`} trend="Optimal" />
+                <StatMetric label="Error Rate" value={`${apiStats?.total > 0 ? ((apiStats.error / apiStats.total) * 100).toFixed(1) : '0'}%`} trend="Stable" />
+             </div>
          </div>
       
       {/* Tab Navigation */}
@@ -535,19 +549,5 @@ function StatMetric({ label, value, trend }: any) {
       <p className="text-2xl font-black text-white leading-none">{value}</p>
       <p className="text-[9px] font-black text-orange-500 uppercase tracking-tighter">{trend}</p>
     </div>
-  );
-}
-
-function TabButton({ active, onClick, icon, label }: any) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
-        active ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'text-slate-400 hover:text-white hover:bg-white/5'
-      }`}
-    >
-      {icon}
-      {label}
-    </button>
   );
 }

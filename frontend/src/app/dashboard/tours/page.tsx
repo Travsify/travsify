@@ -28,7 +28,7 @@ export default function ToursPage() {
   const apiKey = useApiKey();
   const { currency } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [tours, setTours] = useState<any[]>([]);
   const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [search, setSearch] = useState({
     city: 'Dubai',
@@ -38,35 +38,16 @@ export default function ToursPage() {
   const handleSearch = async () => {
     if (!search.city) return;
     setLoading(true);
-    setResults(null);
+    setTours([]);
     try {
       const res = await fetch(`${API_URL}/api/v1/search/tours?location=${encodeURIComponent(search.city)}&currency=${currency}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' }
       });
       const data = await res.json();
-      
-      // If the backend returns an array of tours, we'll just show the first one as the 'featured' result 
-      // since the UI is currently designed to show one featured result. 
-      // If no data, we throw an error to show the empty state.
-      if (Array.isArray(data) && data.length > 0) {
-        const topTour = data[0];
-        setResults({
-          id: topTour.id,
-          tourName: topTour.name || `${search.city} Premium Sightseeing Experience`,
-          duration: topTour.duration || '6 Hours (Full-Day)',
-          estimatedFee: topTour.price?.totalAmount || topTour.price || 0,
-          availability: 'Instant Confirmation Available',
-          message: topTour.description || 'Explore the world\'s most iconic landmarks with priority access and professional guides.',
-          image: topTour.image || `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`
-        });
-      } else {
-        throw new Error('No tours found');
-      }
+      setTours(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Search failed', err);
-      // We no longer set fake results here, letting the UI show the empty/error state
-      setResults(null);
     } finally {
       setLoading(false);
     }
@@ -82,7 +63,7 @@ export default function ToursPage() {
             </div>
             Tours & Experiences
           </h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Global curated experiences, activities, and sightseeing tours.</p>
+          <p className="text-sm text-slate-400 font-medium mt-2">Global curated experiences, activities, and sightseeing tours from our Verified Partners.</p>
         </div>
         <div className="flex gap-2">
           <span className="px-4 py-2 bg-orange-50 text-[#FF6B00] text-[10px] font-black uppercase tracking-widest rounded-xl border border-orange-100 flex items-center gap-2">
@@ -125,90 +106,61 @@ export default function ToursPage() {
 
       {/* Results Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-10 pb-20">
-        {results ? (
+        {tours.map((tour, i) => (
           <div 
-            onClick={() => setSelectedTour(results)}
+            key={i} 
+            onClick={() => setSelectedTour(tour)}
             className="group bg-white rounded-[48px] border border-slate-100 overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(10,22,41,0.12)] hover:-translate-y-2 transition-all duration-700 flex flex-col relative cursor-pointer"
           >
-            {/* Live Badge */}
-            <div className="absolute top-8 left-8 z-20">
-              <div className="px-4 py-2.5 bg-white/90 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/50">
-                <div className="w-2 h-2 bg-[#FF6B00] rounded-full animate-pulse" />
-                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Live Experience</span>
-              </div>
-            </div>
-
-            {/* Provider Badge */}
-            <div className="absolute top-8 right-8 z-20">
-              <div className="px-4 py-2.5 bg-[#0A1629]/80 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/10">
-                <span className="text-[10px] font-black text-white uppercase tracking-widest opacity-80">DIRECT CONNECT</span>
-              </div>
-            </div>
-            
             {/* Hero Image */}
-            <div className="relative h-80 shrink-0 overflow-hidden">
+            <div className="relative h-64 shrink-0 overflow-hidden">
               <img 
-                src={results.image || `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`} 
-                alt={results.tourName} 
+                src={tour.image || `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600`} 
+                alt={tour.title} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 flex items-end p-8">
                  <p className="text-white text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3">
                    <MapPin size={16} className="text-[#FF6B00]" />
-                   {search.city}
+                   {tour.location || search.city}
                  </p>
               </div>
             </div>
 
             {/* Content Area */}
-            <div className="p-10 flex flex-col flex-1 relative">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100">
-                  {results.duration}
+            <div className="p-8 flex flex-col flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-blue-100">
+                  {tour.duration || 'Full Day'}
                 </div>
-                <div className="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                  Instant Confirmation
-                </div>
+                {tour.rating && (
+                  <div className="flex items-center gap-1 text-[10px] font-black text-slate-400">
+                     ★ <span className="text-slate-900">{tour.rating}</span>
+                  </div>
+                )}
               </div>
 
-              <h3 className="text-2xl font-black text-slate-900 leading-[1.2] group-hover:text-[#FF6B00] transition-colors duration-300 tracking-tight mb-4 line-clamp-2">
-                {results.tourName}
+              <h3 className="text-lg font-black text-slate-900 leading-tight group-hover:text-[#FF6B00] transition-colors duration-300 tracking-tight mb-4 line-clamp-2">
+                {tour.title}
               </h3>
-              
-              <p className="text-sm text-slate-400 font-medium leading-relaxed mb-8 line-clamp-2">
-                {results.message}
-              </p>
 
               {/* Price Section */}
-              <div className="mt-auto pt-8 border-t border-slate-50 flex items-center justify-between">
+              <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Exclusive Rate</p>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-sm font-bold text-slate-300 line-through">
-                      {currency} {(results.estimatedFee * 1.12).toLocaleString()}
-                    </span>
-                    <span className="text-3xl font-black text-[#0A1629]">
-                      {currency} {results.estimatedFee.toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-[9px] font-bold text-green-500 uppercase tracking-tighter mt-2 flex items-center gap-1.5">
-                    <CheckCircle2 size={12} /> Best Price Guaranteed
-                  </p>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Per Person</p>
+                   <p className="text-2xl font-black text-[#0A1629]">
+                     {currency} {(tour.price?.totalAmount || tour.price || 0).toLocaleString()}
+                   </p>
                 </div>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const url = `/dashboard/checkout?vertical=experience&provider=DirectConnect&id=${results.id}&name=${encodeURIComponent(results.tourName)}&price=${results.estimatedFee}&currency=${currency}`;
-                    window.location.href = url;
-                  }}
-                  className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
-                >
-                  <ChevronRight size={24} />
-                </button>
+                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-[#FF6B00] group-hover:text-white transition-all">
+                   <ChevronRight size={20} />
+                </div>
               </div>
             </div>
           </div>
-        ) : !loading && (
+        ))}
+
+        {!loading && tours.length === 0 && (
           <div className="lg:col-span-2 2xl:col-span-3 py-40 text-center bg-white rounded-[60px] border-2 border-dashed border-slate-100 relative overflow-hidden shadow-sm">
              <div className="relative z-10">
               <div className="w-40 h-40 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-10 group hover:scale-110 transition-transform duration-700">
@@ -351,20 +303,6 @@ export default function ToursPage() {
         </div>
       )}
 
-      {!loading && !results && (
-        <div className="py-32 text-center bg-slate-50/50 rounded-[48px] border-2 border-dashed border-slate-200/60 relative overflow-hidden">
-           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-50/50 via-transparent to-transparent opacity-50" />
-           <div className="relative z-10">
-              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl shadow-slate-200/50 group hover:scale-110 transition-transform duration-700">
-                <Globe size={56} className="text-slate-200 group-hover:text-[#FF6B00] transition-colors" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Explore the World</h3>
-              <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-4 leading-relaxed px-6">
-                Enter a destination city and date to explore available sightseeing activities and curated tours with live {currency} rates.
-              </p>
-           </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -58,18 +58,8 @@ export class GetYourGuideService {
 
     } catch (error: any) {
       this.logger.error(`GetYourGuide search failed: ${error.message}`);
-      // Return a refined fallback result if API fails to avoid empty UI
-      return [{
-        id: `gyg-fallback-${Math.random().toString(36).substring(7)}`,
-        vertical: TravelVertical.EXPERIENCE,
-        provider: 'GetYourGuide',
-        title: `Explore ${location} Experience`,
-        location,
-        duration: 'Flexible',
-        image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80',
-        price: PricingEngine.calculate(85, 15, tenantMarkup, 'USD', targetCurrency, this.currencyService),
-        bookingUrl: `https://www.getyourguide.com/s/?q=${location}&partner_id=${this.partnerId}`,
-      }];
+      // Throw error so the UI can handle empty state correctly without mock data
+      throw new Error(`GetYourGuide search failed: ${error.message}`);
     }
   }
 

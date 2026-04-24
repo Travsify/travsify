@@ -4,7 +4,7 @@ import { LiteApiService } from '../demo/services/liteapi.service';
 import { TenantService } from '../tenant/tenant.service';
 import { CheckoutService } from './checkout.service';
 import { SherpaService } from '../demo/services/sherpa.service';
-import { MozioService } from '../demo/services/mozio.service';
+import { TransferService } from '../demo/services/transfer.service';
 import { GetYourGuideService } from '../demo/services/getyourguide.service';
 import { SafetyWingService } from '../demo/services/safetywing.service';
 
@@ -18,7 +18,7 @@ export class GatewayController {
     private readonly liteApiService: LiteApiService,
     private readonly checkoutService: CheckoutService,
     private readonly sherpaService: SherpaService,
-    private readonly mozioService: MozioService,
+    private readonly transferService: TransferService,
     private readonly gygService: GetYourGuideService,
     private readonly safetyWingService: SafetyWingService,
   ) {}
@@ -86,7 +86,7 @@ export class GatewayController {
     @Body() criteria: any,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.mozioService.searchTransfers({
+    return this.transferService.searchTransfers({
       pickupAddress: criteria.pickup || criteria.pickupAddress || 'Heathrow Airport (LHR)',
       dropoffAddress: criteria.dropoff || criteria.dropoffAddress || 'Central London',
       pickupDatetime: criteria.time || criteria.pickupDatetime || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -128,7 +128,7 @@ export class GatewayController {
       this.ndcService.airShopping({ origin: 'LOS', destination: location || 'LHR', departureDate: '2026-05-01', adults: 1 }, tenant),
       this.liteApiService.searchHotels({ city: location || 'London', checkin: '2026-05-01', checkout: '2026-05-05', adults: 1 }, tenant.hotelMarkup),
       this.gygService.getTours(location || 'London', tenant.hotelMarkup),
-      this.mozioService.getTransferOptions(location || 'London', tenant.hotelMarkup),
+      this.transferService.getTransferOptions(location || 'London', tenant.hotelMarkup),
       this.safetyWingService.getInsuranceQuotes(tenant.insuranceMarkup),
     ]);
 

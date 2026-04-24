@@ -5,7 +5,7 @@ import { NdcModule } from '../ndc/ndc.module';
 import { LiteApiService } from './services/liteapi.service';
 import { SherpaService } from './services/sherpa.service';
 import { GetYourGuideService } from './services/getyourguide.service';
-import { MozioService } from './services/mozio.service';
+import { TransferService } from './services/transfer.service';
 import { SafetyWingService } from './services/safetywing.service';
 import { FincraService } from './services/fincra.service';
 import { StripeService } from './services/stripe.service';
@@ -17,7 +17,7 @@ import { StripeService } from './services/stripe.service';
     LiteApiService,
     SherpaService,
     GetYourGuideService,
-    MozioService,
+    TransferService,
     SafetyWingService,
     FincraService,
     StripeService,
@@ -26,7 +26,7 @@ import { StripeService } from './services/stripe.service';
     LiteApiService,
     SherpaService,
     GetYourGuideService,
-    MozioService,
+    TransferService,
     SafetyWingService,
     FincraService,
     StripeService,

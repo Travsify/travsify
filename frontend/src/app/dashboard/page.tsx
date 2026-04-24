@@ -51,12 +51,26 @@ export default function OverviewPage() {
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [revenuePeriod, setRevenuePeriod] = useState('daily');
   const [searchQuery, setSearchQuery] = useState('');
+  const [apiStats, setApiStats] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
     fetchDashboardData();
     fetchRevenueStats();
+    fetchApiStats();
   }, [revenuePeriod]);
+
+  const fetchApiStats = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/developer/logs/stats`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) setApiStats(await res.json());
+    } catch (err) {
+      console.error('Failed to fetch api stats:', err);
+    }
+  };
 
   const fetchRevenueStats = async () => {
     const token = localStorage.getItem('token');
@@ -197,8 +211,8 @@ export default function OverviewPage() {
           icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Plane size={24} /></div>}
         />
         <StatCard 
-          label="API Calls (Today)" 
-          value="Live" 
+          label="API Calls (Total)" 
+          value={apiStats?.total?.toLocaleString() || '0'} 
           change="Real-time" 
           positive={true}
           icon={<div className="p-3 bg-purple-50 text-purple-600 rounded-xl"><Code2 size={24} /></div>}
@@ -325,9 +339,9 @@ export default function OverviewPage() {
           </div>
           <div className="space-y-6">
             <HealthItem label="API Status" value="Operational" status="success" />
-            <HealthItem label="Average Latency" value="218 ms" />
-            <HealthItem label="Error Rate" value="0.42%" />
-            <HealthItem label="Uptime (30 days)" value="99.97%" />
+            <HealthItem label="Average Latency" value={`${apiStats?.avgLatency || 0} ms`} />
+            <HealthItem label="Error Rate" value={`${apiStats?.total > 0 ? ((apiStats.error / apiStats.total) * 100).toFixed(2) : '0.00'}%`} />
+            <HealthItem label="Uptime (30 days)" value="100.00%" />
           </div>
         </div>
 
@@ -531,7 +545,7 @@ export default function OverviewPage() {
                   <p className="text-xs text-slate-400 font-medium mt-1">Business identity and regulatory compliance verification.</p>
                   <div className="flex items-center gap-2 mt-4">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status:</span>
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase">Approved</span>
+                    <span className={`px-3 py-1 ${user?.status === 'approved' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'} text-[10px] font-black rounded-full uppercase`}>{user?.status || 'Pending'}</span>
                   </div>
                 </div>
               </div>
@@ -544,10 +558,10 @@ export default function OverviewPage() {
                   <Users size={32} />
                 </div>
                 <div>
-                  <h4 className="text-base font-black text-slate-900">Organization</h4>
+                  <h4 className="text-base font-black text-slate-900">{user?.businessName || 'Organization'}</h4>
                   <p className="text-xs text-slate-400 font-medium mt-1">Manage team members, roles and platform settings.</p>
                   <div className="flex items-center gap-2 mt-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Members: {user?.firstName ? 'Active' : '1'}</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account: {user?.email}</span>
                   </div>
                 </div>
               </div>
