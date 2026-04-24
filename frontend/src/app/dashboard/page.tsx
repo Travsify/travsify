@@ -37,6 +37,7 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { API_URL } from '@/utils/api';
 import VisaTracker from '@/components/VisaTracker';
 
@@ -48,9 +49,35 @@ export default function OverviewPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('flights');
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    const query = encodeURIComponent(searchQuery);
+    switch (activeTab) {
+      case 'flights':
+        router.push(`/dashboard/flights?q=${query}`);
+        break;
+      case 'hotels':
+        router.push(`/dashboard/hotels?q=${query}`);
+        break;
+      case 'transfers':
+        router.push(`/dashboard/transfers?q=${query}`);
+        break;
+      case 'visas':
+        router.push(`/dashboard/visa?q=${query}`);
+        break;
+      default:
+        router.push(`/dashboard/flights?q=${query}`);
+    }
+  };
 
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
@@ -283,29 +310,31 @@ export default function OverviewPage() {
           <h3 className="text-xl font-black mb-1">Global Terminal</h3>
           <p className="text-slate-400 text-sm mb-10">Search and book flights, hotels, visas and more</p>
           
-          <div className="flex flex-col md:flex-row gap-6 items-start mb-10">
+          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6 items-start mb-10">
             <div className="flex-1 w-full relative">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
               <input 
                 type="text" 
-                placeholder="Search flights, hotels, visas..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={`Search ${activeTab}...`} 
                 className="w-full pl-16 pr-6 py-4 bg-white rounded-xl text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-600/20"
               />
-              <button className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-orange-600 rounded-lg hover:bg-orange-700 transition-all">
+              <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-orange-600 rounded-lg hover:bg-orange-700 transition-all">
                 <Search size={18} className="text-white" />
               </button>
             </div>
             <div className="w-full md:w-auto">
               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Popular Searches</p>
               <div className="flex flex-wrap gap-2">
-                <Chip label="Lagos → London" />
-                <Chip label="Lagos Hotels" />
-                <Chip label="UK Visa" />
-                <Chip label="New York Hotels" />
-                <Chip label="Dubai Visa" />
+                <Chip label="Lagos → London" onClick={() => { setSearchQuery('Lagos to London'); setActiveTab('flights'); }} />
+                <Chip label="Lagos Hotels" onClick={() => { setSearchQuery('Lagos'); setActiveTab('hotels'); }} />
+                <Chip label="UK Visa" onClick={() => { setSearchQuery('UK Visa'); setActiveTab('visas'); }} />
+                <Chip label="New York Hotels" onClick={() => { setSearchQuery('New York'); setActiveTab('hotels'); }} />
+                <Chip label="Dubai Visa" onClick={() => { setSearchQuery('Dubai Visa'); setActiveTab('visas'); }} />
               </div>
             </div>
-          </div>
+          </form>
 
           <div className="flex flex-wrap gap-4">
             <TerminalTab active={activeTab === 'flights'} onClick={() => setActiveTab('flights')} icon={<Plane size={18} />} label="Flights" />
@@ -555,9 +584,12 @@ function ActivityItem({ icon, label, sub, time, color }: any) {
   );
 }
 
-function Chip({ label }: { label: string }) {
+function Chip({ label, onClick }: { label: string, onClick?: () => void }) {
   return (
-    <button className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white/60 hover:text-white rounded-lg text-[10px] font-black transition-all border border-white/5">
+    <button 
+      onClick={onClick}
+      className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white/60 hover:text-white rounded-lg text-[10px] font-black transition-all border border-white/5"
+    >
       {label}
     </button>
   );
