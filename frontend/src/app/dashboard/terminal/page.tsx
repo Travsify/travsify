@@ -19,7 +19,8 @@ import {
   ArrowRight,
   RefreshCcw,
   LayoutGrid,
-  Filter
+  Filter,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_URL } from '@/utils/api';
