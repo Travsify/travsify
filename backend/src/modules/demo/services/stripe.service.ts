@@ -8,8 +8,11 @@ export class StripeService {
   private readonly secretKey: string;
   private readonly baseUrl = 'https://api.stripe.com/v1';
 
+  private readonly frontendUrl: string;
+
   constructor(private configService: ConfigService) {
     this.secretKey = this.configService.get<string>('STRIPE_SECRET_KEY') || '';
+    this.frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
   }
 
   async createCheckoutSession(data: { amount: number, currency: string, description: string, email?: string, metadata?: any }) {
@@ -23,8 +26,8 @@ export class StripeService {
       params.append('line_items[0][price_data][unit_amount]', Math.round(data.amount * 100).toString());
       params.append('line_items[0][quantity]', '1');
       params.append('mode', 'payment');
-      params.append('success_url', 'https://travsify.com/dashboard/bookings?status=success');
-      params.append('cancel_url', 'https://travsify.com/dashboard/flights?status=cancelled');
+      params.append('success_url', `${this.frontendUrl}/dashboard/bookings?status=success`);
+      params.append('cancel_url', `${this.frontendUrl}/dashboard/flights?status=cancelled`);
       if (data.email) {
         params.append('customer_email', data.email);
       }
@@ -66,8 +69,8 @@ export class StripeService {
       params.append('payment_method_types[]', 'card');
       params.append('mode', 'setup');
       params.append('customer_email', email);
-      params.append('success_url', 'https://travsify.com/dashboard/wallets?setup=success');
-      params.append('cancel_url', 'https://travsify.com/dashboard/wallets?setup=cancelled');
+      params.append('success_url', `${this.frontendUrl}/dashboard/wallets?setup=success`);
+      params.append('cancel_url', `${this.frontendUrl}/dashboard/wallets?setup=cancelled`);
 
       const response = await axios.post(`${this.baseUrl}/checkout/sessions`, params, {
         headers: {

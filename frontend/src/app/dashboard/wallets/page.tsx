@@ -27,15 +27,25 @@ export default function WalletPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState('');
+  const [conversionRate, setConversionRate] = useState<number>(1500);
 
   useEffect(() => {
     fetchData();
+    // Fetch live conversion rate
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(r => r.json())
+      .then(data => { if (data?.rates?.NGN) setConversionRate(data.rates.NGN); })
+      .catch(() => {});
+
     const params = new URLSearchParams(window.location.search);
     if (params.get('setup') === 'success') {
-      alert('Card linked successfully via Travsify Pay!');
+      setToast('✅ Card linked successfully via Travsify Pay!');
+      setTimeout(() => setToast(''), 5000);
     }
     if (params.get('status') === 'success') {
-      alert('Wallet funded successfully!');
+      setToast('✅ Wallet funded successfully!');
+      setTimeout(() => setToast(''), 5000);
     }
   }, []);
 
@@ -205,6 +215,13 @@ export default function WalletPage() {
 
   return (
     <div className="space-y-8 animate-fade-up">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-[200] bg-emerald-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-2xl shadow-emerald-600/30 animate-in slide-in-from-top-4 duration-300">
+          {toast}
+        </div>
+      )}
+
       {/* Header with Currency Toggle */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -433,7 +450,7 @@ export default function WalletPage() {
                 </div>
                 {showConvertModal && amount && (
                   <p className="text-[11px] font-bold text-blue-600 mt-2 px-2 uppercase tracking-wider">
-                    You will receive: {activeWallet === 'NGN' ? '$' : '₦'}{(parseFloat(amount) * (activeWallet === 'NGN' ? 1/1500 : 1500)).toLocaleString()}
+                    You will receive: {activeWallet === 'NGN' ? '$' : '₦'}{(parseFloat(amount) * (activeWallet === 'NGN' ? 1/conversionRate : conversionRate)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                   </p>
                 )}
               </div>

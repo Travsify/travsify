@@ -4,6 +4,9 @@ import { Repository, DataSource, In } from 'typeorm';
 import { Wallet, Currency } from './entities/wallet.entity';
 import { Transaction, TransactionType, TransactionStatus } from './entities/transaction.entity';
 
+import { CurrencyService } from '../../common/services/currency.service';
+import { NotificationService } from '../notifications/notification.service';
+
 @Injectable()
 export class WalletService {
   constructor(
@@ -12,6 +15,8 @@ export class WalletService {
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
     private dataSource: DataSource,
+    private currencyService: CurrencyService,
+    private notificationService: NotificationService,
   ) {}
 
   async findUserWallets(userId: string): Promise<Wallet[]> {
@@ -58,6 +63,15 @@ export class WalletService {
 
       const savedTransaction = await queryRunner.manager.save(transaction);
       await queryRunner.commitTransaction();
+
+      // Send notification
+      await this.notificationService.create({
+        userId,
+        title: 'Wallet Credited',
+        message: `Your wallet has been credited with ${amount} ${currency}.`,
+        type: 'wallet_credit'
+      });
+
       return savedTransaction;
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -94,6 +108,15 @@ export class WalletService {
 
       const savedTransaction = await queryRunner.manager.save(transaction);
       await queryRunner.commitTransaction();
+
+      // Send notification
+      await this.notificationService.create({
+        userId,
+        title: 'Wallet Debited',
+        message: `Your wallet was debited ${amount} ${currency}.`,
+        type: 'wallet_debit'
+      });
+
       return savedTransaction;
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -116,12 +139,9 @@ export class WalletService {
       if (!fromWallet || !toWallet) throw new NotFoundException('Wallet not found');
       if (Number(fromWallet.balance) < Number(amount)) throw new BadRequestException('Insufficient balance for conversion');
 
-      // 2. Calculate conversion (Simulated rate: 1 USD = 1500 NGN)
-      let rate = 1;
-      if (from === Currency.USD && to === Currency.NGN) rate = 1500;
-      if (from === Currency.NGN && to === Currency.USD) rate = 1 / 1500;
-
-      const convertedAmount = amount * rate;
+      // 2. Calculate conversion
+      const convertedAmount = this.currencyService.convert(amount, from, to);
+      const rate = convertedAmount / amount;
 
       // 3. Update balances
       fromWallet.balance = Number(fromWallet.balance) - Number(amount);
@@ -156,6 +176,15 @@ export class WalletService {
       ]);
 
       await queryRunner.commitTransaction();
+
+      // Send notification
+      await this.notificationService.create({
+        userId,
+        title: 'Currency Converted',
+        message: `You successfully converted ${amount} ${from} to ${convertedAmount.toFixed(2)} ${to}.`,
+        type: 'wallet_conversion'
+      });
+
       return { fromTransaction: savedFrom, toTransaction: savedTo };
     } catch (err) {
       await queryRunner.rollbackTransaction();
