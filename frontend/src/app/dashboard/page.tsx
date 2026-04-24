@@ -52,6 +52,7 @@ export default function OverviewPage() {
   const [revenuePeriod, setRevenuePeriod] = useState('daily');
   const [searchQuery, setSearchQuery] = useState('');
   const [apiStats, setApiStats] = useState<any>(null);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -152,8 +153,6 @@ export default function OverviewPage() {
   };
 
   const getPercent = (count: number) => totalBookingsCount > 0 ? `${Math.round((count / totalBookingsCount) * 100)}%` : '0%';
-
-  const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
