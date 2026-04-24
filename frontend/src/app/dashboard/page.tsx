@@ -523,9 +523,9 @@ export default function OverviewPage() {
         <div className="space-y-6">
           <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Developer Suite</h3>
           <div className="grid grid-cols-2 gap-6">
-            <Link href="/dashboard/developers"><DevCard icon={<Key className="text-orange-600" />} label="API Keys" sub="Manage your Sandbox and Live environment API keys." link="View Keys" /></Link>
-            <Link href="/dashboard/developers"><DevCard icon={<Zap className="text-rose-600" />} label="Webhooks" sub="Configure real-time event notifications for your endpoints." link="Manage Webhooks" /></Link>
-            <Link href="/dashboard/developers"><DevCard icon={<Activity className="text-blue-600" />} label="API Logs" sub="Monitor API requests and responses for debugging." link="View Logs" /></Link>
+            <Link href="/dashboard/api-keys"><DevCard icon={<Key className="text-orange-600" />} label="API Keys" sub="Manage your Sandbox and Live environment API keys." link="View Keys" /></Link>
+            <Link href="/dashboard/webhooks"><DevCard icon={<Zap className="text-rose-600" />} label="Webhooks" sub="Configure real-time event notifications for your endpoints." link="Manage Webhooks" /></Link>
+            <Link href="/dashboard/logs"><DevCard icon={<Activity className="text-blue-600" />} label="API Logs" sub="Monitor API requests and responses for debugging." link="View Logs" /></Link>
             <Link href="/dashboard/docs"><DevCard icon={<Code2 className="text-blue-700" />} label="Documentation" sub="Access API reference, SDKs and integration guides." link="View Documentation" /></Link>
           </div>
         </div>
@@ -548,7 +548,7 @@ export default function OverviewPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/dashboard/developers"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">View Details →</button></Link>
+              <Link href="/dashboard/kyc"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">View Details →</button></Link>
             </div>
             
             <div className="p-8 bg-white border border-slate-200 rounded-2xl flex items-center justify-between shadow-sm">
@@ -564,7 +564,7 @@ export default function OverviewPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/dashboard/developers"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">Manage Organization →</button></Link>
+              <Link href="/dashboard/settings"><button className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline">Manage Organization →</button></Link>
             </div>
           </div>
         </div>
