@@ -44,6 +44,23 @@ export class DeveloperWebhooksService {
     }
   }
 
+  async testWebhook(id: string) {
+    const webhook = await this.webhookRepository.findOne({ where: { id } });
+    if (!webhook) throw new Error('Webhook not found');
+
+    const testPayload = {
+      event: 'ping',
+      timestamp: new Date().toISOString(),
+      message: 'This is a test notification from the Travsify Developer Portal.',
+      data: {
+        system: 'Verified Network',
+        status: 'Operational'
+      }
+    };
+
+    return this.sendWebhook(webhook, 'ping', testPayload);
+  }
+
   private async sendWebhook(webhook: DeveloperWebhook, event: string, payload: any) {
     const timestamp = Date.now();
     const signature = crypto

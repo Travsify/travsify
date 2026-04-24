@@ -21,4 +21,9 @@ export class DeveloperWebhooksController {
   async deleteWebhook(@Param('id') id: string) {
     return this.webhooksService.deleteWebhook(id);
   }
+
+  @Post(':id/test')
+  async testWebhook(@Param('id') id: string) {
+    return this.webhooksService.testWebhook(id);
+  }
 }

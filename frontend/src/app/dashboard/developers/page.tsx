@@ -383,6 +383,19 @@ function WebhooksSection() {
     }
   };
 
+  const triggerTest = async (id: string) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/developer/webhooks/${id}/test`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) alert('Test webhook sent successfully!');
+    } catch (err) {
+      console.error('Failed to test webhook:', err);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-[32px] border border-slate-200 p-10 shadow-sm">
@@ -426,12 +439,30 @@ function WebhooksSection() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
+                 <button 
+                   onClick={() => triggerTest(wh.id)}
+                   className="px-4 py-2 bg-slate-50 text-slate-600 hover:bg-orange-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-100"
+                 >
+                   Test Trigger
+                 </button>
                  <div className="text-right">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Signing Secret</p>
                     <p className="text-[11px] font-mono text-blue-500 font-bold">{wh.secret.substring(0, 10)}••••••••</p>
                  </div>
-                 <button className="p-3 text-slate-300 hover:text-rose-600 transition-all">
+                 <button 
+                   onClick={async () => {
+                     if (confirm('Delete this webhook?')) {
+                        const token = localStorage.getItem('token');
+                        await fetch(`${API_URL}/developer/webhooks/${wh.id}`, { 
+                          method: 'DELETE',
+                          headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        fetchWebhooks();
+                     }
+                   }}
+                   className="p-3 text-slate-300 hover:text-rose-600 transition-all"
+                 >
                     <ShieldAlert size={20} />
                  </button>
               </div>
