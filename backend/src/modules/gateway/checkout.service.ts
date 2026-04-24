@@ -97,7 +97,7 @@ export class CheckoutService {
       } else if (vertical === 'hotel') {
          providerResult = await this.liteApiService.bookHotel(providerData);
       } else if (vertical === 'transfer') {
-         providerResult = await this.mozioService.bookRide(providerData); // Keeping service name but ensuring it's for 'Verified Network'
+         providerResult = await this.transferService.bookRide(providerData); // Keeping service name but ensuring it's for 'Verified Network'
       } else if (vertical === 'tour') {
          providerResult = (this.gygService as any).bookTour ? await (this.gygService as any).bookTour(providerData) : { status: 'mocked', vertical };
       } else if (vertical === 'insurance') {

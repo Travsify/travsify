@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Query, Logger, Param } from '@nestjs/commo
 import { NdcService } from '../ndc/ndc.service';
 import { LiteApiService } from './services/liteapi.service';
 import { GetYourGuideService } from './services/getyourguide.service';
-import { MozioService } from './services/mozio.service';
+import { TransferService } from './services/transfer.service';
 import { SafetyWingService } from './services/safetywing.service';
 import { SherpaService } from './services/sherpa.service';
 import { StripeService } from './services/stripe.service';
@@ -17,7 +17,7 @@ export class DemoController {
     private readonly liteApiService: LiteApiService,
     private readonly sherpaService: SherpaService,
     private readonly getYourGuideService: GetYourGuideService,
-    private readonly mozioService: MozioService,
+    private readonly transferService: TransferService,
     private readonly safetyWingService: SafetyWingService,
     private readonly stripeService: StripeService,
     private readonly fincraService: FincraService,
@@ -117,12 +117,12 @@ export class DemoController {
     return this.getYourGuideService.getActivityDetails(activityId);
   }
 
-  // ─── 🚗 Airport Transfers (Mozio) ────────────────────────
+  // ─── 🚗 Airport Transfers (Verified Network) ────────────────────────
   @Post('transfers/search')
   async searchTransfers(@Body() criteria: any) {
     this.logger.log(`Transfer search: ${criteria.pickupAddress} → ${criteria.dropoffAddress}`);
     const defaultDatetime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-    return this.mozioService.searchTransfers({
+    return this.transferService.searchTransfers({
       pickupAddress: criteria.pickupAddress || 'Heathrow Airport (LHR)',
       dropoffAddress: criteria.dropoffAddress || 'Central London',
       pickupDatetime: criteria.pickupDatetime || defaultDatetime,
@@ -133,7 +133,7 @@ export class DemoController {
 
   @Get('transfers/status/:searchId')
   async getTransferStatus(@Param('searchId') searchId: string) {
-    return (this.mozioService as any).getTransferStatus ? (this.mozioService as any).getTransferStatus(searchId) : { status: 'completed' };
+    return (this.transferService as any).getTransferStatus ? (this.transferService as any).getTransferStatus(searchId) : { status: 'completed' };
   }
 
   // ─── 🛡️ Travel Insurance (SafetyWing) ────────────────────
