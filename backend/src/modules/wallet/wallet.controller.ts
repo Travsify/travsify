@@ -29,7 +29,7 @@ export class WalletController {
 
   @Get('revenue-stats')
   async getRevenueStats(@Request() req: any, @Query('period') period: string = 'daily') {
-    return this.walletService.getRevenueStats(req.user.id, period);
+    return this.walletService.getRevenueStats(req.user.id, period as 'daily' | 'weekly' | 'monthly');
   }
 
   @Post('fund')
