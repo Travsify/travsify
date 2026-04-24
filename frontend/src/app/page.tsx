@@ -1,17 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Plane, Hotel, Car, ShieldCheck, Globe, 
   Code2, Wallet, Search, PieChart, Lock, 
   Key, Zap, Play, CheckCircle2, ArrowRight,
   CreditCard, BarChart3, Settings, Users,
-  Briefcase, Rocket, Smartphone, Building2, FileText
+  Briefcase, Rocket, Smartphone, Building2, FileText,
+  ScrollText, ChevronDown, X, Menu
 } from 'lucide-react';
 
 export default function LandingPage() {
   const mainRef = useRef<HTMLDivElement>(null);
+  const [bookMenuOpen, setBookMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const verticals = [
+    { id: 'flights', label: 'Flights', desc: 'Search 500+ airlines globally', icon: <Plane size={20} />, color: 'blue' },
+    { id: 'hotels', label: 'Hotels', desc: 'Over 1M+ properties worldwide', icon: <Hotel size={20} />, color: 'orange' },
+    { id: 'transfers', label: 'Transfers', desc: 'Airport pickups & city rides', icon: <Car size={20} />, color: 'emerald' },
+    { id: 'visa', label: 'eVisa', desc: 'Instant visa processing', icon: <ScrollText size={20} />, color: 'indigo' },
+    { id: 'insurance', label: 'Insurance', desc: 'Travel protection plans', icon: <ShieldCheck size={20} />, color: 'teal' },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -33,18 +44,55 @@ export default function LandingPage() {
             </div>
             <span className="text-xl font-black tracking-tight text-[#0A2540]">TRAVSIFY <span className="text-[#FF7A00]">NDC</span></span>
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-[#5B6B7C]">
-            <Link href="#products" className="hover:text-[#0A2540] transition-colors">Products</Link>
-            <Link href="#developers" className="hover:text-[#0A2540] transition-colors">Developers</Link>
-            <Link href="#company" className="hover:text-[#0A2540] transition-colors">Company</Link>
+          <div className="hidden md:flex items-center gap-1">
+            <div className="relative">
+              <button onClick={() => setBookMenuOpen(!bookMenuOpen)} className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[13px] font-bold text-[#0A2540] hover:bg-slate-50 transition-all">
+                <Globe size={16} className="text-[#FF7A00]" /> Book Travel <ChevronDown size={14} className={`transition-transform ${bookMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {bookMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setBookMenuOpen(false)} />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[400px] bg-white rounded-[24px] border border-[#E5EAF0] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] z-50 overflow-hidden animate-fade-up">
+                    <div className="p-3">
+                      <p className="px-4 pt-3 pb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Travel Services</p>
+                      {verticals.map((v) => (
+                        <Link key={v.id} href={`/demo?tab=${v.id}`} onClick={() => setBookMenuOpen(false)} className="flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-slate-50 transition-all group">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-slate-100 group-hover:bg-slate-200 transition-colors`}>{v.icon}</div>
+                          <div className="flex-1"><p className="text-[13px] font-black text-slate-900">{v.label}</p><p className="text-[11px] font-medium text-slate-400">{v.desc}</p></div>
+                          <ArrowRight size={14} className="text-slate-300 group-hover:text-[#FF7A00] group-hover:translate-x-1 transition-all" />
+                        </Link>
+                      ))}
+                    </div>
+                    <div className="border-t border-[#E5EAF0] p-4 bg-slate-50/50">
+                      <Link href="/demo" className="flex items-center justify-center gap-2 w-full py-3 bg-[#0A2540] text-white rounded-xl font-black text-[12px] uppercase tracking-widest hover:bg-[#FF7A00] transition-all"><Search size={14} /> Explore All Services</Link>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            <Link href="#products" className="px-4 py-2.5 text-[13px] font-bold text-[#5B6B7C] hover:text-[#0A2540] transition-colors">Products</Link>
+            <Link href="#developers" className="px-4 py-2.5 text-[13px] font-bold text-[#5B6B7C] hover:text-[#0A2540] transition-colors">Developers</Link>
+            <Link href="/docs" className="px-4 py-2.5 text-[13px] font-bold text-[#5B6B7C] hover:text-[#0A2540] transition-colors">Docs</Link>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-[13px] font-bold text-[#5B6B7C] hover:text-[#0A2540] transition-colors">Log in</Link>
-            <Link href="/register" className="text-[13px] font-bold bg-[#FF7A00] text-white px-5 py-2.5 rounded-lg hover:bg-[#E86E00] transition-colors">
-              Get API Access
-            </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/demo" className="hidden md:flex items-center gap-2 text-[13px] font-bold bg-[#0A2540] text-white px-5 py-2.5 rounded-lg hover:bg-[#0A2540]/90 transition-colors"><Play size={14} fill="currentColor" /> Live Demo</Link>
+            <Link href="/login" className="hidden md:block text-[13px] font-bold text-[#5B6B7C] hover:text-[#0A2540] transition-colors">Log in</Link>
+            <Link href="/register" className="text-[13px] font-bold bg-[#FF7A00] text-white px-5 py-2.5 rounded-lg hover:bg-[#E86E00] transition-colors">Get API Access</Link>
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-600">{mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}</button>
           </div>
         </div>
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-[#E5EAF0] px-6 py-6 space-y-2 animate-fade-up">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Book Travel</p>
+            {verticals.map((v) => (
+              <Link key={v.id} href={`/demo?tab=${v.id}`} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 transition-all">{v.icon}<span className="text-sm font-bold text-slate-900">{v.label}</span></Link>
+            ))}
+            <div className="border-t border-slate-100 pt-4 mt-4 space-y-2">
+              <Link href="/demo" className="block text-sm font-bold text-slate-600 px-4 py-2">Live Demo</Link>
+              <Link href="/login" className="block text-sm font-bold text-slate-600 px-4 py-2">Log in</Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="pt-20">
@@ -81,6 +129,21 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3"><div className="w-10 h-10 bg-[#16A34A]/10 rounded-lg flex items-center justify-center"><CheckCircle2 size={20} className="text-[#16A34A]"/></div><div><p className="text-xs font-bold text-[#0A2540]">99.99% Uptime</p><p className="text-[10px] text-[#5B6B7C]">Enterprise SLA</p></div></div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ─── BOOKING WIDGET STRIP ─── */}
+        <section className="max-w-[1200px] mx-auto px-6 pb-16">
+          <div className="bg-[#0A2540] rounded-[24px] p-2 flex flex-wrap lg:flex-nowrap items-center gap-2 shadow-xl">
+            {verticals.map((v) => (
+              <Link key={v.id} href={`/demo?tab=${v.id}`} className="flex-1 min-w-[140px] flex items-center justify-center gap-3 px-6 py-4 rounded-[18px] text-[13px] font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all group">
+                <span className="group-hover:scale-110 transition-transform">{v.icon}</span>
+                {v.label}
+              </Link>
+            ))}
+            <Link href="/demo" className="flex-shrink-0 flex items-center gap-2 px-8 py-4 bg-[#FF7A00] text-white rounded-[18px] font-black text-[13px] hover:bg-[#E86E00] transition-all shadow-lg shadow-[#FF7A00]/20">
+              <Search size={16} /> Search All
+            </Link>
           </div>
         </section>
 
