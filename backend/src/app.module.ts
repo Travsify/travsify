@@ -15,6 +15,8 @@ import { KycModule } from './modules/kyc/kyc.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { AdminController } from './modules/admin/admin.controller';
+import { ApiLogsModule } from './modules/api-logs/api-logs.module';
+import { DeveloperWebhooksModule } from './modules/developer-webhooks/developer-webhooks.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { AdminController } from './modules/admin/admin.controller';
     KycModule,
     WalletModule,
     NotificationModule,
+    ApiLogsModule,
+    DeveloperWebhooksModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService],
