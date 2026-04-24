@@ -192,7 +192,7 @@ export default function DevelopersPage() {
                   <span className="text-slate-500 italic"># 3-Line Integration: Search all travel verticals</span><br/>
                   <span className="text-white">import</span> travsify <span className="text-slate-500"># or use native fetch/curl</span><br/>
                   <span className="text-blue-400">travsify</span>.apiKey = "<span className="text-orange-500">{tenant?.apiKey || 'YOUR_KEY'}</span>"<br/>
-                  <span className="text-emerald-400">const</span> results = <span className="text-blue-400">await</span> travsify.<span className="text-orange-400">search</span>({ from: <span className="text-emerald-400">'LHR'</span>, to: <span className="text-emerald-400">'LOS'</span> })
+                  <span className="text-emerald-400">const</span> results = <span className="text-blue-400">await</span> travsify.<span className="text-orange-400">search</span>({'{'} from: <span className="text-emerald-400">'LHR'</span>, to: <span className="text-emerald-400">'LOS'</span> {'}'})
                </div>
             </div>
           </div>
