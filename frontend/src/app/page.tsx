@@ -18,7 +18,7 @@ import { Logo } from '@/components/Logo';
 // --- ANIMATION VARIANTS ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any } }
 };
 
 const staggerContainer = {
@@ -89,7 +89,7 @@ const VisualSection = ({ reverse = false, image, children, id }: { reverse?: boo
         initial={{ opacity: 0, scale: 0.95, x: reverse ? -40 : 40 }}
         whileInView={{ opacity: 1, scale: 1, x: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as any }}
         className={`relative ${reverse ? 'lg:order-1' : ''}`}
       >
         <div className="absolute -inset-10 bg-gradient-to-tr from-blue-100/30 to-orange-100/30 blur-[100px] rounded-full -z-10" />
@@ -176,7 +176,7 @@ export default function LandingPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] as any }}
             className="text-7xl md:text-9xl font-black tracking-tighter leading-[0.85] text-[#0A2540] mb-12"
           >
             ONE API FOR<br/>
@@ -213,7 +213,7 @@ export default function LandingPage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: 100 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 1, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 1, duration: 1.5, ease: [0.16, 1, 0.3, 1] as any }}
             className="mt-32 w-full max-w-[1200px] aspect-video rounded-[60px] overflow-hidden border-8 border-slate-50 shadow-2xl relative group"
           >
              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109c055?w=1600&q=80" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[10s]" alt="Travel Hero" />
