@@ -32,6 +32,7 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
   useEffect(() => {
     fetchBookings();
@@ -81,7 +82,7 @@ export default function BookingsPage() {
     );
   }
 
-  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+
 
   return (
     <div className="space-y-8 animate-fade-up">
