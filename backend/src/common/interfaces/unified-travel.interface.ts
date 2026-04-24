@@ -46,6 +46,9 @@ export interface UnifiedInsurance {
   vertical: TravelVertical.INSURANCE;
   provider: string;
   planName: string;
+  tag?: string;
+  coverage?: string;
+  benefits?: string[];
   coverageDetails: any;
   price: UnifiedPrice;
   bookingUrl: string;
