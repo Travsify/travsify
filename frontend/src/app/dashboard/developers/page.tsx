@@ -198,13 +198,12 @@ export default function DevelopersPage() {
           </div>
 
           <div className="space-y-8">
-            {/* Resource Links */}
             <div className="bg-white rounded-[32px] border border-slate-200 p-10 shadow-sm">
                <h4 className="text-lg font-black text-slate-900 mb-8 tracking-tight">Support Resources</h4>
                <div className="space-y-3">
-                  <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" path="/docs" />
-                  <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" path="/docs" />
-                  <ResourceItem icon={<ShieldCheck size={18} />} title="Best Practices" desc="Build like a pro" path="/docs" />
+                  <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" onClick={() => setActiveTab('docs')} />
+                  <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" onClick={() => setActiveTab('docs')} />
+                  <ResourceItem icon={<ShieldCheck size={18} />} title="Support Center" desc="Get help from engineers" path="/dashboard/support" />
                </div>
             </div>
 
@@ -214,10 +213,10 @@ export default function DevelopersPage() {
                <p className="text-orange-100 font-bold text-sm leading-relaxed mb-10">
                  Our engineering team is ready to help you build the perfect travel experience for your users.
                </p>
-               <button onClick={() => setActiveTab('webhooks')} className="w-full py-5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-95">
-                  Configure Webhooks
+               <Link href="/dashboard/support" className="w-full py-5 bg-slate-900 text-white rounded-[22px] font-black text-[13px] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-95">
+                  Visit Support Center
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                </Link>
             </div>
           </div>
         </div>
