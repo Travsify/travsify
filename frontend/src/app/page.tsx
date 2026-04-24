@@ -80,7 +80,7 @@ const FeatureBlock = ({ icon, title, desc, dark = false }: { icon: any, title: s
 );
 
 const VisualSection = ({ reverse = false, image, children, id }: { reverse?: boolean, image: string, children: React.ReactNode, id?: string }) => (
-  <section id={id} className="py-40 max-w-[1400px] mx-auto px-8">
+  <section id={id} className="py-20 lg:py-40 max-w-[1400px] mx-auto px-8">
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-24 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
       <div className={reverse ? 'lg:order-2' : ''}>
         {children}
@@ -122,7 +122,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white text-[#0B1F33] font-sans selection:bg-[#FF7A00]/20 overflow-x-hidden selection:text-white">
+    <div ref={containerRef} className="min-h-screen bg-white text-[#0B1F33] font-sans selection:bg-[#FF7A00]/20 overflow-x-hidden selection:text-white scroll-smooth">
       
       {/* --- PROGRESS INDICATOR --- */}
       <motion.div 
@@ -134,7 +134,7 @@ export default function LandingPage() {
       <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${scrolled ? 'bg-white/70 backdrop-blur-2xl border-b border-slate-100 py-3 shadow-sm' : 'bg-transparent py-8'}`}>
         <div className="max-w-[1400px] mx-auto px-8 flex items-center justify-between">
           <Link href="/" className="group">
-            <Logo className="w-12 h-12" />
+            <Logo className="w-10 h-10 md:w-12 md:h-12" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-2 bg-slate-100/50 p-1.5 rounded-[22px] border border-slate-200/50">
@@ -148,11 +148,39 @@ export default function LandingPage() {
             <Link href="/register" className="bg-[#0A2540] text-white px-8 py-4 rounded-[18px] text-[12px] font-black hover:bg-[#FF6B00] transition-all shadow-2xl shadow-[#0A2540]/10 hover:shadow-[#FF6B00]/20 hover:scale-[1.02] active:scale-95 uppercase tracking-widest">
               Get Started
             </Link>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-3 bg-slate-100 rounded-xl text-[#0A2540]">
-              <Menu size={24} />
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-3 bg-slate-100 rounded-xl text-[#0A2540] hover:bg-[#FF6B00] hover:text-white transition-all">
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
+
+        {/* --- MOBILE MENU OVERLAY --- */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-white border-b border-slate-100 overflow-hidden"
+            >
+              <div className="p-8 flex flex-col gap-6">
+                {['Products', 'Developers', 'Docs', 'Pricing'].map((item) => (
+                  <Link 
+                    key={item} 
+                    href={`#${item.toLowerCase()}`} 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-2xl font-black text-[#0A2540] hover:text-[#FF6B00] transition-colors"
+                  >
+                    {item}
+                  </Link>
+                ))}
+                <div className="h-px bg-slate-100 my-4" />
+                <Link href="/login" className="text-xl font-black text-slate-500">Login</Link>
+                <Link href="/register" className="bg-[#FF6B00] text-white text-center py-5 rounded-[20px] font-black">Get Started</Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       <main>
@@ -177,7 +205,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] as any }}
-            className="text-7xl md:text-9xl font-black tracking-tighter leading-[0.85] text-[#0A2540] mb-12"
+            className="text-5xl md:text-9xl font-black tracking-tighter leading-[0.85] text-[#0A2540] mb-12"
           >
             ONE API FOR<br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0A2540] via-[#FF6B00] to-[#FF6B00]">EVERY JOURNEY.</span>
@@ -303,7 +331,7 @@ export default function LandingPage() {
         </VisualSection>
 
         {/* ─── SECTION 6: TREASURY & SETTLEMENT ─── */}
-        <section className="bg-[#0A2540] py-40 overflow-hidden relative" id="wallets">
+        <section className="bg-[#0A2540] py-20 lg:py-40 overflow-hidden relative" id="wallets">
           <div className="absolute top-0 left-0 w-full h-full">
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-900/20 blur-[200px] rounded-full" />
           </div>
@@ -465,7 +493,7 @@ export default function LandingPage() {
         </section>
 
         {/* ─── FINAL CTA ─── */}
-        <section className="py-60 text-center relative overflow-hidden">
+        <section className="py-32 lg:py-60 text-center relative overflow-hidden">
            <div className="absolute inset-0 -z-10 bg-slate-50/50" />
            <motion.div 
              initial={{ opacity: 0, scale: 0.95 }}
