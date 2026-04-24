@@ -34,6 +34,8 @@ import {
   Lock
 } from 'lucide-react';
 
+import { API_URL } from '@/utils/api';
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, currency, setCurrency } = useAuth();
   const pathname = usePathname();
@@ -107,7 +109,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/notifications`, {
+        const res = await fetch(`${API_URL}/api/v1/notifications`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -128,7 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const markAsRead = async (id: string) => {
     const token = localStorage.getItem('token');
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/notifications/${id}/read`, {
+      await fetch(`${API_URL}/api/v1/notifications/${id}/read`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       });

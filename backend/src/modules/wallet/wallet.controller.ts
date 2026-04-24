@@ -175,10 +175,9 @@ export class WalletController {
   // ─── Stripe Webhook (Wallet Funding Confirmation) ────────
   @Post('webhook/stripe')
   async handleStripeWebhook(@Req() req: any, @Headers('stripe-signature') sig: string) {
-    // In production, verify the webhook signature with Stripe's SDK.
-    // For now, parse the event directly.
     try {
-      const event = (req as any).body;
+      const payload = req.rawBody || req.body;
+      const event = this.stripeService.constructEvent(payload, sig);
 
       if (event?.type === 'checkout.session.completed') {
         const session = event.data?.object;
@@ -201,7 +200,8 @@ export class WalletController {
       }
 
       return { received: true };
-    } catch (err) {
+    } catch (err: any) {
+      console.error(`Stripe Webhook Error: ${err.message}`);
       return { received: false, error: 'Webhook processing failed' };
     }
   }

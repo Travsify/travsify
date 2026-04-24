@@ -1,87 +1,75 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
-  private readonly secretKey: string;
-  private readonly baseUrl = 'https://api.stripe.com/v1';
-
+  private readonly stripe: Stripe;
   private readonly frontendUrl: string;
+  private readonly webhookSecret: string;
 
   constructor(private configService: ConfigService) {
-    this.secretKey = this.configService.get<string>('STRIPE_SECRET_KEY') || '';
+    const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY') || '';
+    this.stripe = new Stripe(secretKey, {
+      apiVersion: '2025-01-27.acacia' as any, // Use latest stable
+    });
     this.frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    this.webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET') || '';
   }
 
   async createCheckoutSession(data: { amount: number, currency: string, description: string, email?: string, metadata?: any }) {
     this.logger.log(`Stripe: Creating checkout session for ${data.amount} ${data.currency}`);
     try {
-      const params = new URLSearchParams();
-      params.append('payment_method_types[]', 'card');
-      params.append('line_items[0][price_data][currency]', data.currency.toLowerCase());
-      params.append('line_items[0][price_data][product_data][name]', 'Travsify Pay - Flight Booking');
-      params.append('line_items[0][price_data][product_data][description]', data.description);
-      params.append('line_items[0][price_data][unit_amount]', Math.round(data.amount * 100).toString());
-      params.append('line_items[0][quantity]', '1');
-      params.append('mode', 'payment');
-      params.append('success_url', `${this.frontendUrl}/dashboard/bookings?status=success`);
-      params.append('cancel_url', `${this.frontendUrl}/dashboard/flights?status=cancelled`);
-      if (data.email) {
-        params.append('customer_email', data.email);
-      }
-      
-      if (data.metadata) {
-        Object.keys(data.metadata).forEach(key => {
-          params.append(`metadata[${key}]`, data.metadata[key]);
-        });
-      }
-
-      const response = await axios.post(`${this.baseUrl}/checkout/sessions`, params, {
-        headers: {
-          'Authorization': `Bearer ${this.secretKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: data.currency.toLowerCase(),
+            product_data: {
+              name: 'Travsify Pay - Wallet Funding',
+              description: data.description,
+            },
+            unit_amount: Math.round(data.amount * 100),
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${this.frontendUrl}/dashboard/wallets?status=success`,
+        cancel_url: `${this.frontendUrl}/dashboard/wallets?status=cancelled`,
+        customer_email: data.email,
+        metadata: data.metadata,
       });
-      return { status: 'success', link: response.data.url, id: response.data.id };
-    } catch (error) {
-      this.logger.error(`Stripe error: ${error.response?.data?.error?.message || error.message}`);
+
+      return { status: 'success', link: session.url, id: session.id };
+    } catch (error: any) {
+      this.logger.error(`Stripe error: ${error.message}`);
       return { status: 'error', message: 'Stripe payment initiation failed' };
-    }
-  }
-
-  async verifyPayment(sessionId: string) {
-    try {
-      const response = await axios.get(`${this.baseUrl}/checkout/sessions/${sessionId}`, {
-        headers: { 'Authorization': `Bearer ${this.secretKey}` }
-      });
-      return response.data;
-    } catch (error) {
-      return { status: 'failed' };
     }
   }
 
   async createSetupSession(email: string) {
     this.logger.log(`Stripe: Creating setup session for ${email}`);
     try {
-      const params = new URLSearchParams();
-      params.append('payment_method_types[]', 'card');
-      params.append('mode', 'setup');
-      params.append('customer_email', email);
-      params.append('success_url', `${this.frontendUrl}/dashboard/wallets?setup=success`);
-      params.append('cancel_url', `${this.frontendUrl}/dashboard/wallets?setup=cancelled`);
-
-      const response = await axios.post(`${this.baseUrl}/checkout/sessions`, params, {
-        headers: {
-          'Authorization': `Bearer ${this.secretKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'setup',
+        customer_email: email,
+        success_url: `${this.frontendUrl}/dashboard/wallets?setup=success`,
+        cancel_url: `${this.frontendUrl}/dashboard/wallets?setup=cancelled`,
       });
-      return { status: 'success', link: response.data.url, id: response.data.id };
-    } catch (error) {
-      this.logger.error(`Stripe Setup error: ${error.response?.data?.error?.message || error.message}`);
+      return { status: 'success', link: session.url, id: session.id };
+    } catch (error: any) {
+      this.logger.error(`Stripe Setup error: ${error.message}`);
       return { status: 'error', message: 'Stripe setup initiation failed' };
     }
+  }
+
+  constructEvent(payload: string | Buffer, signature: string) {
+    if (!this.webhookSecret) {
+      this.logger.warn('Stripe Webhook Secret not configured. Skipping signature verification.');
+      return JSON.parse(payload.toString());
+    }
+    return this.stripe.webhooks.constructEvent(payload, signature, this.webhookSecret);
   }
 }

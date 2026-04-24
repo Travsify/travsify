@@ -25,7 +25,7 @@ import {
 import Link from 'next/link';
 import VisaTracker from '@/components/VisaTracker';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_URL } from '@/utils/api';
 
 export default function BookingsPage() {
   const [filter, setFilter] = useState('all');

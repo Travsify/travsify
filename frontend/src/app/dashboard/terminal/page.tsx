@@ -1,16 +1,42 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, Plane, Hotel, Car, Globe, ShieldCheck, Loader2, MapPin, Calendar, Clock, Star, Map } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { 
+  Search, 
+  Plane, 
+  Hotel, 
+  Car, 
+  Globe, 
+  ShieldCheck, 
+  Loader2, 
+  MapPin, 
+  Calendar, 
+  Clock, 
+  Star, 
+  Sparkles, 
+  Zap, 
+  ChevronRight,
+  ArrowRight,
+  RefreshCcw,
+  LayoutGrid,
+  Filter
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { API_URL } from '@/utils/api';
 import { useApiKey } from '@/hooks/useApiKey';
+import { useAuth } from '@/context/AuthContext';
+
+type Vertical = 'flights' | 'hotels' | 'transfers' | 'visa' | 'insurance';
 
 export default function TerminalPage() {
   const apiKey = useApiKey();
-  const [tab, setTab] = useState('flights');
+  const { currency } = useAuth();
+  const [tab, setTab] = useState<Vertical>('flights');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [destination, setDestination] = useState('LHR');
   const [results, setResults] = useState<any[]>([]);
+  const [stats, setStats] = useState({ providers: 12, uptime: '99.98%', latency: '240ms' });
 
   const handleSearch = async () => {
     if (!query) return;
@@ -18,16 +44,27 @@ export default function TerminalPage() {
     setResults([]);
     try {
       const endpoint = tab === 'flights' ? 'flights' : tab === 'hotels' ? 'hotels' : 'visa';
-      const body = tab === 'flights' ? { origin: query.toUpperCase(), destination: 'LHR', departureDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], adults: 1 } : {};
-      const searchParams = tab === 'hotels' ? `?city=${query}` : tab === 'visas' ? `?nationality=NG&destination=${query}` : '';
+      const body = tab === 'flights' ? { 
+        origin: query.toUpperCase(), 
+        destination: destination.toUpperCase(), 
+        departureDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
+        adults: 1 
+      } : {};
+      
+      const searchParams = tab === 'hotels' ? `?city=${query}&currency=${currency}` : tab === 'visa' ? `?nationality=NG&destination=${query}` : '';
       
       const res = await fetch(`${API_URL}/api/v1/search/${endpoint}${searchParams}`, {
         method: tab === 'flights' ? 'POST' : 'GET',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey || '' },
+        headers: { 
+          'Content-Type': 'application/json', 
+          'x-api-key': apiKey || '' 
+        },
         ...(tab === 'flights' ? { body: JSON.stringify(body) } : {})
       });
+      
       const data = await res.json();
-      setResults(Array.isArray(data) ? data : [data]);
+      const resultsArray = Array.isArray(data) ? data : data.offers ? data.offers : [data];
+      setResults(resultsArray);
     } catch (err) {
       console.error('Search failed', err);
     } finally {
@@ -36,26 +73,45 @@ export default function TerminalPage() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700">
-      <div className="flex flex-col">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Global Terminal</h1>
-        <p className="text-sm text-slate-400 font-medium">Unified search interface for all travel verticals.</p>
+    <div className="space-y-12 animate-in fade-in duration-700 pb-40">
+      {/* ─── HEADER ─── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <div className="flex items-center gap-2 text-[#FF6B00] mb-2">
+            <Zap size={14} fill="currentColor" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Unified Adapter Layer</span>
+          </div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Global Terminal<span className="text-[#FF6B00]">.</span></h1>
+          <p className="text-sm text-slate-400 font-medium mt-2">Unified query interface for cross-vertical inventory fetching.</p>
+        </div>
+        
+        <div className="flex items-center gap-6 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">System Latency</span>
+            <span className="text-sm font-black text-emerald-500">{stats.latency}</span>
+          </div>
+          <div className="w-px h-8 bg-slate-100" />
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Adapters</span>
+            <span className="text-sm font-black text-[#0A1629]">{stats.providers} Connected</span>
+          </div>
+        </div>
       </div>
 
-      {/* Terminal Tabs */}
-      <div className="flex bg-white p-2 rounded-2xl border border-slate-200 shadow-sm w-fit">
+      {/* ─── TERMINAL TABS ─── */}
+      <div className="flex bg-slate-100/50 p-2 rounded-[28px] border border-slate-200/50 w-fit">
         {[
           { id: 'flights', icon: <Plane size={18} />, label: 'Flights' },
           { id: 'hotels', icon: <Hotel size={18} />, label: 'Hotels' },
           { id: 'transfers', icon: <Car size={18} />, label: 'Transfers' },
-          { id: 'visas', icon: <Globe size={18} />, label: 'e-Visas' },
+          { id: 'visa', icon: <Globe size={18} />, label: 'e-Visas' },
           { id: 'insurance', icon: <ShieldCheck size={18} />, label: 'Insurance' }
         ].map((t) => (
           <button 
             key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[12px] font-black uppercase tracking-widest transition-all ${
-              tab === t.id ? 'bg-orange-600 text-white shadow-xl shadow-orange-600/20' : 'text-slate-400 hover:text-slate-900'
+            onClick={() => setTab(t.id as Vertical)}
+            className={`flex items-center gap-3 px-8 py-4 rounded-[22px] text-[12px] font-black uppercase tracking-widest transition-all ${
+              tab === t.id ? 'bg-white text-[#0A1629] shadow-xl shadow-slate-200/50 scale-[1.02]' : 'text-slate-400 hover:text-slate-900'
             }`}
           >
             {t.icon}
@@ -64,82 +120,153 @@ export default function TerminalPage() {
         ))}
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-[#0A1629] p-10 rounded-[32px] text-white shadow-2xl relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-          <Globe size={180} />
+      {/* ─── SEARCH CONSOLE ─── */}
+      <div className="bg-[#0A1629] p-12 rounded-[48px] text-white shadow-2xl relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-20 opacity-5 group-hover:scale-110 transition-transform duration-1000">
+          <Globe size={240} />
         </div>
-        <div className="relative z-10 flex flex-col md:flex-row gap-6 items-end">
-          <div className="flex-1 w-full space-y-3">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-2">Global Search</p>
+        
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-end">
+          <div className="space-y-4">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] px-2 flex items-center gap-2">
+              <MapPin size={12} className="text-[#FF6B00]" /> {tab === 'flights' ? 'Departure City' : 'Location'}
+            </p>
             <div className="relative">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
               <input 
                 type="text" 
-                placeholder={tab === 'flights' ? 'Airport code (e.g. LOS)' : 'City or Country name'} 
-                className="w-full pl-16 pr-6 py-5 bg-white rounded-2xl text-slate-900 font-bold outline-none focus:ring-4 focus:ring-orange-600/20"
+                placeholder={tab === 'flights' ? 'Airport code (e.g. LOS)' : 'City or Country'} 
+                className="w-full pl-6 pr-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-[#FF6B00]/20 focus:border-[#FF6B00]/50 transition-all uppercase"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
           </div>
-          <button 
-            onClick={handleSearch}
-            disabled={loading}
-            className="bg-orange-600 text-white px-12 py-5 rounded-2xl font-black text-sm hover:bg-orange-700 transition-all active:scale-95 shadow-xl shadow-orange-600/30 flex items-center gap-3 disabled:opacity-50"
-          >
-            {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
-            {loading ? 'Fetching...' : 'Query Inventory'}
-          </button>
+
+          {tab === 'flights' && (
+            <div className="space-y-4">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] px-2 flex items-center gap-2">
+                <MapPin size={12} className="text-blue-500" /> Destination City
+              </p>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Arrival (e.g. LHR)" 
+                  className="w-full pl-6 pr-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all uppercase"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="lg:col-span-1 flex gap-4">
+             <button 
+              onClick={handleSearch}
+              disabled={loading}
+              className="flex-1 bg-[#FF6B00] text-white h-[68px] rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-600 transition-all active:scale-95 shadow-2xl shadow-orange-600/30 flex items-center justify-center gap-3 disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="animate-spin" size={22} /> : <Search size={22} />}
+              {loading ? 'Polling...' : 'Sync Data'}
+            </button>
+            <button className="w-[68px] h-[68px] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-white/10 transition-all">
+              <Filter size={20} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Results */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
-        {results.map((res, i) => (
-          <div key={i} className="bg-white rounded-[32px] border border-slate-200 overflow-hidden hover:shadow-2xl transition-all duration-500 group">
-            <div className="relative h-56 bg-slate-100 overflow-hidden">
-              <img 
-                src={res.image || `https://images.unsplash.com/photo-${1506744038136 + i}-46273834b3fb?auto=format&fit=crop&q=80&w=600&h=400`} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
-                alt="Result"
-              />
-              <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-xl">
-                {res.provider ? 'DIRECT CONNECT' : 'DIRECT CONNECT'}
-              </div>
-              {res.price && (
-                <div className="absolute bottom-6 right-6 px-5 py-3 bg-orange-600 text-white rounded-2xl text-xl font-black shadow-xl shadow-orange-600/20">
-                  ₦{res.price.toLocaleString()}
-                </div>
-              )}
-            </div>
-            <div className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-lg">Verified</span>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1"><Clock size={10} /> Instantly Ticketable</span>
-              </div>
-              <h4 className="text-xl font-black text-slate-900 mb-6 truncate leading-tight">{res.name || res.airline || res.destination || 'Inventory Result'}</h4>
-              <div className="flex gap-3">
-                <button className="flex-1 py-4 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg">
-                  Confirm Booking
-                </button>
-                <button className="w-14 h-14 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-all border border-slate-100">
-                  <Star size={18} />
-                </button>
-              </div>
-            </div>
+      {/* ─── RESULTS FEED ─── */}
+      <div className="space-y-8">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+               <LayoutGrid size={18} />
+             </div>
+             <div>
+               <h3 className="text-lg font-black text-[#0A1629]">Available Inventory</h3>
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Real-time Affiliate Consumption</p>
+             </div>
           </div>
-        ))}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sort by:</span>
+            <select className="bg-transparent text-[11px] font-black text-slate-900 uppercase tracking-widest outline-none cursor-pointer">
+              <option>Price: Low to High</option>
+              <option>Provider Rank</option>
+            </select>
+          </div>
+        </div>
 
-        {!loading && results.length === 0 && (
-          <div className="lg:col-span-3 py-32 text-center bg-slate-50/50 rounded-[40px] border-2 border-dashed border-slate-200">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
-              <Search size={32} className="text-slate-200" />
-            </div>
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Global Inventory Hub</h3>
-            <p className="text-sm text-slate-400 font-medium">Select a service and search across our global provider network.</p>
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <AnimatePresence mode="popLayout">
+            {results.map((res, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -10 }}
+                className="bg-white rounded-[40px] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 group overflow-hidden"
+              >
+                <div className="relative h-60 bg-slate-100 overflow-hidden">
+                  <img 
+                    src={res.image || `https://images.unsplash.com/photo-${1506744038136 + i}-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=600`} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                    alt="Inventory"
+                  />
+                  <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-xl border border-white/50">
+                    <Sparkles size={10} className="inline text-[#FF6B00] mr-2" fill="currentColor" />
+                    Direct Connect
+                  </div>
+                  {res.price && (
+                    <div className="absolute bottom-6 right-6 px-5 py-3 bg-[#0A1629]/90 backdrop-blur-md text-white rounded-2xl text-xl font-black shadow-xl border border-white/10">
+                      {currency === 'USD' ? '$' : '₦'}{(res.price.totalAmount || res.price).toLocaleString()}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-lg border border-emerald-100 flex items-center gap-1.5">
+                      <CheckCircle2 size={10} /> Verified
+                    </span>
+                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1.5"><Clock size={12} /> Instantly Ticketable</span>
+                  </div>
+                  
+                  <h4 className="text-xl font-black text-slate-900 mb-8 leading-tight line-clamp-1">
+                    {res.name || res.airline || res.destination || 'Inventory Result'}
+                  </h4>
+                  
+                  <div className="flex gap-3">
+                    <button className="flex-1 py-4 bg-[#0A1629] text-white rounded-[18px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#FF6B00] transition-all shadow-xl shadow-blue-900/10 active:scale-95">
+                      Confirm Order
+                    </button>
+                    <button className="w-14 h-14 bg-slate-50 text-slate-400 rounded-[18px] flex items-center justify-center hover:bg-slate-100 transition-all border border-slate-100">
+                      <Star size={18} />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {!loading && results.length === 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="lg:col-span-3 py-40 text-center bg-slate-50/30 rounded-[60px] border-2 border-dashed border-slate-200/60 relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-slate-200/50">
+                  <Search size={32} className="text-slate-200" />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Global Inventory Hub</h3>
+                <p className="text-sm text-slate-400 font-medium max-w-sm mx-auto mt-4 leading-relaxed">
+                  Initiate a query to fetch real-time availability across our global provider network.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );
