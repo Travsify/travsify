@@ -184,18 +184,15 @@ export default function DevelopersPage() {
                </div>
                <div className="bg-black/40 rounded-2xl p-8 font-mono text-[13px] text-slate-300 border border-white/5 leading-loose overflow-x-auto relative group">
                   <button 
-                    onClick={() => copyToClipboard(`curl -X GET "${API_URL}/api/v1/flights" -H "x-api-key: ${tenant?.apiKey || 'YOUR_KEY'}"`)}
+                    onClick={() => copyToClipboard(`import travsify; travsify.apiKey = "${tenant?.apiKey || 'YOUR_KEY'}"; const results = await travsify.search({ from: 'LHR', to: 'LOS' })`)}
                     className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all text-slate-500 hover:text-white opacity-0 group-hover:opacity-100"
                   >
                     <Copy size={16} />
                   </button>
-                  <span className="text-slate-500 italic"># Search for flights from London to Lagos</span><br/>
-                  <span className="text-white">curl</span> -X GET "<span className="text-blue-400">{API_URL}/api/v1/flights</span>" \<br/>
-                  &nbsp;&nbsp;-H "<span className="text-orange-500">x-api-key: {tenant?.apiKey || 'YOUR_KEY'}</span>" \<br/>
-                  &nbsp;&nbsp;-G \<br/>
-                  &nbsp;&nbsp;--data-urlencode "from=LHR" \<br/>
-                  &nbsp;&nbsp;--data-urlencode "to=LOS" \<br/>
-                  &nbsp;&nbsp;--data-urlencode "date=2026-06-20"
+                  <span className="text-slate-500 italic"># 3-Line Integration: Search all travel verticals</span><br/>
+                  <span className="text-white">import</span> travsify <span className="text-slate-500"># or use native fetch/curl</span><br/>
+                  <span className="text-blue-400">travsify</span>.apiKey = "<span className="text-orange-500">{tenant?.apiKey || 'YOUR_KEY'}</span>"<br/>
+                  <span className="text-emerald-400">const</span> results = <span className="text-blue-400">await</span> travsify.<span className="text-orange-400">search</span>({ from: <span className="text-emerald-400">'LHR'</span>, to: <span className="text-emerald-400">'LOS'</span> })
                </div>
             </div>
           </div>
@@ -248,10 +245,6 @@ function TabButton({ active, onClick, icon, label }: any) {
     </button>
   );
 }
-    </div>
-  );
-}
-
 function ApiLogsSection() {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

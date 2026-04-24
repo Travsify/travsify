@@ -8,6 +8,7 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, user: any) => void;
   logout: () => void;
+  setUser: (u: any) => void;
   loading: boolean;
   currency: string;
   setCurrency: (c: string) => void;
@@ -57,8 +58,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('currency', c);
   };
 
+  const handleSetUser = (u: any) => {
+    setUser(u);
+    localStorage.setItem('user', JSON.stringify(u));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading, currency, setCurrency: handleSetCurrency }}>
+    <AuthContext.Provider value={{ user, token, login, logout, setUser: handleSetUser, loading, currency, setCurrency: handleSetCurrency }}>
       {children}
     </AuthContext.Provider>
   );

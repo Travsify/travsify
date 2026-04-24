@@ -32,6 +32,8 @@ export class TenantService {
       flightMarkup: 0,
       hotelMarkup: 0,
       insuranceMarkup: 0,
+      transferMarkup: 0,
+      tourMarkup: 0,
     });
     return this.tenantRepository.save(tenant);
   }
@@ -47,6 +49,8 @@ export class TenantService {
     if (markups.flightMarkup !== undefined) tenant.flightMarkup = markups.flightMarkup;
     if (markups.hotelMarkup !== undefined) tenant.hotelMarkup = markups.hotelMarkup;
     if (markups.insuranceMarkup !== undefined) tenant.insuranceMarkup = markups.insuranceMarkup;
+    if (markups.transferMarkup !== undefined) tenant.transferMarkup = markups.transferMarkup;
+    if (markups.tourMarkup !== undefined) tenant.tourMarkup = markups.tourMarkup;
     return this.tenantRepository.save(tenant);
   }
 

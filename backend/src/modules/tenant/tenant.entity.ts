@@ -23,6 +23,12 @@ export class Tenant {
   @Column({ type: 'float', default: 0 })
   insuranceMarkup: number;
 
+  @Column({ type: 'float', default: 0 })
+  transferMarkup: number;
+
+  @Column({ type: 'float', default: 0 })
+  tourMarkup: number;
+
   @Column({ default: 'duffel' })
   flightProvider: string; // 'duffel', 'sitecity', or 'both'
 

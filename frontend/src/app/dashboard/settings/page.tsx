@@ -17,13 +17,20 @@ import {
 import { API_URL } from '@/utils/api';
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    businessName: user?.businessName || '',
+    email: user?.email || ''
+  });
   const [markups, setMarkups] = useState({
     flightMarkup: 0,
     hotelMarkup: 0,
+    transferMarkup: 0,
+    tourMarkup: 0,
     insuranceMarkup: 0
   });
 
@@ -42,6 +49,8 @@ export default function SettingsPage() {
         setMarkups({
           flightMarkup: data.flightMarkup || 0,
           hotelMarkup: data.hotelMarkup || 0,
+          transferMarkup: data.transferMarkup || 0,
+          tourMarkup: data.tourMarkup || 0,
           insuranceMarkup: data.insuranceMarkup || 0
         });
       }
@@ -77,6 +86,33 @@ export default function SettingsPage() {
     }
   };
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/users/profile`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(profileData)
+      });
+      if (res.ok) {
+        const updatedUser = await res.json();
+        setUser(updatedUser);
+        setIsEditingProfile(false);
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
@@ -96,35 +132,74 @@ export default function SettingsPage() {
           <div className="w-32 h-32 rounded-[40px] bg-[#0A1629] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-blue-900/30 shrink-0">
             {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
           </div>
-          <div className="flex-1 text-center lg:text-left">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4 justify-center lg:justify-start">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight">{user?.businessName || 'Travsify HQ'}</h3>
-              <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 w-fit mx-auto lg:mx-0">
-                Verified Enterprise
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Administrator Email</p>
-                <p className="text-sm font-bold text-slate-700">{user?.email || 'admin@travsify.com'}</p>
+          
+          {isEditingProfile ? (
+            <form onSubmit={handleSaveProfile} className="flex-1 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Business Name</label>
+                  <input 
+                    type="text" 
+                    value={profileData.businessName}
+                    onChange={(e) => setProfileData({...profileData, businessName: e.target.value})}
+                    className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Admin Email</label>
+                  <input 
+                    type="email" 
+                    value={profileData.email}
+                    onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                    className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20"
+                  />
+                </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Role</p>
-                <p className="text-sm font-bold text-slate-700">{user?.role || 'Global Admin'}</p>
+              <div className="flex gap-4">
+                <button type="submit" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-2">
+                  <Save size={14} /> Save Profile
+                </button>
+                <button type="button" onClick={() => setIsEditingProfile(false)} className="px-8 py-4 bg-slate-50 text-slate-400 rounded-2xl font-black text-[11px] uppercase tracking-widest">
+                  Cancel
+                </button>
               </div>
-              <div className="space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account Status</p>
-                <p className="text-sm font-bold text-emerald-500 flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 size={14} /> Active & Secured
-                </p>
+            </form>
+          ) : (
+            <>
+              <div className="flex-1 text-center lg:text-left">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4 justify-center lg:justify-start">
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{user?.businessName || 'Travsify HQ'}</h3>
+                  <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 w-fit mx-auto lg:mx-0">
+                    Verified Enterprise
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Administrator Email</p>
+                    <p className="text-sm font-bold text-slate-700">{user?.email || 'admin@travsify.com'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Role</p>
+                    <p className="text-sm font-bold text-slate-700 uppercase tracking-widest">{user?.role || 'admin'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account Status</p>
+                    <p className="text-sm font-bold text-emerald-500 flex items-center gap-2 justify-center lg:justify-start">
+                      <CheckCircle2 size={14} /> Active & Secured
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="shrink-0">
-            <button className="px-8 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm">
-              Edit Profile
-            </button>
-          </div>
+              <div className="shrink-0">
+                <button 
+                  onClick={() => setIsEditingProfile(true)}
+                  className="px-8 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm"
+                >
+                  Edit Profile
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -134,7 +209,7 @@ export default function SettingsPage() {
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <MarkupCard 
             icon={<Plane className="text-blue-600" size={20} />}
             title="Flight Markup"
@@ -155,6 +230,20 @@ export default function SettingsPage() {
             value={markups.insuranceMarkup}
             onChange={(val: string) => setMarkups({...markups, insuranceMarkup: parseFloat(val)})}
             desc="Platform fee for travel protection."
+          />
+          <MarkupCard 
+            icon={<Settings className="text-purple-600" size={20} />}
+            title="Transfer Markup"
+            value={markups.transferMarkup}
+            onChange={(val: string) => setMarkups({...markups, transferMarkup: parseFloat(val)})}
+            desc="Margin for airport transfers."
+          />
+          <MarkupCard 
+            icon={<ShieldCheck className="text-rose-600" size={20} />}
+            title="Tour Markup"
+            value={markups.tourMarkup}
+            onChange={(val: string) => setMarkups({...markups, tourMarkup: parseFloat(val)})}
+            desc="Fee for holiday packages & tours."
           />
         </div>
 
@@ -195,7 +284,7 @@ export default function SettingsPage() {
           Pro-Tip: Smart Margins
         </h4>
         <p className="text-slate-400 text-sm leading-relaxed max-w-2xl">
-          Travsify NDC is a free infrastructure. We recommend a flight markup of 3-5% for competitive global pricing. Your markup is added directly to the airline base fare with zero platform fees.
+          Travsify NDC is a free infrastructure. We recommend a flight markup of 3-5% for competitive global pricing. Our engine automatically combines your markup with the Travsify base fee to provide a seamless checkout for your end-users. No hidden costs, way simpler and cheaper than standard payment orchestration.
         </p>
       </div>
     </div>

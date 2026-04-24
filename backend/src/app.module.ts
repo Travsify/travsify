@@ -17,6 +17,7 @@ import { NotificationModule } from './modules/notifications/notification.module'
 import { AdminController } from './modules/admin/admin.controller';
 import { ApiLogsModule } from './modules/api-logs/api-logs.module';
 import { DeveloperWebhooksModule } from './modules/developer-webhooks/developer-webhooks.module';
+import { SupportModule } from './modules/support/support.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DeveloperWebhooksModule } from './modules/developer-webhooks/developer-
     NotificationModule,
     ApiLogsModule,
     DeveloperWebhooksModule,
+    SupportModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService],
