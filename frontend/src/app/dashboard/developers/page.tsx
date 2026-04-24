@@ -102,112 +102,123 @@ function DevelopersContent() {
 
   return (
     <div className="space-y-10 pb-20">
-      {/* Global Ecosystem Header */}
-      <div className="bg-slate-900 rounded-[32px] border border-white/5 p-12 relative overflow-hidden shadow-2xl">
-         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-600/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                 <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
-                 <span className="text-[11px] font-black text-orange-500 uppercase tracking-[0.3em]">Developer Hub: Live</span>
+    <div className="space-y-12 pb-40">
+      {/* ─── ELITE ECOSYSTEM HEADER ─── */}
+      <div className="bg-[#0A1629] rounded-[48px] border border-white/5 p-16 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(10,22,41,0.5)] group">
+         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-500/10 via-transparent to-transparent opacity-50" />
+         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+         
+         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-16">
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                 <div className="w-2.5 h-2.5 bg-[#FF6B00] rounded-full animate-pulse shadow-[0_0_12px_#FF6B00]" />
+                 <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">Integration_Protocol_Active</span>
               </div>
-              <h2 className="text-5xl font-black text-white tracking-tight leading-none">
-                Integration <span className="text-slate-400">Terminal</span>
+              <h2 className="text-7xl font-black text-white tracking-tighter leading-none">
+                Integration <span className="text-white/20">Terminal</span>
               </h2>
-              <p className="text-slate-400 font-bold text-lg max-w-xl">
-                Build the next generation of travel tools. Connect your software directly to our global booking infrastructure.
+              <p className="text-slate-400 font-medium text-lg max-w-xl leading-relaxed">
+                Architect the next generation of travel infrastructure. Orchestrate global inventory directly via our high-velocity API cluster.
               </p>
+              
+              <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-2xl rounded-[24px] border border-white/10 w-fit">
+                <TabButton active={activeTab === 'keys'} onClick={() => setActiveTab('keys')} icon={<Zap size={14} className={activeTab === 'keys' ? 'text-[#FF6B00]' : ''}/>} label="API KEYS" />
+                <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity size={14} className={activeTab === 'logs' ? 'text-[#FF6B00]' : ''}/>} label="TRAFFIC LOGS" />
+                <TabButton active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} icon={<Globe size={14} className={activeTab === 'webhooks' ? 'text-[#FF6B00]' : ''}/>} label="WEBHOOKS" />
+              </div>
             </div>
-             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-                <StatMetric label="Total Requests" value={apiStats?.total?.toLocaleString() || '0'} trend="Live" />
-                <StatMetric label="Avg. Latency" value={`${apiStats?.avgLatency || 0}ms`} trend="Optimal" />
-                <StatMetric label="Error Rate" value={`${apiStats?.total > 0 ? ((apiStats.error / apiStats.total) * 100).toFixed(1) : '0'}%`} trend="Stable" />
-             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+               <div className="p-8 bg-white/5 rounded-[32px] border border-white/10 backdrop-blur-xl">
+                  <StatMetric label="Total Requests" value={apiStats?.total?.toLocaleString() || '0'} trend="Live Consumption" />
+               </div>
+               <div className="p-8 bg-white/5 rounded-[32px] border border-white/10 backdrop-blur-xl">
+                  <StatMetric label="Avg. Latency" value={`${apiStats?.avgLatency || 0}ms`} trend="Optimal Node" />
+               </div>
+            </div>
          </div>
-      
-      {/* Tab Navigation */}
-      <div className="flex gap-2 p-2 bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-white/5 inline-flex shadow-xl">
-        <TabButton active={activeTab === 'keys'} onClick={() => setActiveTab('keys')} icon={<Zap size={14}/>} label="API Keys" />
-        <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity size={14}/>} label="API Logs" />
-        <TabButton active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} icon={<Globe size={14}/>} label="Webhooks" />
-      </div>
       </div>
 
       {activeTab === 'keys' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-2 space-y-8">
             {/* API Key Card */}
-            <div className="bg-white rounded-[32px] border border-slate-200 p-10 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-orange-600" />
-              <div className="flex items-center justify-between mb-10">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-orange-500 shadow-lg group-hover:scale-110 transition-transform">
-                    <Zap size={24} />
+            {/* ─── API KEY MANAGEMENT ─── */}
+            <div className="bg-white/70 backdrop-blur-xl rounded-[40px] border border-slate-200/60 p-12 shadow-2xl shadow-slate-200/20 relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 rounded-[24px] bg-[#0A1629] flex items-center justify-center text-[#FF6B00] shadow-2xl group-hover:rotate-6 transition-transform duration-500">
+                    <Zap size={28} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Main API Key</h3>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active & Authenticated</p>
+                    <h3 className="text-2xl font-black text-[#0A1629] tracking-tighter">Production Credentials</h3>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">Status: Authenticated & Secure</p>
                   </div>
                 </div>
                 <button 
                   onClick={rotateKey}
                   disabled={rotating}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-400 hover:text-orange-600 rounded-xl text-[11px] font-black uppercase tracking-widest border border-slate-100 transition-all active:scale-95"
+                  className="flex items-center gap-3 px-8 py-4 bg-slate-100 text-slate-500 hover:text-[#FF6B00] hover:bg-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] border border-transparent hover:border-slate-200 transition-all active:scale-95 shadow-sm"
                 >
-                  {rotating ? <Loader2 size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
-                  Generate New Key
+                  {rotating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCcw size={16} />}
+                  Rotate Secret
                 </button>
               </div>
 
-              <div className="relative group/key">
-                <div className="absolute inset-0 bg-orange-600/5 blur-2xl group-hover/key:bg-orange-600/10 transition-all rounded-3xl" />
-                <div className="relative flex items-center gap-4 p-8 bg-slate-900 rounded-3xl border border-white/5 font-mono text-sm text-blue-400 overflow-hidden shadow-xl">
-                  <Terminal size={20} className="text-slate-600 shrink-0" />
-                  <span className="flex-1 truncate tracking-[0.2em]">{tenant?.apiKey || '••••••••••••••••••••••••••••••'}</span>
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#FF6B00]/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity rounded-[32px]" />
+                <div className="relative flex items-center gap-6 p-10 bg-[#0A1629] rounded-[32px] border border-white/5 font-mono text-sm text-blue-400 overflow-hidden shadow-2xl group/key">
+                  <Terminal size={24} className="text-white/20 shrink-0" />
+                  <span className="flex-1 truncate tracking-[0.3em] font-black">{tenant?.apiKey || '••••••••••••••••••••••••••••••'}</span>
                   <button 
                     onClick={() => copyToClipboard(tenant?.apiKey)}
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white active:scale-90"
+                    className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white/40 hover:text-white active:scale-90"
                   >
-                    {copied ? <CheckCircle2 size={20} className="text-emerald-400" /> : <Copy size={20} />}
+                    {copied ? <CheckCircle2 size={24} className="text-emerald-400" /> : <Copy size={24} />}
                   </button>
                 </div>
               </div>
 
-              <div className="mt-10 flex gap-4 items-start p-6 bg-orange-50 rounded-2xl border border-orange-100">
-                 <ShieldAlert className="text-orange-600 shrink-0 mt-0.5" size={20} />
-                 <p className="text-[13px] font-bold text-slate-600 leading-relaxed">
-                   <span className="text-orange-600 font-black">IMPORTANT SECURITY:</span> Never share this key or put it in public code. Use it only on your secure server.
-                 </p>
+              <div className="mt-12 flex gap-5 items-start p-8 bg-orange-50/50 rounded-[32px] border border-orange-100/50">
+                 <ShieldAlert className="text-[#FF6B00] shrink-0 mt-1" size={24} />
+                 <div>
+                    <p className="text-sm font-black text-[#0A1629] uppercase tracking-widest mb-1">Security Enforcement</p>
+                    <p className="text-[13px] font-bold text-slate-500 leading-relaxed">
+                      This key provides full administrative access to your distribution node. Ensure it is stored in an encrypted environment and never exposed to client-side logic.
+                    </p>
+                 </div>
               </div>
             </div>
 
-            {/* Quick Integration Section */}
-            <div className="bg-slate-900 rounded-[32px] border border-white/5 p-10 shadow-2xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/5 blur-[100px] rounded-full translate-x-1/2 pointer-events-none" />
-               <div className="flex items-center justify-between mb-10">
-                  <div className="flex items-center gap-3">
-                     <Code2 className="text-blue-400" size={24} />
-                     <h3 className="text-xl font-black text-white tracking-tight">Easy Integration</h3>
+            {/* ─── QUICKSTART ORCHESTRATION ─── */}
+            <div className="bg-[#0A1629] rounded-[40px] border border-white/5 p-12 shadow-[0_40px_80px_-20px_rgba(10,22,41,0.3)] relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+               <div className="flex items-center justify-between mb-12">
+                  <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-inner">
+                        <Code2 size={24} />
+                     </div>
+                     <h3 className="text-2xl font-black text-white tracking-tighter">SDK Integration</h3>
                   </div>
                   <div className="flex gap-3">
                      {['cURL', 'Node.js', 'Python'].map(lang => (
-                       <span key={lang} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/10 cursor-pointer transition-all">
+                       <span key={lang} className="px-5 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white hover:bg-white/10 cursor-pointer transition-all">
                          {lang}
                        </span>
                      ))}
                   </div>
                </div>
-               <div className="bg-black/40 rounded-2xl p-8 font-mono text-[13px] text-slate-300 border border-white/5 leading-loose overflow-x-auto relative group">
+               <div className="bg-black/60 backdrop-blur-2xl rounded-[32px] p-10 font-mono text-[14px] text-slate-300 border border-white/5 leading-loose overflow-x-auto relative group/code shadow-inner">
                   <button 
                     onClick={() => copyToClipboard(`import travsify; travsify.apiKey = "${tenant?.apiKey || 'YOUR_KEY'}"; const results = await travsify.search({ from: 'LHR', to: 'LOS' })`)}
-                    className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all text-slate-500 hover:text-white opacity-0 group-hover:opacity-100"
+                    className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-slate-500 hover:text-white opacity-0 group-hover/code:opacity-100"
                   >
-                    <Copy size={16} />
+                    <Copy size={18} />
                   </button>
-                  <span className="text-slate-500 italic"># 3-Line Integration: Search all travel verticals</span><br/>
-                  <span className="text-white">import</span> travsify <span className="text-slate-500"># or use native fetch/curl</span><br/>
-                  <span className="text-blue-400">travsify</span>.apiKey = "<span className="text-orange-500">{tenant?.apiKey || 'YOUR_KEY'}</span>"<br/>
-                  <span className="text-emerald-400">const</span> results = <span className="text-blue-400">await</span> travsify.<span className="text-orange-400">search</span>({'{'} from: <span className="text-emerald-400">'LHR'</span>, to: <span className="text-emerald-400">'LOS'</span> {'}'})
+                  <span className="text-slate-600 italic">// Orchestrate global inventory across all verticals</span><br/>
+                  <span className="text-blue-500">import</span> {'{'} TravsifyClient {'}'} <span className="text-blue-500">from</span> <span className="text-emerald-400">'@travsify/core'</span>;<br/><br/>
+                  <span className="text-emerald-500">const</span> client = <span className="text-blue-500">new</span> <span className="text-orange-400">TravsifyClient</span>("<span className="text-[#FF6B00]">{tenant?.apiKey || 'YOUR_SECRET_KEY'}</span>");<br/>
+                  <span className="text-emerald-500">const</span> inventory = <span className="text-blue-500">await</span> client.<span className="text-orange-400">orchestrate</span>({'{'} origin: <span className="text-emerald-400">'LOS'</span>, destination: <span className="text-emerald-400">'LHR'</span> {'}'});
                </div>
             </div>
           </div>
@@ -255,14 +266,17 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
+      className={`flex items-center gap-3 px-8 py-3.5 rounded-[18px] text-[10px] font-black tracking-[0.2em] transition-all duration-300 relative overflow-hidden group ${
         active 
-        ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' 
-        : 'text-slate-500 hover:text-white hover:bg-white/5'
+        ? 'bg-white text-[#0A1629] shadow-2xl' 
+        : 'text-white/40 hover:text-white hover:bg-white/5'
       }`}
     >
-      {icon}
+      <span className={`${active ? 'text-[#FF6B00]' : 'group-hover:text-white'} transition-colors`}>{icon}</span>
       {label}
+      {active && (
+        <motion.div layoutId="dev-tab-glow" className="absolute inset-0 bg-white/10 blur-xl -z-10" />
+      )}
     </button>
   );
 }
@@ -525,10 +539,13 @@ function GuideBox({ title, desc, url }: any) {
 }
 function StatMetric({ label, value, trend }: any) {
   return (
-    <div className="space-y-1">
-      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{label}</p>
-      <p className="text-2xl font-black text-white leading-none">{value}</p>
-      <p className="text-[9px] font-black text-orange-500 uppercase tracking-tighter">{trend}</p>
+    <div className="space-y-2">
+      <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">{label}</p>
+      <p className="text-4xl font-black text-white tracking-tighter leading-none">{value}</p>
+      <div className="flex items-center gap-2 mt-2">
+        <div className="w-1.5 h-1.5 bg-[#FF6B00] rounded-full animate-pulse shadow-[0_0_8px_#FF6B00]" />
+        <p className="text-[10px] font-black text-[#FF6B00] uppercase tracking-widest">{trend}</p>
+      </div>
     </div>
   );
 }

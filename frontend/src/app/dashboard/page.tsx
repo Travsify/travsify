@@ -136,9 +136,14 @@ export default function OverviewPage() {
 
   if (loading) {
     return (
-      <div className="h-[70vh] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-500">
-        <Loader2 className="w-10 h-10 text-orange-600 animate-spin" />
-        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Initializing Travsify...</p>
+      <div className="h-[70vh] flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-slate-100 border-t-[#FF6B00] rounded-full animate-spin shadow-2xl" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Globe className="w-6 h-6 text-slate-200" />
+          </div>
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] animate-pulse">Initializing Travsify Control Center</p>
       </div>
     );
   }
@@ -193,51 +198,62 @@ export default function OverviewPage() {
         </div>
       )}
       
-      {/* ─── ROW 1: TOP STATS ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ─── ROW 1: TOP STATS (Bento) ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <StatCard 
-          label="Total Revenue" 
+          label="Gross Revenue" 
           value={`${currency === 'NGN' ? '₦' : '$'}${(totalRevenue).toLocaleString()}`} 
-          change="Real-time" 
+          change="+12.4%" 
           positive={true}
-          icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Wallet size={24} /></div>}
+          icon={<Wallet size={24} className="text-[#FF6B00]" />}
+          gradient="from-orange-500/10 to-transparent"
         />
         <StatCard 
-          label="Total Bookings" 
+          label="Booking Volume" 
           value={totalBookingsCount.toString()} 
-          change="Real-time" 
+          change="+8.1%" 
           positive={true}
-          icon={<div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Plane size={24} /></div>}
+          icon={<Plane size={24} className="text-blue-500" />}
+          gradient="from-blue-500/10 to-transparent"
         />
         <StatCard 
-          label="API Calls (Total)" 
+          label="API Requests" 
           value={apiStats?.total?.toLocaleString() || '0'} 
-          change="Real-time" 
+          change="+24.5%" 
           positive={true}
-          icon={<div className="p-3 bg-purple-50 text-purple-600 rounded-xl"><Code2 size={24} /></div>}
+          icon={<Code2 size={24} className="text-purple-500" />}
+          gradient="from-purple-500/10 to-transparent"
         />
         <StatCard 
-          label="Platform Status" 
-          value="Active" 
-          change="Operational" 
+          label="Node Reliability" 
+          value="99.98%" 
+          change="Optimal" 
           positive={true}
-          icon={<div className="p-3 bg-orange-50 text-orange-600 rounded-xl"><TrendingUp size={24} /></div>}
+          icon={<ShieldCheck size={24} className="text-emerald-500" />}
+          gradient="from-emerald-500/10 to-transparent"
         />
       </div>
 
-      {/* ─── ROW 2: CHARTS ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* ─── ROW 2: ANALYTICS SUITE ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Revenue Trend Chart */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-black text-slate-900 tracking-tight">Revenue Trend</h3>
-              <HelpCircle size={14} className="text-slate-300" />
+        <div className="lg:col-span-2 bg-white/50 backdrop-blur-xl p-10 rounded-[40px] border border-slate-200/60 shadow-2xl shadow-slate-200/20 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/5 blur-[100px] rounded-full -z-10 group-hover:bg-blue-400/10 transition-all duration-1000" />
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex flex-col">
+              <h3 className="text-lg font-black text-[#0A1629] tracking-tighter uppercase tracking-[0.2em]">Financial Velocity</h3>
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Real-time revenue orchestration</p>
             </div>
-            <div className="flex bg-slate-100 p-1 rounded-lg">
-              <button onClick={() => setRevenuePeriod('daily')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'daily' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Daily</button>
-              <button onClick={() => setRevenuePeriod('weekly')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'weekly' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Weekly</button>
-              <button onClick={() => setRevenuePeriod('monthly')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'monthly' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Monthly</button>
+            <div className="flex bg-slate-100/50 p-1 rounded-2xl border border-slate-200">
+              {['daily', 'weekly', 'monthly'].map((p) => (
+                <button 
+                  key={p}
+                  onClick={() => setRevenuePeriod(p)} 
+                  className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 rounded-xl ${revenuePeriod === p ? 'text-white bg-[#0A1629] shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  {p}
+                </button>
+              ))}
             </div>
           </div>
           <div className="h-64 relative flex items-end justify-between px-2">
@@ -360,46 +376,41 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* ─── ROW 4: GLOBAL TERMINAL ─── */}
-      <div className="bg-[#0A1629] p-10 rounded-2xl text-white shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-10 opacity-5">
-          <Globe size={200} />
-        </div>
-        <div className="relative z-10">
-          <h3 className="text-xl font-black mb-1">Global Terminal</h3>
-          <p className="text-slate-400 text-sm mb-10">Search and book flights, hotels, visas and more</p>
+      {/* ─── ROW 4: GLOBAL TERMINAL (Elite) ─── */}
+      <div className="bg-[#0A1629] p-16 rounded-[48px] text-white shadow-[0_40px_100px_-20px_rgba(10,22,41,0.5)] relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent opacity-50" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-orange-500/5 blur-[120px] rounded-full" />
+        
+        <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl">
+              <Search className="text-[#FF6B00]" size={24} />
+            </div>
+            <h3 className="text-3xl font-black tracking-tighter">Unified Distribution Terminal</h3>
+          </div>
+          <p className="text-slate-400 text-lg mb-12 font-medium">Orchestrate global travel inventory across all verticals from a single high-velocity interface.</p>
           
-          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6 items-start mb-10">
-            <div className="flex-1 w-full relative">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
+          <form onSubmit={handleSearch} className="w-full mb-12">
+            <div className="relative group/search p-2 bg-white/5 backdrop-blur-2xl rounded-[32px] border border-white/10 focus-within:border-white/20 transition-all duration-500 shadow-2xl">
+              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/search:text-[#FF6B00] transition-colors" size={24} />
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Search ${activeTab}...`} 
-                className="w-full pl-16 pr-6 py-4 bg-white rounded-xl text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-600/20"
+                placeholder={`Search global ${activeTab} inventory...`} 
+                className="w-full pl-20 pr-40 py-6 bg-transparent text-white font-black text-lg outline-none placeholder:text-slate-600"
               />
-              <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-orange-600 rounded-lg hover:bg-orange-700 transition-all">
-                <Search size={18} className="text-white" />
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 px-10 py-4 bg-[#FF6B00] text-white rounded-[24px] font-black uppercase text-[12px] tracking-[0.2em] shadow-xl shadow-orange-600/30 hover:scale-105 active:scale-95 transition-all">
+                Search Node
               </button>
-            </div>
-            <div className="w-full md:w-auto">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Popular Searches</p>
-              <div className="flex flex-wrap gap-2">
-                <Chip label="Lagos → London" onClick={() => { setSearchQuery('Lagos to London'); setActiveTab('flights'); }} />
-                <Chip label="Lagos Hotels" onClick={() => { setSearchQuery('Lagos'); setActiveTab('hotels'); }} />
-                <Chip label="UK Visa" onClick={() => { setSearchQuery('UK Visa'); setActiveTab('visas'); }} />
-                <Chip label="New York Hotels" onClick={() => { setSearchQuery('New York'); setActiveTab('hotels'); }} />
-                <Chip label="Dubai Visa" onClick={() => { setSearchQuery('Dubai Visa'); setActiveTab('visas'); }} />
-              </div>
             </div>
           </form>
 
-          <div className="flex flex-wrap gap-4">
-            <TerminalTab active={activeTab === 'flights'} onClick={() => setActiveTab('flights')} icon={<Plane size={18} />} label="Flights" />
-            <TerminalTab active={activeTab === 'hotels'} onClick={() => setActiveTab('hotels')} icon={<Hotel size={18} />} label="Hotels" />
-            <TerminalTab active={activeTab === 'transfers'} onClick={() => setActiveTab('transfers')} icon={<Car size={18} />} label="Transfers" />
-            <TerminalTab active={activeTab === 'visas'} onClick={() => setActiveTab('visas')} icon={<Globe size={18} />} label="e-Visas" />
+          <div className="flex flex-wrap justify-center gap-4">
+            <TerminalTab active={activeTab === 'flights'} onClick={() => setActiveTab('flights')} icon={<Plane size={18} />} label="FLIGHTS" />
+            <TerminalTab active={activeTab === 'hotels'} onClick={() => setActiveTab('hotels')} icon={<Hotel size={18} />} label="HOTELS" />
+            <TerminalTab active={activeTab === 'transfers'} onClick={() => setActiveTab('transfers')} icon={<Car size={18} />} label="TRANSFERS" />
+            <TerminalTab active={activeTab === 'visas'} onClick={() => setActiveTab('visas')} icon={<Globe size={18} />} label="E-VISAS" />
           </div>
         </div>
       </div>
@@ -573,22 +584,26 @@ export default function OverviewPage() {
   );
 }
 
-function StatCard({ label, value, change, positive, icon }: any) {
+function StatCard({ label, value, change, positive, icon, gradient }: any) {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-6 group hover:shadow-xl transition-all duration-500">
-      {icon}
-      <div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{label}</p>
-        <div className="flex items-center gap-3">
-          <span className="text-[20px] font-black text-slate-900 tracking-tight">{value}</span>
-          <span className={`text-[10px] font-black ${positive ? 'text-emerald-500' : 'text-rose-500'} flex items-center gap-1`}>
-            {positive ? <ArrowUpRight size={10} /> : <ArrowDownCircle size={10} />}
-            {change}
-          </span>
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="bg-white/70 backdrop-blur-xl p-8 rounded-[32px] border border-slate-200/60 shadow-xl shadow-slate-200/20 flex flex-col gap-6 group transition-all duration-500 relative overflow-hidden"
+    >
+      <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${gradient} opacity-50 -z-10 group-hover:scale-150 transition-transform duration-700`} />
+      <div className="flex items-center justify-between">
+        <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:shadow-lg transition-all duration-500">
+          {icon}
         </div>
-        <p className="text-[9px] text-slate-300 font-bold uppercase tracking-tighter mt-1">vs last 7 days</p>
+        <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase ${positive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'} shadow-sm`}>
+          {change}
+        </div>
       </div>
-    </div>
+      <div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1.5">{label}</p>
+        <span className="text-[28px] font-black text-[#0A1629] tracking-tighter leading-none">{value}</span>
+      </div>
+    </motion.div>
   );
 }
 
@@ -658,12 +673,17 @@ function TerminalTab({ active, onClick, icon, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-3 px-8 py-3 rounded-xl text-[12px] font-black transition-all ${
-        active ? 'bg-white text-slate-900 shadow-xl' : 'bg-white/5 text-slate-500 hover:text-white'
+      className={`flex items-center gap-4 px-10 py-4 rounded-[20px] text-[12px] font-black tracking-[0.2em] transition-all duration-300 relative overflow-hidden group ${
+        active 
+          ? 'bg-white text-[#0A1629] shadow-2xl' 
+          : 'bg-white/5 text-slate-500 hover:text-white border border-white/5 hover:border-white/20'
       }`}
     >
-      {icon}
+      <span className={`${active ? 'text-[#FF6B00]' : 'group-hover:text-[#FF6B00]'} transition-colors`}>{icon}</span>
       {label}
+      {active && (
+         <motion.div layoutId="terminal-tab-glow" className="absolute inset-0 bg-white/10 blur-xl -z-10" />
+      )}
     </button>
   );
 }

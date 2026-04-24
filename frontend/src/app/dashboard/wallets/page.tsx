@@ -271,13 +271,14 @@ export default function WalletPage() {
 
   if (loading) {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
-        <motion.div 
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-slate-200 border-t-[#FF7A00] rounded-full"
-        />
-        <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Loading Treasury...</p>
+      <div className="h-[60vh] flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-slate-100 border-t-[#FF6B00] rounded-full animate-spin shadow-2xl" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <WalletIcon className="w-8 h-8 text-slate-200" />
+          </div>
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] animate-pulse">Initializing Financial Node</p>
       </div>
     );
   }
@@ -301,19 +302,23 @@ export default function WalletPage() {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
         <div>
-          <h2 className="text-4xl font-black tracking-tight text-[#0A2540] mb-3">Treasury Management</h2>
-          <p className="text-slate-500 font-medium text-lg">Multi-vertical financial orchestration and settlement.</p>
+          <h2 className="text-5xl font-black tracking-tighter text-[#0A1629] mb-4">Treasury Control</h2>
+          <div className="flex items-center gap-3">
+             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10B981]" />
+             <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">Multi-Vertical Liquidity Active</p>
+          </div>
         </div>
-        <div className="flex bg-slate-100/50 p-1.5 rounded-[20px] border border-slate-200/50 backdrop-blur-sm">
+        <div className="flex bg-white/50 backdrop-blur-xl p-1.5 rounded-[24px] border border-slate-200/60 shadow-xl shadow-slate-200/10">
           {['NGN', 'USD'].map((curr) => (
             <button 
               key={curr}
               onClick={() => setActiveWallet(curr as any)}
-              className={`flex items-center gap-2 px-8 py-3 rounded-[14px] text-sm font-black transition-all ${activeWallet === curr ? 'bg-[#0A2540] text-white shadow-xl' : 'text-slate-500 hover:text-slate-900'}`}
+              className={`flex items-center gap-3 px-10 py-4 rounded-[18px] text-xs font-black transition-all duration-300 ${activeWallet === curr ? 'bg-[#0A1629] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-[#0A1629] hover:bg-white/50'}`}
             >
-              {curr === 'NGN' ? '🇳🇬' : '🇺🇸'} {curr}
+              <span className="text-lg">{curr === 'NGN' ? '🇳🇬' : '🇺🇸'}</span>
+              <span className="tracking-widest">{curr} SETTLEMENT</span>
             </button>
           ))}
         </div>
@@ -336,55 +341,62 @@ export default function WalletPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
           {/* ─── MAIN BALANCE CARD (PREMIUM) ─── */}
+          {/* ─── MAIN BALANCE CARD (ELITE) ─── */}
           <motion.div 
-            whileHover={{ y: -5 }}
-            className="relative overflow-hidden bg-[#0A2540] rounded-[40px] p-12 text-white shadow-[0_30px_60px_-15px_rgba(10,37,64,0.3)] group"
+            whileHover={{ y: -8 }}
+            className="relative overflow-hidden bg-[#0A1629] rounded-[48px] p-16 text-white shadow-[0_50px_100px_-20px_rgba(10,22,41,0.4)] group border border-white/5"
           >
-            <div className="absolute top-0 right-0 p-16 opacity-10 group-hover:scale-110 transition-transform duration-700">
-              <WalletIcon size={240} />
+            <div className="absolute top-0 right-0 p-20 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-1000">
+              <WalletIcon size={300} />
             </div>
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#FF6B00]/5 blur-[120px] rounded-full pointer-events-none" />
             
             <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-[#FF7A00]">
-                  <TrendingUp size={20} />
+              <div className="flex items-center justify-between mb-16">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-[#FF6B00] border border-white/10 shadow-inner">
+                    <TrendingUp size={24} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Financial Velocity</span>
+                    <span className="text-xs font-bold text-[#FF6B00] mt-1">Live Settlement Active</span>
+                  </div>
                 </div>
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40">Real-time Settlement Balance</span>
+                <div className="px-5 py-2 bg-white/5 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/60">
+                   NODE_0483_ONLINE
+                </div>
               </div>
               
-              <div className="mb-12">
-                <p className="text-white/40 text-sm font-black uppercase tracking-widest mb-4">Available {activeWallet} Liquidity</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-7xl font-black tracking-tighter">
+              <div className="mb-20">
+                <p className="text-white/40 text-xs font-black uppercase tracking-[0.3em] mb-6">Available {activeWallet} Liquidity</p>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-8xl font-black tracking-tighter leading-none">
                     {formatAmount(currentWallet.balance, activeWallet).split('.')[0]}
                   </span>
-                  <span className="text-3xl font-bold text-white/30">
+                  <span className="text-4xl font-bold text-white/20">
                     .{formatAmount(currentWallet.balance, activeWallet).split('.')[1] || '00'}
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                  { icon: <Plus size={20} />, label: "Add Funds", color: "bg-[#FF7A00]", shadow: "shadow-[#FF7A00]/20", onClick: () => setShowFundModal(true) },
-                  { icon: <ArrowUpRight size={20} />, label: "Withdraw", color: "bg-white/10 hover:bg-white/20", shadow: "", onClick: () => setShowWithdrawModal(true) },
-                  { icon: <History size={20} />, label: "Currency Swap", color: "bg-blue-600 hover:bg-blue-700", shadow: "shadow-blue-600/20", onClick: () => setShowConvertModal(true) }
+                  { icon: <Plus size={20} />, label: "Add Funds", color: "bg-[#FF6B00]", shadow: "shadow-orange-600/30", onClick: () => setShowFundModal(true) },
+                  { icon: <ArrowUpRight size={20} />, label: "Withdraw", color: "bg-white/10 hover:bg-white/20 border border-white/10", shadow: "", onClick: () => setShowWithdrawModal(true) },
+                  { icon: <History size={20} />, label: "Currency Swap", color: "bg-blue-600 hover:bg-blue-700", shadow: "shadow-blue-600/30", onClick: () => setShowConvertModal(true) }
                 ].map((btn, i) => (
                   <button 
                     key={i}
                     onClick={btn.onClick}
-                    className={`flex items-center gap-3 px-8 py-5 rounded-[20px] font-black text-sm transition-all active:scale-95 shadow-xl ${btn.color} ${btn.shadow}`}
+                    className={`flex items-center justify-center gap-4 py-6 rounded-[28px] font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-2xl ${btn.color} ${btn.shadow} group/btn`}
                   >
-                    {btn.icon}
+                    <span className="group-hover:scale-125 transition-transform">{btn.icon}</span>
                     {btn.label}
                   </button>
                 ))}
               </div>
             </div>
-            
-            {/* Glass decoration */}
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute top-12 left-1/2 w-32 h-32 bg-[#FF7A00]/10 rounded-full blur-2xl pointer-events-none" />
           </motion.div>
 
           {/* ─── TRANSACTIONS (PREMIUM LIST) ─── */}

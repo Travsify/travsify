@@ -151,23 +151,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
-      {/* Sidebar - Travsify Dark Navy */}
-      <aside className="w-64 bg-[#0A1629] flex flex-col fixed h-full z-50 shadow-2xl">
-        <div className="p-6 mb-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
-            <Globe size={18} />
+    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900 overflow-hidden">
+      {/* Sidebar - Elite Glassmorphism */}
+      <aside className="w-[300px] bg-[#0A1629]/95 backdrop-blur-2xl flex flex-col fixed h-full z-50 border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.1)]">
+        <div className="p-10 flex items-center gap-4 group cursor-pointer">
+          <div className="w-14 h-14 bg-gradient-to-br from-[#FF6B00] to-[#FF8A00] rounded-2xl flex items-center justify-center text-white shadow-[0_10px_30px_rgba(255,107,0,0.3)] group-hover:rotate-6 transition-transform duration-500">
+            <Globe size={28} />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-black tracking-tight text-white leading-none">Travsify</span>
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">API Platform</span>
+            <span className="text-3xl font-black tracking-tighter text-white leading-none">Travsify</span>
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">Node Orchestration</span>
           </div>
         </div>
         
-        <nav className="flex-1 px-3 py-2 space-y-6 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 px-4 py-2 space-y-8 overflow-y-auto custom-scrollbar">
           {menuGroups.map((group) => (
-            <div key={group.label} className="space-y-1">
-              <h3 className="px-3 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">{group.label}</h3>
+            <div key={group.label} className="space-y-2">
+              <h3 className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-4 opacity-50">{group.label}</h3>
               {group.items.map((item: any) => {
                 const isActive = pathname === item.path;
                 const isLocked = item.locked;
@@ -176,20 +176,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     key={item.path} 
                     href={isLocked ? '#' : item.path}
                     onClick={(e) => isLocked && e.preventDefault()}
-                    className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] transition-all group ${
-                      isLocked ? 'opacity-50 cursor-not-allowed grayscale' :
+                    className={`flex items-center justify-between gap-3 px-4 py-3 rounded-2xl font-black text-[12px] transition-all duration-300 group relative ${
+                      isLocked ? 'opacity-30 cursor-not-allowed grayscale' :
                       isActive 
-                        ? 'bg-[#FF6B00] text-white' 
-                        : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                        ? 'bg-white/10 text-white shadow-xl shadow-black/20' 
+                        : 'text-slate-500 hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-white transition-colors'}>
+                      <span className={`${isActive ? 'text-[#FF6B00]' : 'text-slate-600 group-hover:text-white'} transition-colors duration-300`}>
                         {item.icon}
                       </span>
-                      {item.name}
+                      <span className="tracking-tight">{item.name}</span>
                     </div>
-                    {isLocked && <Lock size={12} className="text-slate-600" />}
+                    {isActive && (
+                       <motion.div 
+                          layoutId="active-nav-dot"
+                          className="w-1.5 h-1.5 bg-[#FF6B00] rounded-full shadow-[0_0_10px_#FF6B00]" 
+                       />
+                    )}
+                    {isLocked && <Lock size={12} className="text-slate-700" />}
                   </Link>
                 );
               })}
@@ -197,38 +203,41 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
-        <div className="p-3 border-t border-white/5">
-          <button 
-            onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all group"
-          >
-            <LogOut size={18} />
-            Terminate Session
-          </button>
-        </div>
-
-        <div className="p-4 m-3 bg-white/5 rounded-xl border border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white">
-              <Activity size={18} />
-            </div>
-            <div>
-              <p className="text-[11px] font-black text-white">Need Help?</p>
-              <p className="text-[10px] text-slate-500 font-medium">Visit support center</p>
+        <div className="p-4 border-t border-white/5 space-y-4">
+          <div className="p-5 bg-white/5 rounded-3xl border border-white/10 group cursor-pointer hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#FF6B00]/10 rounded-2xl flex items-center justify-center text-[#FF6B00] group-hover:scale-110 transition-transform">
+                <Activity size={20} />
+              </div>
+              <div>
+                <p className="text-[11px] font-black text-white uppercase tracking-wider">System Health</p>
+                <p className="text-[10px] text-slate-500 font-bold">All nodes active</p>
+              </div>
             </div>
           </div>
+          
+          <button 
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-black text-[12px] text-rose-500 hover:bg-rose-500/10 hover:text-rose-400 transition-all group"
+          >
+            <LogOut size={18} />
+            TERMINATE SESSION
+          </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-64 min-h-screen">
-        {/* Top Header - Travsify Premium White */}
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-10">
+      {/* Main Content Area */}
+      <main className="flex-1 ml-[300px] min-h-screen relative bg-[#F8FAFC]">
+        <div className="absolute top-0 right-0 w-full h-[800px] bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent -z-10" />
+        <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full -z-10" />
+        
+        {/* Top Header - Elite Premium */}
+        <header className="h-24 bg-white/70 backdrop-blur-2xl border-b border-slate-200 sticky top-0 z-40 flex items-center justify-between px-12">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-[#0A1629] tracking-tighter">Control Center</h1>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Live System Analytics</p>
+            <h1 className="text-3xl font-black text-[#0A1629] tracking-tighter leading-none">Control Center</h1>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10B981]" />
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em]">Operational Protocol Active</p>
             </div>
           </div>
 
@@ -380,7 +389,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <div className="p-8">
+        <div className="px-16 py-12">
           {children}
         </div>
       </main>

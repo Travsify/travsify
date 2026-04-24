@@ -115,9 +115,14 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-        <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Loading Settings...</p>
+      <div className="h-[60vh] flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-slate-100 border-t-[#FF6B00] rounded-full animate-spin shadow-2xl" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Settings className="w-8 h-8 text-slate-200" />
+          </div>
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] animate-pulse">Establishing Secure Context</p>
       </div>
     );
   }
@@ -125,41 +130,42 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl space-y-10">
       {/* Business Profile Section */}
-      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:bg-orange-50 transition-colors duration-1000 -z-10" />
+      {/* ─── ELITE BUSINESS PROFILE ─── */}
+      <div className="bg-white/70 backdrop-blur-xl rounded-[48px] border border-slate-200/60 p-12 shadow-2xl shadow-slate-200/20 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-orange-500/10 transition-all duration-1000" />
         
-        <div className="flex flex-col lg:flex-row items-center gap-10 relative z-10">
-          <div className="w-32 h-32 rounded-[40px] bg-[#0A1629] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-blue-900/30 shrink-0">
+        <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
+          <div className="w-40 h-40 rounded-[32px] bg-[#0A1629] flex items-center justify-center text-white text-5xl font-black shadow-[0_20px_50px_rgba(10,22,41,0.3)] shrink-0 border border-white/10 group-hover:scale-105 transition-transform duration-500">
             {user?.businessName ? user.businessName.substring(0, 2) : 'TR'}
           </div>
           
           {isEditingProfile ? (
-            <form onSubmit={handleSaveProfile} className="flex-1 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Business Name</label>
+            <form onSubmit={handleSaveProfile} className="flex-1 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Business Identity</label>
                   <input 
                     type="text" 
                     value={profileData.businessName}
                     onChange={(e) => setProfileData({...profileData, businessName: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full px-8 py-5 bg-white border-2 border-slate-100 rounded-[24px] font-black text-[#0A1629] text-lg outline-none focus:border-[#FF6B00]/20 transition-all shadow-inner"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Admin Email</label>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Administrative Node</label>
                   <input 
                     type="email" 
                     value={profileData.email}
                     onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full px-8 py-5 bg-white border-2 border-slate-100 rounded-[24px] font-black text-[#0A1629] text-lg outline-none focus:border-[#FF6B00]/20 transition-all shadow-inner"
                   />
                 </div>
               </div>
               <div className="flex gap-4">
-                <button type="submit" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-2">
-                  <Save size={14} /> Save Profile
+                <button type="submit" className="px-10 py-5 bg-[#0A1629] text-white rounded-[20px] font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-2xl active:scale-95 transition-all">
+                  <Save size={18} /> Update Node
                 </button>
-                <button type="button" onClick={() => setIsEditingProfile(false)} className="px-8 py-4 bg-slate-50 text-slate-400 rounded-2xl font-black text-[11px] uppercase tracking-widest">
+                <button type="button" onClick={() => setIsEditingProfile(false)} className="px-10 py-5 bg-slate-100 text-slate-400 rounded-[20px] font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">
                   Cancel
                 </button>
               </div>
@@ -167,25 +173,26 @@ export default function SettingsPage() {
           ) : (
             <>
               <div className="flex-1 text-center lg:text-left">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4 justify-center lg:justify-start">
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{user?.businessName || 'Travsify HQ'}</h3>
-                  <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-100 w-fit mx-auto lg:mx-0">
-                    Verified Enterprise
+                <div className="flex flex-col lg:flex-row lg:items-center gap-6 mb-8 justify-center lg:justify-start">
+                  <h3 className="text-5xl font-black text-[#0A1629] tracking-tighter">{user?.businessName || 'Travsify HQ'}</h3>
+                  <span className="px-6 py-2 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-[0.2em] border border-emerald-100 w-fit mx-auto lg:mx-0 shadow-sm">
+                    Verified Infrastructure
                   </span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Administrator Email</p>
-                    <p className="text-sm font-bold text-slate-700">{user?.email || 'admin@travsify.com'}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Operational Admin</p>
+                    <p className="text-base font-bold text-[#0A1629]">{user?.email || 'admin@travsify.com'}</p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Role</p>
-                    <p className="text-sm font-bold text-slate-700 uppercase tracking-widest">{user?.role || 'admin'}</p>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Access Privilege</p>
+                    <p className="text-base font-black text-[#FF6B00] uppercase tracking-widest">{user?.role || 'SYSTEM_ADMIN'}</p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account Status</p>
-                    <p className="text-sm font-bold text-emerald-500 flex items-center gap-2 justify-center lg:justify-start">
-                      <CheckCircle2 size={14} /> Active & Secured
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Network Status</p>
+                    <p className="text-base font-bold text-emerald-500 flex items-center gap-2 justify-center lg:justify-start">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10B981]" />
+                      LIVE_SYNC_ENABLED
                     </p>
                   </div>
                 </div>
@@ -193,9 +200,9 @@ export default function SettingsPage() {
               <div className="shrink-0">
                 <button 
                   onClick={() => setIsEditingProfile(true)}
-                  className="px-8 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm"
+                  className="px-10 py-5 bg-white border border-slate-200 rounded-[24px] text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] hover:bg-[#0A1629] hover:text-white transition-all shadow-xl shadow-slate-200/50"
                 >
-                  Edit Profile
+                  Configure Identity
                 </button>
               </div>
             </>

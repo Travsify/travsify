@@ -49,7 +49,7 @@ export class DuffelService {
       const response = await axios.post(this.apiUrl, payload, {
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Duffel-Version': 'v2',
+          'Duffel-Version': '2024-05-09',
           'Content-Type': 'application/json',
         },
       });

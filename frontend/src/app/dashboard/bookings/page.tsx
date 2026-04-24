@@ -75,9 +75,14 @@ export default function BookingsPage() {
 
   if (loading) {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Accessing Operations...</p>
+      <div className="h-[60vh] flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-slate-100 border-t-[#FF6B00] rounded-full animate-spin shadow-2xl" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Ticket className="w-8 h-8 text-slate-200" />
+          </div>
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] animate-pulse">Syncing Operational Ledger</p>
       </div>
     );
   }
@@ -120,24 +125,29 @@ export default function BookingsPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 mb-2">Global Operations</h2>
-          <p className="text-slate-500 font-medium text-[13px]">Monitor and manage all bookings across your unified travel network.</p>
+      {/* ─── ELITE OPERATIONAL HEADER ─── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12 mb-16">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="w-2.5 h-2.5 bg-[#FF6B00] rounded-full animate-pulse shadow-[0_0_12px_#FF6B00]" />
+             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Node_Operational_Ledger</span>
+          </div>
+          <h2 className="text-6xl font-black text-[#0A1629] tracking-tighter leading-none">Global Operations<span className="text-[#FF6B00]">.</span></h2>
+          <p className="text-lg text-slate-500 font-medium max-w-xl leading-relaxed">High-fidelity orchestration of all travel inventory and fulfillment across your unified distribution network.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+        
+        <div className="flex flex-wrap items-center gap-6 bg-white/70 backdrop-blur-xl p-8 rounded-[32px] border border-slate-200/60 shadow-2xl shadow-slate-200/20 group">
+          <div className="relative group/search">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#FF6B00] transition-colors" size={20} />
             <input 
               type="text" 
-              placeholder="Search Reference or Service..." 
-              className="pl-11 pr-6 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-medium w-64 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-sm"
+              placeholder="Search Reference..." 
+              className="pl-16 pr-10 py-5 bg-white border border-slate-100 rounded-2xl text-sm font-black w-72 focus:outline-none focus:border-[#FF6B00]/20 transition-all shadow-inner placeholder:text-slate-300"
             />
           </div>
-          <Link href="/dashboard" className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
-            <Plus size={18} />
-            New Search
+          <Link href="/dashboard/terminal" className="flex items-center gap-4 px-10 py-5 bg-[#0A1629] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#FF6B00] transition-all shadow-2xl active:scale-[0.98] group/btn">
+            <Plus size={20} className="group-hover:rotate-90 transition-transform" />
+            Initiate Order
           </Link>
         </div>
       </div>
@@ -156,81 +166,80 @@ export default function BookingsPage() {
         </div>
       )}
 
-      {/* Filter Bar */}
-      <div className="flex items-center justify-between bg-white p-2 rounded-[24px] border border-slate-100 shadow-sm">
-        <div className="flex gap-1">
-          {['All', 'Ticketed', 'Fulfilled', 'Pending', 'Fulfillment_Pending', 'Failed'].map((t) => (
-            <button 
-              key={t}
-              onClick={() => setFilter(t.toLowerCase())}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                filter === t.toLowerCase() ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              {t.replace('_', ' ')}
-            </button>
-          ))}
-        </div>
+      {/* ─── FILTER SUITE ─── */}
+      <div className="flex items-center gap-4 bg-slate-200/40 backdrop-blur-md p-2 rounded-[28px] border border-slate-200/60 w-fit mb-12">
+        {['All', 'Ticketed', 'Fulfilled', 'Pending', 'Failed'].map((t) => (
+          <button 
+            key={t}
+            onClick={() => setFilter(t.toLowerCase())}
+            className={`px-8 py-4 rounded-[22px] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+              filter === t.toLowerCase() ? 'bg-[#0A1629] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-[#0A1629] hover:bg-white/50'
+            }`}
+          >
+            {t.replace('_', ' ')}
+          </button>
+        ))}
       </div>
 
-      {/* Bookings Table */}
-      <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden">
+      {/* ─── OPERATIONAL LEDGER (ELITE) ─── */}
+      <div className="bg-white/70 backdrop-blur-xl rounded-[48px] border border-slate-200/60 shadow-2xl shadow-slate-200/20 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Vertical / Reference</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Service & Provider</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Date & Amount</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">Status</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
+              <tr className="bg-slate-100/50">
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Inventory Reference</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Service Metadata</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Settlement Amount</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Operational Status</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {filteredBookings.length > 0 ? (
                 filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="group hover:bg-slate-50/50 transition-all">
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                  <tr key={booking.id} className="group hover:bg-slate-50 transition-all cursor-pointer">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                           {getVerticalIcon(booking.vertical)}
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-[14px] font-black text-blue-600 tracking-wider font-mono">{booking.id.substring(0, 8).toUpperCase()}</span>
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{booking.vertical || 'FLIGHT'}</span>
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[14px] font-black text-[#0A1629] tracking-widest font-mono group-hover:text-[#FF6B00] transition-colors">{booking.id.substring(0, 10).toUpperCase()}</span>
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">{booking.vertical || 'FLIGHT_NODE'}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[13px] font-bold text-slate-900">
-                          {booking.flightDetails?.itemName || booking.itemName || 'Unified Service'}
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col gap-1.5">
+                        <div className="text-[14px] font-black text-[#0A1629] group-hover:translate-x-1 transition-transform">
+                          {booking.flightDetails?.itemName || booking.itemName || 'Unified Travel Asset'}
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 uppercase">
-                          {booking.flightDetails?.provider || 'Global Partner'}
+                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                          {booking.flightDetails?.provider || 'Global Infrastructure Partner'}
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[13px] font-bold text-slate-900">
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-lg font-black text-[#0A1629]">
                           {new Intl.NumberFormat('en-US', { style: 'currency', currency: booking.currency || 'USD' }).format(booking.totalPrice || booking.totalAmount)}
                         </span>
-                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
-                          <Calendar size={12} className="text-slate-300" />
-                          {new Date(booking.createdAt).toLocaleDateString()}
+                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <Calendar size={12} className="text-[#FF6B00]" />
+                          {new Date(booking.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
+                    <td className="px-10 py-8">
                       <StatusBadge status={booking.status} />
                     </td>
-                    <td className="px-8 py-6 text-right">
+                    <td className="px-10 py-8 text-right">
                        <button 
                         onClick={() => setSelectedBooking(booking)}
-                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                        className="w-12 h-12 flex items-center justify-center text-slate-300 hover:text-[#0A1629] hover:bg-white rounded-2xl transition-all shadow-inner group-hover:shadow-2xl group-hover:border group-hover:border-slate-100"
                        >
-                          <ChevronRight size={18} />
+                          <ChevronRight size={20} />
                        </button>
                     </td>
                   </tr>

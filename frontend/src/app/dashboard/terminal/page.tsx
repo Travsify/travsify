@@ -75,68 +75,70 @@ export default function TerminalPage() {
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-40">
-      {/* ─── HEADER ─── */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div>
-          <div className="flex items-center gap-2 text-[#FF6B00] mb-2">
-            <Zap size={14} fill="currentColor" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Unified Adapter Layer</span>
+      {/* ─── ELITE HEADER ─── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="w-2.5 h-2.5 bg-[#FF6B00] rounded-full animate-pulse shadow-[0_0_12px_#FF6B00]" />
+             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Node_Global_Distribution_Terminal</span>
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Global Terminal<span className="text-[#FF6B00]">.</span></h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Unified query interface for cross-vertical inventory fetching.</p>
+          <h1 className="text-6xl font-black text-[#0A1629] tracking-tighter leading-none">Global Terminal<span className="text-[#FF6B00]">.</span></h1>
+          <p className="text-lg text-slate-500 font-medium max-w-xl leading-relaxed">Unified distribution interface for high-velocity travel inventory orchestration across our global provider network.</p>
         </div>
         
-        <div className="flex items-center gap-6 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="flex items-center gap-8 bg-white/70 backdrop-blur-xl p-8 rounded-[32px] border border-slate-200/60 shadow-2xl shadow-slate-200/20 group">
           <div className="flex flex-col">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">System Latency</span>
-            <span className="text-sm font-black text-emerald-500">{stats.latency}</span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Network Latency</span>
+            <div className="flex items-baseline gap-2">
+               <span className="text-2xl font-black text-emerald-500 group-hover:scale-110 transition-transform">{stats.latency}</span>
+               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
+            </div>
           </div>
-          <div className="w-px h-8 bg-slate-100" />
+          <div className="w-px h-12 bg-slate-100" />
           <div className="flex flex-col">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Adapters</span>
-            <span className="text-sm font-black text-[#0A1629]">{stats.providers} Connected</span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Connected Nodes</span>
+            <span className="text-2xl font-black text-[#0A1629] tracking-tighter">{stats.providers} ADAPTERS</span>
           </div>
         </div>
       </div>
 
       {/* ─── TERMINAL TABS ─── */}
-      <div className="flex bg-slate-100/50 p-2 rounded-[28px] border border-slate-200/50 w-fit">
+      <div className="flex bg-slate-200/40 backdrop-blur-md p-2 rounded-[28px] border border-slate-200/60 w-fit">
         {[
-          { id: 'flights', icon: <Plane size={18} />, label: 'Flights' },
-          { id: 'hotels', icon: <Hotel size={18} />, label: 'Hotels' },
-          { id: 'transfers', icon: <Car size={18} />, label: 'Transfers' },
-          { id: 'visa', icon: <Globe size={18} />, label: 'e-Visas' },
-          { id: 'insurance', icon: <ShieldCheck size={18} />, label: 'Insurance' }
+          { id: 'flights', icon: <Plane size={20} />, label: 'FLIGHTS' },
+          { id: 'hotels', icon: <Hotel size={20} />, label: 'HOTELS' },
+          { id: 'transfers', icon: <Car size={20} />, label: 'TRANSFERS' },
+          { id: 'visa', icon: <Globe size={20} />, label: 'E-VISAS' },
+          { id: 'insurance', icon: <ShieldCheck size={20} />, label: 'INSURANCE' }
         ].map((t) => (
           <button 
             key={t.id}
             onClick={() => setTab(t.id as Vertical)}
-            className={`flex items-center gap-3 px-8 py-4 rounded-[22px] text-[12px] font-black uppercase tracking-widest transition-all ${
-              tab === t.id ? 'bg-white text-[#0A1629] shadow-xl shadow-slate-200/50 scale-[1.02]' : 'text-slate-400 hover:text-slate-900'
+            className={`flex items-center gap-4 px-10 py-5 rounded-[22px] text-[11px] font-black tracking-[0.2em] transition-all duration-300 relative ${
+              tab === t.id ? 'bg-[#0A1629] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-[#0A1629] hover:bg-white/50'
             }`}
           >
-            {t.icon}
+            <span className={`${tab === t.id ? 'text-[#FF6B00]' : 'text-slate-400'}`}>{t.icon}</span>
             {t.label}
           </button>
         ))}
       </div>
 
-      {/* ─── SEARCH CONSOLE ─── */}
-      <div className="bg-[#0A1629] p-12 rounded-[48px] text-white shadow-2xl relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-20 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-          <Globe size={240} />
-        </div>
+      {/* ─── SEARCH CONSOLE (ELITE) ─── */}
+      <div className="bg-[#0A1629] p-16 rounded-[60px] text-white shadow-[0_50px_100px_-20px_rgba(10,22,41,0.5)] relative overflow-hidden group border border-white/5">
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent opacity-50" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#FF6B00]/5 blur-[120px] rounded-full" />
         
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-end">
-          <div className="space-y-4">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] px-2 flex items-center gap-2">
-              <MapPin size={12} className="text-[#FF6B00]" /> {tab === 'flights' ? 'Departure City' : 'Location'}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 items-end">
+          <div className="space-y-4 lg:col-span-1">
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] px-2 flex items-center gap-3">
+              <MapPin size={12} className="text-[#FF6B00]" /> {tab === 'flights' ? 'Departure Node' : 'Operational Locale'}
             </p>
-            <div className="relative">
+            <div className="relative group/input">
               <input 
                 type="text" 
-                placeholder={tab === 'flights' ? 'Airport code (e.g. LOS)' : 'City or Country'} 
-                className="w-full pl-6 pr-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-[#FF6B00]/20 focus:border-[#FF6B00]/50 transition-all uppercase"
+                placeholder={tab === 'flights' ? 'Origin Code' : 'Target City/Country'} 
+                className="w-full pl-8 pr-8 py-6 bg-white/5 border border-white/10 rounded-[28px] text-white font-black text-lg placeholder:text-slate-700 outline-none focus:bg-white/10 focus:border-[#FF6B00]/50 transition-all uppercase tracking-widest"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -144,15 +146,15 @@ export default function TerminalPage() {
           </div>
 
           {tab === 'flights' && (
-            <div className="space-y-4">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] px-2 flex items-center gap-2">
-                <MapPin size={12} className="text-blue-500" /> Destination City
+            <div className="space-y-4 lg:col-span-1">
+              <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] px-2 flex items-center gap-3">
+                <MapPin size={12} className="text-blue-500" /> Arrival Terminal
               </p>
-              <div className="relative">
+              <div className="relative group/input">
                 <input 
                   type="text" 
-                  placeholder="Arrival (e.g. LHR)" 
-                  className="w-full pl-6 pr-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all uppercase"
+                  placeholder="Target Code" 
+                  className="w-full pl-8 pr-8 py-6 bg-white/5 border border-white/10 rounded-[28px] text-white font-black text-lg placeholder:text-slate-700 outline-none focus:bg-white/10 focus:border-blue-500/50 transition-all uppercase tracking-widest"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                 />
@@ -160,17 +162,26 @@ export default function TerminalPage() {
             </div>
           )}
 
+          <div className={`space-y-4 ${tab === 'flights' ? 'lg:col-span-1' : 'lg:col-span-2'}`}>
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] px-2 flex items-center gap-3">
+              <Calendar size={12} className="text-[#FF6B00]" /> Operational Schedule
+            </p>
+            <div className="w-full pl-8 pr-8 py-6 bg-white/5 border border-white/10 rounded-[28px] text-white/40 font-black text-sm uppercase tracking-[0.2em]">
+               System Auto-Optimized Date
+            </div>
+          </div>
+
           <div className="lg:col-span-1 flex gap-4">
              <button 
               onClick={handleSearch}
               disabled={loading}
-              className="flex-1 bg-[#FF6B00] text-white h-[68px] rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-600 transition-all active:scale-95 shadow-2xl shadow-orange-600/30 flex items-center justify-center gap-3 disabled:opacity-50"
+              className="flex-1 bg-[#FF6B00] text-white h-[84px] rounded-[32px] font-black text-sm uppercase tracking-[0.2em] hover:bg-orange-600 transition-all active:scale-95 shadow-2xl shadow-orange-600/30 flex items-center justify-center gap-4 disabled:opacity-50 group/btn"
             >
-              {loading ? <Loader2 className="animate-spin" size={22} /> : <Search size={22} />}
-              {loading ? 'Polling...' : 'Sync Data'}
+              {loading ? <Loader2 className="animate-spin" size={24} /> : <Search size={24} className="group-hover:scale-125 transition-transform" />}
+              {loading ? 'POLLING...' : 'EXECUTE'}
             </button>
-            <button className="w-[68px] h-[68px] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-white/10 transition-all">
-              <Filter size={20} />
+            <button className="w-[84px] h-[84px] bg-white/5 border border-white/10 rounded-[32px] flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all">
+              <Filter size={24} />
             </button>
           </div>
         </div>
