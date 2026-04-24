@@ -69,13 +69,15 @@ const SectionTitle = ({ subtitle, title, description, dark = false }: { subtitle
 const FeatureBlock = ({ icon, title, desc, dark = false }: { icon: any, title: string, desc: string, dark?: boolean }) => (
   <motion.div 
     variants={fadeInUp}
-    className={`p-10 rounded-[40px] border transition-all duration-500 group ${dark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50'}`}
+    whileHover={{ y: -10, scale: 1.02 }}
+    className={`p-10 rounded-[40px] border transition-all duration-500 group relative overflow-hidden ${dark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-slate-200/30'}`}
   >
-    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-6 ${dark ? 'bg-[#FF6B00] text-white' : 'bg-[#0A2540] text-[#FF6B00]'}`}>
+    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-6 relative z-10 ${dark ? 'bg-[#FF6B00] text-white' : 'bg-[#0A2540] text-[#FF6B00]'}`}>
       {icon}
     </div>
-    <h3 className={`text-2xl font-black mb-4 tracking-tight ${dark ? 'text-white' : 'text-[#0A2540]'}`}>{title}</h3>
-    <p className={`text-sm font-medium leading-relaxed ${dark ? 'text-white/50' : 'text-slate-500'}`}>{desc}</p>
+    <h3 className={`text-2xl font-black mb-4 tracking-tight relative z-10 ${dark ? 'text-white' : 'text-[#0A2540]'}`}>{title}</h3>
+    <p className={`text-sm font-medium leading-relaxed relative z-10 ${dark ? 'text-white/50' : 'text-slate-500'}`}>{desc}</p>
   </motion.div>
 );
 
@@ -187,9 +189,10 @@ export default function LandingPage() {
         
         {/* ─── SECTION 1: THE GRAND HERO ─── */}
         <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-8 pt-40 pb-20 overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full -z-10">
-            <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-blue-100/40 blur-[150px] rounded-full animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-orange-100/30 blur-[120px] rounded-full animate-pulse-glow" />
+          <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#F8FAFC]">
+            <div className="absolute top-0 left-0 w-full h-full grid-pattern opacity-40" />
+            <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-blue-100/50 blur-[180px] rounded-full animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-orange-100/40 blur-[150px] rounded-full animate-pulse-glow" />
           </div>
 
           <motion.div 
@@ -331,11 +334,7 @@ export default function LandingPage() {
         </VisualSection>
 
         {/* ─── SECTION 6: TREASURY & SETTLEMENT ─── */}
-        <section className="bg-[#0A2540] py-20 lg:py-40 overflow-hidden relative" id="wallets">
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-900/20 blur-[200px] rounded-full" />
-          </div>
-          
+        <section className="aurora-bg py-20 lg:py-40 overflow-hidden relative" id="wallets">
           <div className="max-w-[1400px] mx-auto px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
               <div>
@@ -390,55 +389,84 @@ export default function LandingPage() {
           </div>
         </VisualSection>
 
-        {/* ─── SECTION 8: CORPORATE GOVERNANCE ─── */}
-        <section className="py-40 bg-slate-50/50">
+        {/* ─── SECTION 8 & 9: BENTO ENTERPRISE HUB ─── */}
+        <section className="py-40 relative overflow-hidden" id="enterprise">
            <div className="max-w-[1400px] mx-auto px-8">
-              <div className="text-center max-w-3xl mx-auto mb-24">
+              <div className="text-center max-w-3xl mx-auto mb-32">
                  <SectionTitle 
                     subtitle="Management"
-                    title="Enterprise Control Plane."
-                    description="Centralized administration for corporate travel managers. Define approval workflows, manage employee wallets, and monitor global spending in real-time."
+                    title="The Bento Enterprise Hub."
+                    description="Centralized administration reimagined. A powerful orchestration layer for corporate travel, policy enforcement, and real-time audits."
                  />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                 {[
-                   { icon: <Users />, title: "Team Hierarchies", desc: "Manage multi-level teams." },
-                   { icon: <Lock />, title: "Policy Enforcement", desc: "Define travel budgets." },
-                   { icon: <Activity />, title: "Real-time Audits", desc: "Every transaction tracked." },
-                   { icon: <FileText />, title: "Automated Reporting", desc: "Tax-ready travel logs." }
-                 ].map((f, i) => (
-                   <div key={i} className="bg-white p-10 rounded-[40px] border border-slate-100 shadow-sm hover:shadow-xl transition-all text-center group">
-                      <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-8 text-[#0A2540] group-hover:bg-[#0A2540] group-hover:text-white transition-all">
-                        {f.icon}
-                      </div>
-                      <h4 className="text-xl font-black text-[#0A2540] mb-4 tracking-tight">{f.title}</h4>
-                      <p className="text-sm font-medium text-slate-500 leading-relaxed">{f.desc}</p>
-                   </div>
-                 ))}
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 grid-rows-2 gap-6 h-full lg:h-[800px]">
+                 {/* Large Hero Bento Item */}
+                 <motion.div 
+                    whileHover={{ scale: 0.99 }}
+                    className="md:col-span-4 lg:col-span-3 row-span-2 bg-[#0A2540] rounded-[60px] p-16 relative overflow-hidden group"
+                 >
+                    <div className="absolute top-0 right-0 w-full h-full opacity-20 pointer-events-none">
+                       <div className="absolute top-0 right-0 w-full h-full grid-pattern" />
+                    </div>
+                    <div className="relative z-10 h-full flex flex-col justify-between">
+                       <div>
+                          <div className="w-20 h-20 bg-[#FF6B00] rounded-3xl flex items-center justify-center text-white mb-10 shadow-2xl shadow-[#FF6B00]/30">
+                             <Users size={40} />
+                          </div>
+                          <h3 className="text-5xl font-black text-white tracking-tighter mb-6 leading-tight">Autonomous Team<br/>Governance.</h3>
+                          <p className="text-xl text-white/50 font-medium max-w-md leading-relaxed">
+                             Manage multi-level hierarchies with granular permission controls and real-time approval pipelines.
+                          </p>
+                       </div>
+                       <div className="pt-10">
+                          <button className="bg-white/10 hover:bg-white/20 text-white px-10 py-5 rounded-2xl font-black transition-all border border-white/10 flex items-center gap-4 group">
+                             Explore Governance <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                          </button>
+                       </div>
+                    </div>
+                 </motion.div>
+
+                 {/* Medium Bento Item 1 */}
+                 <motion.div 
+                    whileHover={{ scale: 0.99 }}
+                    className="md:col-span-2 lg:col-span-3 bg-slate-50 border border-slate-100 rounded-[60px] p-12 group hover:bg-white transition-colors"
+                 >
+                    <div className="flex items-start justify-between mb-8">
+                       <div className="w-14 h-14 bg-[#0A2540] rounded-2xl flex items-center justify-center text-[#FF6B00]">
+                          <Lock size={28} />
+                       </div>
+                       <div className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest">Secure</div>
+                    </div>
+                    <h4 className="text-3xl font-black text-[#0A2540] mb-4 tracking-tight">Policy Guard.</h4>
+                    <p className="text-slate-500 font-medium leading-relaxed">Define travel budgets and enforce company policies at the point of search.</p>
+                 </motion.div>
+
+                 {/* Small Bento Items */}
+                 <motion.div 
+                    whileHover={{ scale: 0.99 }}
+                    className="md:col-span-2 lg:col-span-1.5 bg-orange-50 border border-orange-100 rounded-[60px] p-10 flex flex-col justify-between"
+                 >
+                    <Activity className="text-[#FF6B00]" size={32} />
+                    <div>
+                       <h4 className="text-xl font-black text-[#0A2540] mb-2">Live Audits</h4>
+                       <p className="text-xs font-medium text-slate-500">Instant visibility.</p>
+                    </div>
+                 </motion.div>
+
+                 <motion.div 
+                    whileHover={{ scale: 0.99 }}
+                    className="md:col-span-2 lg:col-span-1.5 bg-blue-50 border border-blue-100 rounded-[60px] p-10 flex flex-col justify-between"
+                 >
+                    <FileText className="text-blue-600" size={32} />
+                    <div>
+                       <h4 className="text-xl font-black text-[#0A2540] mb-2">Smart Logs</h4>
+                       <p className="text-xs font-medium text-slate-500">Tax-ready data.</p>
+                    </div>
+                 </motion.div>
               </div>
            </div>
         </section>
-
-        {/* ─── SECTION 9: CURATED TOURS ─── */}
-        <VisualSection reverse image="https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1200&q=80">
-          <SectionTitle 
-            subtitle="Experiences"
-            title="Curated Discovery Engine."
-            description="Go beyond the basics. Integrate sightseeing, local tours, and exclusive destination experiences into your travel platform with zero inventory risk."
-          />
-          <div className="grid grid-cols-2 gap-6">
-             <div className="p-6 bg-orange-50 rounded-3xl border border-orange-100">
-                <Ticket className="text-[#FF6B00] mb-4" />
-                <p className="text-lg font-black text-[#0A2540]">VIP Access</p>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Skip-the-line entries</p>
-             </div>
-             <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100">
-                <Compass className="text-blue-600 mb-4" />
-                <p className="text-lg font-black text-[#0A2540]">Expert Guides</p>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Verified local pros</p>
-             </div>
-          </div>
-        </VisualSection>
 
         {/* ─── SECTION 10: CONCIERGE & SUPPORT ─── */}
         <section className="py-40 bg-[#0A2540] text-white">

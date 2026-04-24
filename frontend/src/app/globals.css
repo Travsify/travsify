@@ -95,10 +95,55 @@
 
 .mesh-bg {
   background-image: 
-    radial-gradient(at 0% 0%, rgba(10, 37, 64, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(255, 122, 0, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(10, 37, 64, 0.05) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(255, 122, 0, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(10, 37, 64, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 122, 0, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(10, 37, 64, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(255, 122, 0, 0.08) 0px, transparent 50%);
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.aurora-bg {
+  background: linear-gradient(135deg, #0A2540 0%, #1a3a5a 50%, #0A2540 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.aurora-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255, 122, 0, 0.1) 0%, transparent 50%);
+  animation: aurora-rotate 20s linear infinite;
+}
+
+@keyframes aurora-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.premium-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  backdrop-filter: blur(10px);
+}
+
+.magnetic-button {
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.magnetic-button:hover {
+  transform: translate(var(--mx, 0), var(--my, 0));
 }
 
 .grid-pattern {

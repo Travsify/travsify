@@ -43,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <body className={`${inter.className} antialiased text-[#0B1F33] bg-[#F8FAFC] selection:bg-[#FF7A00]/20`}>
+        <div className="noise-overlay" />
         <AuthProvider>
           {children}
         </AuthProvider>
