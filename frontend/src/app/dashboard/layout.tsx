@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,7 +27,10 @@ import {
   Zap,
   Activity,
   Globe,
-  ChevronDown
+  ChevronDown,
+  CheckCircle2,
+  AlertCircle,
+  FileText
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -53,6 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       items: [
         { name: 'Flights', path: '/dashboard/flights', icon: <Plane size={18} /> },
         { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
+        { name: 'Visa & e-Visa', path: '/dashboard/visa', icon: <FileText size={18} /> },
         { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
         { name: 'Tours', path: '/dashboard/tours', icon: <Globe size={18} /> },
         { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
@@ -83,6 +88,55 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       ]
     }
   ];
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/notifications`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data);
+          setUnreadCount(data.filter((n: any) => !n.isRead).length);
+        }
+      } catch (err) {
+        console.error('Failed to fetch notifications', err);
+      }
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // Polling every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const markAsRead = async (id: string) => {
+    const token = localStorage.getItem('token');
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1/notifications/${id}/read`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error('Failed to mark as read', err);
+    }
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'success': return { icon: <CheckCircle2 size={14} />, color: 'bg-emerald-50 text-emerald-600' };
+      case 'warning': return { icon: <Wallet size={14} />, color: 'bg-orange-50 text-[#FF6B00]' };
+      case 'error': return { icon: <AlertCircle size={14} />, color: 'bg-rose-50 text-rose-600' };
+      default: return { icon: <Activity size={14} />, color: 'bg-blue-50 text-blue-600' };
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
@@ -124,6 +178,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           ))}
         </nav>
+
+        <div className="p-3 border-t border-white/5">
+          <button 
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all group"
+          >
+            <LogOut size={18} />
+            Terminate Session
+          </button>
+        </div>
 
         <div className="p-4 m-3 bg-white/5 rounded-xl border border-white/10">
           <div className="flex items-center gap-3">
@@ -184,35 +248,54 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="relative group">
                 <button className="relative p-2.5 text-slate-400 hover:text-[#0A1629] bg-slate-50 rounded-xl border border-transparent hover:border-slate-200 transition-all">
                   <Bell size={22} />
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#FF6B00] rounded-full border-2 border-white text-[9px] font-black text-white flex items-center justify-center shadow-lg shadow-orange-600/30">3</div>
+                  {unreadCount > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#FF6B00] rounded-full border-2 border-white text-[9px] font-black text-white flex items-center justify-center shadow-lg shadow-orange-600/30">
+                      {unreadCount}
+                    </div>
+                  )}
                 </button>
                 
                 {/* Notification Dropdown */}
                 <div className="absolute right-0 mt-4 w-80 bg-white rounded-[32px] shadow-2xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-                  <div className="p-6 border-b border-slate-50 bg-slate-50/50">
+                  <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-black text-[#0A1629] uppercase tracking-widest">Recent Alerts</h3>
+                    <span className="text-[10px] font-black text-slate-400">{notifications.length} Total</span>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
-                    {[
-                      { title: 'New Flight Booking', time: '2 mins ago', icon: <Plane size={14} />, color: 'bg-blue-50 text-blue-600' },
-                      { title: 'Wallet Threshold Alert', time: '1 hour ago', icon: <Wallet size={14} />, color: 'bg-orange-50 text-[#FF6B00]' },
-                      { title: 'System Maintenance', time: '5 hours ago', icon: <Activity size={14} />, color: 'bg-slate-50 text-slate-600' },
-                    ].map((n, i) => (
-                      <div key={i} className="p-5 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 group/item">
-                        <div className="flex gap-4">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${n.color}`}>
-                            {n.icon}
-                          </div>
-                          <div>
-                            <p className="text-[13px] font-black text-[#0A1629] mb-1">{n.title}</p>
-                            <p className="text-[11px] text-slate-400 font-medium">{n.time}</p>
+                    {notifications.length > 0 ? notifications.map((n, i) => {
+                      const style = getNotificationIcon(n.type);
+                      return (
+                        <div 
+                          key={n.id} 
+                          onClick={() => !n.isRead && markAsRead(n.id)}
+                          className={`p-5 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 group/item relative ${!n.isRead ? 'bg-blue-50/20' : ''}`}
+                        >
+                          <div className="flex gap-4">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${style.color}`}>
+                              {style.icon}
+                            </div>
+                            <div className="flex-1">
+                              <p className={`text-[13px] font-black text-[#0A1629] mb-1 ${!n.isRead ? 'pr-3' : ''}`}>{n.title}</p>
+                              <p className="text-[11px] text-slate-400 font-medium line-clamp-2">{n.message}</p>
+                              <p className="text-[9px] text-slate-300 font-bold uppercase mt-2">{new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            </div>
+                            {!n.isRead && (
+                              <div className="absolute right-6 top-6 w-2 h-2 bg-[#FF6B00] rounded-full" />
+                            )}
                           </div>
                         </div>
+                      );
+                    }) : (
+                      <div className="p-10 text-center">
+                        <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Bell size={20} className="text-slate-300" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No new alerts</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                   <div className="p-4 bg-slate-50 text-center">
-                    <button className="text-[11px] font-black text-[#FF6B00] uppercase tracking-widest hover:underline">View All Notifications</button>
+                    <button className="text-[11px] font-black text-[#FF6B00] uppercase tracking-widest hover:underline">Clear All Alerts</button>
                   </div>
                 </div>
               </div>

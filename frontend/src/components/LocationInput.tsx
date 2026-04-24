@@ -73,22 +73,24 @@ export default function LocationInput({ value, onChange, placeholder, label, ico
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl border border-slate-100 shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="autocomplete-dropdown">
           {suggestions.map((s, i) => (
             <div 
               key={i} 
-              className="px-6 py-4 hover:bg-slate-50 cursor-pointer flex items-start gap-4 transition-colors border-b border-slate-50 last:border-0"
+              className="autocomplete-item hover:bg-[#0A1629] group"
               onClick={() => {
-                onChange(s.full_address);
+                onChange(s.full_address || s.name);
                 setShowDropdown(false);
               }}
             >
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                <MapPin size={18} className="text-blue-500" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-black text-slate-900">{s.name}</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{[s.city, s.state, s.country].filter(Boolean).join(', ')}</span>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors">
+                  <MapPin size={18} className="text-blue-500 group-hover:text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-black text-slate-900 group-hover:text-white transition-colors">{s.name}</span>
+                  <span className="text-[10px] font-bold text-slate-400 group-hover:text-white/60 uppercase tracking-tight">{[s.city, s.state, s.country].filter(Boolean).join(', ')}</span>
+                </div>
               </div>
             </div>
           ))}

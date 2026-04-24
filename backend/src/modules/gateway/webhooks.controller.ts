@@ -16,28 +16,33 @@ export class WebhooksController {
 
     if (payload.event === 'collection.successful') {
       const reference = payload.data.reference;
-      this.logger.log(`Webhook: Payment successful for reference ${reference}`);
+      const metadata = payload.data.metadata || {};
+      const vertical = metadata.vertical || 'flight';
       
-      // In a real scenario, we would fetch the booking metadata from DB
-      // For this powerhouse demo, we proceed to finalize
-      return this.checkoutService.finalizeBooking(reference, 'flight', {});
+      this.logger.log(`Webhook: Payment successful for ${vertical} (Ref: ${reference})`);
+      
+      return this.checkoutService.finalizeBooking(reference, vertical, {});
     }
 
     return { status: 'acknowledged' };
   }
 
   /**
-   * Handles successful payment intents from Stripe
+   * Handles successful checkout sessions from Stripe
    */
   @Post('stripe')
   async handleStripeWebhook(@Body() payload: any) {
     this.logger.log(`Webhook: Received Stripe event: ${payload.type}`);
 
-    if (payload.type === 'payment_intent.succeeded') {
-      const intentId = payload.data.object.id;
-      this.logger.log(`Webhook: Stripe payment succeeded for intent ${intentId}`);
+    if (payload.type === 'checkout.session.completed') {
+      const session = payload.data.object;
+      const reference = session.id;
+      const metadata = session.metadata || {};
+      const vertical = metadata.vertical || 'flight';
       
-      return this.checkoutService.finalizeBooking(intentId, 'hotel', {});
+      this.logger.log(`Webhook: Stripe payment succeeded for ${vertical} (Session: ${reference})`);
+      
+      return this.checkoutService.finalizeBooking(reference, vertical, {});
     }
 
     return { status: 'acknowledged' };

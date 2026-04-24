@@ -269,9 +269,19 @@ function CheckoutContent() {
             </div>
 
             <div className="space-y-4">
-               <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/10">
-                  <ShieldCheck size={20} className="text-emerald-400" />
-                  <p className="text-[10px] font-bold text-slate-300 leading-relaxed uppercase tracking-tight">Secure Payment via Wallet or External Gateway</p>
+               <div className="flex flex-col gap-3 p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-all group/pay">
+                  <div className="flex items-center gap-3">
+                    <ShieldCheck size={24} className="text-emerald-400" />
+                    <p className="text-xs font-black text-white uppercase tracking-wider">Travsify Pay</p>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 leading-relaxed uppercase tracking-tight">
+                    Secure payment gateway supporting {currency === 'NGN' ? 'Naira (NGN) via Local Channels' : 'Global Currencies (USD/EUR)'}.
+                  </p>
+                  <div className="flex gap-2 mt-1">
+                    <div className="px-2 py-1 bg-white/10 rounded text-[8px] font-black text-slate-300">VISA</div>
+                    <div className="px-2 py-1 bg-white/10 rounded text-[8px] font-black text-slate-300">MASTERCARD</div>
+                    {currency === 'NGN' && <div className="px-2 py-1 bg-white/10 rounded text-[8px] font-black text-slate-300">BANK TRANSFER</div>}
+                  </div>
                </div>
             </div>
 

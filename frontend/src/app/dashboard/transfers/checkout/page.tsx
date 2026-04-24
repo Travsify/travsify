@@ -190,7 +190,7 @@ function CheckoutContent() {
                 </div>
                 <div>
                   <p className="text-sm font-black tracking-tight">Executive Sedan</p>
-                  <p className="text-[10px] font-bold text-slate-400 flex items-center gap-1"><Clock size={10} /> Mozio Certified</p>
+                  <p className="text-[10px] font-bold text-slate-400 flex items-center gap-1"><Clock size={10} /> Direct Connect</p>
                 </div>
               </div>
             </div>
@@ -210,15 +210,26 @@ function CheckoutContent() {
               </div>
             </div>
 
+            <div className="space-y-4">
+               <div className="flex flex-col gap-3 p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-all group/pay">
+                  <div className="flex items-center gap-3">
+                    <ShieldCheck size={24} className="text-emerald-400" />
+                    <p className="text-xs font-black text-white uppercase tracking-wider">Travsify Pay</p>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 leading-relaxed uppercase tracking-tight">
+                    Secure payment gateway supporting {currency === 'NGN' ? 'Naira (NGN) via Local Channels' : 'Global Currencies (USD/EUR)'}.
+                  </p>
+               </div>
+            </div>
+
             <button 
               onClick={handleBooking}
               disabled={loading}
               className="w-full py-5 bg-[#FF6B00] rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-orange-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
             >
               {loading ? <Loader2 className="animate-spin" size={18} /> : <CreditCard size={18} />}
-              {loading ? 'Scheduling...' : 'Schedule Pickup'}
+              {loading ? 'Processing...' : 'Confirm & Pay'}
             </button>
-            <p className="text-center text-[9px] font-bold text-slate-500 uppercase tracking-widest">Secure Checkout by Travsify Settle</p>
           </div>
         </div>
       </div>

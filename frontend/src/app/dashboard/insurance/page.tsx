@@ -74,7 +74,7 @@ export default function InsurancePage() {
             </div>
             Travel Insurance
           </h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Protect your travelers with comprehensive global coverage via SafetyWing integration.</p>
+          <p className="text-sm text-slate-400 font-medium mt-2">Protect your travelers with comprehensive global coverage via our Verified Network.</p>
         </div>
         <div className="flex gap-2">
            <span className="px-4 py-2 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-emerald-100 flex items-center gap-2">
@@ -158,8 +158,8 @@ export default function InsurancePage() {
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-black text-slate-900 mb-2 relative z-10 tracking-tight">{plan.planName || 'SafetyWing Global'}</h3>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 relative z-10">Underwritten by SafetyWing Direct</p>
+                <h3 className="text-2xl font-black text-slate-900 mb-2 relative z-10 tracking-tight">{plan.planName || 'Global Direct'}</h3>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 relative z-10">Underwritten by Verified Network</p>
 
                 <div className="space-y-5 mb-10 relative z-10 flex-1">
                   {(plan.benefits || ['Medical Emergencies up to $250k', 'Trip Interruption Coverage', 'Lost Checked Luggage Protection', 'Emergency Evacuation']).map((benefit: string, j: number) => (
@@ -189,7 +189,7 @@ export default function InsurancePage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    const url = `/dashboard/checkout?vertical=insurance&provider=SafetyWing&id=${plan.id}&name=${encodeURIComponent(plan.planName)}&price=${plan.price?.totalAmount}&currency=${currency}`;
+                    const url = `/dashboard/checkout?vertical=insurance&provider=VerifiedNetwork&id=${plan.id}&name=${encodeURIComponent(plan.planName)}&price=${plan.price?.totalAmount}&currency=${currency}`;
                     window.location.href = url;
                   }}
                   className="w-full mt-10 py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] transition-all duration-500 flex items-center justify-center gap-3 relative z-10 active:scale-95 shadow-2xl hover:shadow-orange-600/30 group/btn"
@@ -209,7 +209,7 @@ export default function InsurancePage() {
                   </div>
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight">Protect Your Journey</h3>
                   <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-4 leading-relaxed px-6">
-                    Enter destination and travel dates to fetch live availability and dynamic {currency} quotes from SafetyWing.
+                    Enter destination and travel dates to fetch live availability and dynamic {currency} quotes from our global network.
                   </p>
                 </div>
               </div>
@@ -231,8 +231,8 @@ export default function InsurancePage() {
               <table className="w-full text-left border-collapse">
                 <tbody className="divide-y divide-slate-50">
                   {[
-                    { id: 'POL-SW-9283', pax: 'John Doe', plan: 'SafetyWing Global', expiry: 'May 20, 2026', status: 'Active' },
-                    { id: 'POL-SW-1102', pax: 'Jane Smith', plan: 'SafetyWing Nomad', expiry: 'Apr 25, 2026', status: 'Expiring Soon' },
+                    { id: 'POL-VN-9283', pax: 'John Doe', plan: 'Global Direct', expiry: 'May 20, 2026', status: 'Active' },
+                    { id: 'POL-VN-1102', pax: 'Jane Smith', plan: 'Global Nomad', expiry: 'Apr 25, 2026', status: 'Expiring Soon' },
                   ].map((policy) => (
                     <tr key={policy.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer">
                       <td className="px-10 py-8">
@@ -308,7 +308,7 @@ export default function InsurancePage() {
               <h4 className="text-sm font-black uppercase tracking-[0.2em]">Emergency Assistance</h4>
             </div>
             <p className="text-sm font-medium text-slate-500 leading-relaxed mb-8 relative z-10">
-              Need immediate global help? Access the 24/7 SafetyWing emergency line for medical evacuation, urgent care, or coordination support.
+              Need immediate global help? Access the 24/7 Verified emergency line for medical evacuation, urgent care, or coordination support.
             </p>
             <div className="p-6 bg-[#0A1629] rounded-[24px] border border-blue-900/30 font-mono text-lg font-black text-center text-white shadow-2xl shadow-blue-900/20 group-hover:scale-105 transition-transform relative z-10 cursor-pointer active:scale-95">
               +1 (800) 555-0199
@@ -328,8 +328,8 @@ export default function InsurancePage() {
                   <ShieldCheck size={28} className="text-[#FF6B00]" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{selectedPlan.planName || 'SafetyWing Global'}</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">SafetyWing Direct Coverage</p>
+                  <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{selectedPlan.planName || 'Global Direct'}</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verified Direct Coverage</p>
                 </div>
               </div>
               <button 
@@ -410,7 +410,7 @@ export default function InsurancePage() {
                   <button className="w-full py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] shadow-xl hover:shadow-orange-600/30 transition-all active:scale-95">
                     Issue Policy Now
                   </button>
-                  <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-6">Instant Issuance via SafetyWing API</p>
+                  <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-6">Instant Issuance via Verified Network</p>
                 </div>
               </div>
             </div>

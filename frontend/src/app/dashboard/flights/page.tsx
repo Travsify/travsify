@@ -116,13 +116,13 @@ export default function FlightsPage() {
     <div className="space-y-10 animate-in fade-in duration-300 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
             <div className="w-10 h-10 bg-[#0A1629] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-900/20">
               <Plane size={24} className="text-[#FF6B00]" />
             </div>
             Flights
           </h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Direct connection to over 400+ airlines for real-time inventory and instant ticketing.</p>
+          <p className="text-[13px] text-slate-400 font-medium mt-2">Direct connection to over 400+ airlines for real-time inventory and instant ticketing.</p>
         </div>
         <div className="flex gap-2">
           <span className="px-4 py-2 bg-orange-50 text-[#FF6B00] text-[10px] font-black uppercase tracking-widest rounded-xl border border-orange-100 flex items-center gap-2">
@@ -205,7 +205,7 @@ export default function FlightsPage() {
                     onFocus={() => seg.origin.length >= 2 && handleAirportSearch(idx, 'origin', seg.origin)}
                   />
                   {activeInput?.index === idx && activeInput?.field === 'origin' && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-slate-200 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[100] overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 min-w-[300px]">
+                    <div className="autocomplete-dropdown">
                       <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Origin</p>
                         <Plane size={12} className="text-slate-300" />
@@ -215,14 +215,14 @@ export default function FlightsPage() {
                           <button
                             key={airport.iata}
                             onClick={() => selectAirport(idx, 'origin', airport)}
-                            className="w-full px-6 py-5 text-left hover:bg-[#0A1629] group transition-all border-b border-slate-50 last:border-0 flex items-center justify-between"
+                            className="autocomplete-item hover:bg-[#0A1629]"
                           >
                             <div className="flex items-center gap-4">
                               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
                                 <span className="text-xs font-black">{airport.iata}</span>
                               </div>
                               <div>
-                                <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors leading-tight">{airport.city}</p>
+                                <p className="text-[13px] font-black text-slate-900 group-hover:text-white transition-colors leading-tight">{airport.city}</p>
                                 <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors mt-0.5">{airport.name}</p>
                               </div>
                             </div>
@@ -250,7 +250,7 @@ export default function FlightsPage() {
                     onFocus={() => seg.destination.length >= 2 && handleAirportSearch(idx, 'destination', seg.destination)}
                   />
                   {activeInput?.index === idx && activeInput?.field === 'destination' && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-slate-200 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[100] overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 min-w-[300px]">
+                    <div className="autocomplete-dropdown">
                       <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Destination</p>
                         <Plane size={12} className="text-slate-300 rotate-90" />
@@ -260,14 +260,14 @@ export default function FlightsPage() {
                           <button
                             key={airport.iata}
                             onClick={() => selectAirport(idx, 'destination', airport)}
-                            className="w-full px-6 py-5 text-left hover:bg-[#FF6B00] group transition-all border-b border-slate-50 last:border-0 flex items-center justify-between"
+                            className="autocomplete-item hover:bg-[#FF6B00]"
                           >
                             <div className="flex items-center gap-4">
                               <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
                                 <span className="text-xs font-black">{airport.iata}</span>
                               </div>
                               <div>
-                                <p className="text-sm font-black text-slate-900 group-hover:text-white transition-colors leading-tight">{airport.city}</p>
+                                <p className="text-[13px] font-black text-slate-900 group-hover:text-white transition-colors leading-tight">{airport.city}</p>
                                 <p className="text-[10px] font-medium text-slate-400 group-hover:text-white/70 transition-colors mt-0.5">{airport.name}</p>
                               </div>
                             </div>
@@ -452,15 +452,15 @@ export default function FlightsPage() {
                 <div className="text-center lg:text-right">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Grand Total</p>
                   <div className="flex items-baseline gap-1 justify-center lg:justify-end">
-                    <span className="text-sm font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}</span>
-                    <p className="text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                    <span className="text-xs font-black text-slate-900">{currency === 'USD' ? '$' : '₦'}</span>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter leading-none">
                       {(flight.price?.totalAmount || 0).toLocaleString()}
                     </p>
                   </div>
                   <div className="mt-4 flex flex-col items-center lg:items-end gap-2">
                     <div className="px-3 py-1 bg-[#0A1629] text-white rounded-full flex items-center gap-1.5 shadow-lg shadow-blue-900/20">
                       <CheckCircle2 size={10} strokeWidth={4} className="text-[#FF6B00]" />
-                      <span className="text-[9px] font-black uppercase tracking-widest">{flight.provider} Network Verified</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest">Verified Network</span>
                     </div>
                   </div>
                 </div>
@@ -506,7 +506,7 @@ export default function FlightsPage() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight">Itinerary Details</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{selectedFlight.provider} • {selectedFlight.cabin || 'Economy'} Class{selectedFlight.totalDuration ? ` • ${selectedFlight.totalDuration}` : ''}</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Direct Connect • {selectedFlight.cabin || 'Economy'} Class{selectedFlight.totalDuration ? ` • ${selectedFlight.totalDuration}` : ''}</p>
                 </div>
               </div>
               <button 

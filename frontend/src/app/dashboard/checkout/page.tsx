@@ -28,7 +28,7 @@ function CheckoutContent() {
   
   // Params from the search results
   const vertical = searchParams.get('vertical') || 'hotel';
-  const provider = searchParams.get('provider') || 'LiteAPI';
+  const provider = searchParams.get('provider') || 'Direct Connect';
   const itemId = searchParams.get('id');
   const itemName = searchParams.get('name') || 'Travel Service';
   const basePrice = parseFloat(searchParams.get('price') || '0');
@@ -47,8 +47,11 @@ function CheckoutContent() {
 
   const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'card'>('wallet');
 
+  const [error, setError] = useState<any>(null);
+
   const handleBooking = async () => {
     setLoading(true);
+    setError(null);
     const token = localStorage.getItem('token');
     
     try {
@@ -70,15 +73,21 @@ function CheckoutContent() {
         })
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
         setBookingId(data.id);
         setSuccess(true);
       } else {
-        alert('Booking failed. Please check your wallet balance.');
+        if (data.message?.code === 'INSUFFICIENT_FUNDS') {
+          setError(data.message);
+        } else {
+          setError({ message: data.message || 'Booking failed. Please try again later.' });
+        }
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      setError({ message: 'A network error occurred. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -92,7 +101,7 @@ function CheckoutContent() {
         </div>
         <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">Booking Received!</h2>
         <p className="text-slate-500 text-lg mb-12 max-w-lg mx-auto leading-relaxed">
-          Your payment was successful. Our operations team is now fulfilling your <span className="font-bold text-slate-900 uppercase">{vertical}</span> booking with {provider}.
+          Your payment was successful. Our operations team is now fulfilling your <span className="font-bold text-slate-900 uppercase">{vertical}</span> booking via our Verified Network.
         </p>
         
         <div className="bg-white p-10 rounded-[48px] border border-slate-100 shadow-2xl mb-12 text-left">
@@ -195,30 +204,52 @@ function CheckoutContent() {
                
                <div className="space-y-6 mb-12 relative z-10">
                  <SummaryRow label="Vertical" value={vertical.toUpperCase()} />
-                 <SummaryRow label="Provider" value={provider} />
+                 <SummaryRow label="Network" value="Verified Direct" />
                  <SummaryRow label="Fulfillment" value="Manual (Secure)" color="text-[#FF6B00]" />
                </div>
 
-               <div className="pt-10 border-t border-white/10 relative z-10">
-                  <div className="flex justify-between items-end mb-10">
-                    <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Total Amount</p>
-                      <p className="text-5xl font-black tracking-tighter">{currency === 'USD' ? '$' : '₦'}{basePrice.toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  <button 
-                    onClick={handleBooking}
-                    disabled={loading}
-                    className="w-full py-6 bg-[#FF6B00] text-white rounded-[24px] font-black text-sm uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-orange-600/40 flex items-center justify-center gap-3"
-                  >
-                    {loading ? <Loader2 className="animate-spin" /> : 'Confirm & Pay'}
-                    {!loading && <ChevronRight size={20} />}
-                  </button>
-                  <p className="text-center text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-8 flex items-center justify-center gap-2">
-                    <Lock size={12} /> SSL Secure Encrypted Transaction
-                  </p>
-               </div>
+                <div className="pt-10 border-t border-white/10 relative z-10">
+                   {error && (
+                     <div className="mb-8 p-6 bg-rose-500/10 border border-rose-500/20 rounded-[24px] flex items-start gap-4 animate-in fade-in slide-in-from-top-4">
+                       <AlertCircle className="text-rose-500 shrink-0 mt-0.5" size={20} />
+                       <div>
+                         <p className="text-xs font-black text-rose-500 uppercase tracking-widest mb-1">{error.code === 'INSUFFICIENT_FUNDS' ? 'Insufficient Balance' : 'Payment Error'}</p>
+                         <p className="text-xs font-bold text-slate-400 leading-relaxed">{error.message}</p>
+                         {error.code === 'INSUFFICIENT_FUNDS' && (
+                           <button 
+                             onClick={() => router.push('/dashboard/wallet')}
+                             className="mt-4 text-[10px] font-black text-[#FF6B00] uppercase tracking-[0.2em] hover:underline flex items-center gap-2"
+                           >
+                             Fund your {error.currency || 'NGN'} wallet now <ChevronRight size={12} />
+                           </button>
+                         )}
+                       </div>
+                     </div>
+                   )}
+
+                   <div className="flex justify-between items-end mb-10">
+                     <div>
+                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Total Amount</p>
+                       <p className="text-5xl font-black tracking-tighter">{currency === 'USD' ? '$' : '₦'}{basePrice.toLocaleString()}</p>
+                     </div>
+                   </div>
+                   
+                   <button 
+                     onClick={handleBooking}
+                     disabled={loading}
+                     className={`w-full py-6 rounded-[24px] font-black text-sm uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-3 ${
+                       error?.code === 'INSUFFICIENT_FUNDS' 
+                         ? 'bg-slate-700 text-white cursor-not-allowed opacity-50' 
+                         : 'bg-[#FF6B00] text-white shadow-orange-600/40'
+                     }`}
+                   >
+                     {loading ? <Loader2 className="animate-spin" /> : 'Confirm & Pay'}
+                     {!loading && <ChevronRight size={20} />}
+                   </button>
+                   <p className="text-center text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-8 flex items-center justify-center gap-2">
+                     <Lock size={12} /> SSL Secure Encrypted Transaction
+                   </p>
+                </div>
             </div>
 
             <div className="bg-blue-50 p-8 rounded-[32px] border border-blue-100 flex gap-4">

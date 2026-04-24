@@ -141,7 +141,7 @@ export default function ToursPage() {
             {/* Provider Badge */}
             <div className="absolute top-8 right-8 z-20">
               <div className="px-4 py-2.5 bg-[#0A1629]/80 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/10">
-                <span className="text-[10px] font-black text-white uppercase tracking-widest opacity-80">GETYOURGUIDE</span>
+                <span className="text-[10px] font-black text-white uppercase tracking-widest opacity-80">DIRECT CONNECT</span>
               </div>
             </div>
             
@@ -198,7 +198,7 @@ export default function ToursPage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    const url = `/dashboard/checkout?vertical=experience&provider=GetYourGuide&id=${results.id}&name=${encodeURIComponent(results.tourName)}&price=${results.estimatedFee}&currency=${currency}`;
+                    const url = `/dashboard/checkout?vertical=experience&provider=DirectConnect&id=${results.id}&name=${encodeURIComponent(results.tourName)}&price=${results.estimatedFee}&currency=${currency}`;
                     window.location.href = url;
                   }}
                   className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"
@@ -216,7 +216,7 @@ export default function ToursPage() {
               </div>
               <h3 className="text-3xl font-black text-slate-900 tracking-tight">Discover Curated Tours</h3>
               <p className="text-base text-slate-400 font-medium max-w-lg mx-auto mt-4 leading-relaxed px-10">
-                Enter your destination city to fetch live sightseeing tours and experiences directly from GetYourGuide.
+                Enter your destination city to fetch live sightseeing tours and experiences directly from our global network.
               </p>
             </div>
           </div>
@@ -325,7 +325,7 @@ export default function ToursPage() {
                     
                     <button 
                       onClick={() => {
-                        const url = `/dashboard/checkout?vertical=experience&provider=GetYourGuide&id=${selectedTour.id}&name=${encodeURIComponent(selectedTour.tourName)}&price=${selectedTour.estimatedFee}&currency=${currency}`;
+                        const url = `/dashboard/checkout?vertical=experience&provider=DirectConnect&id=${selectedTour.id}&name=${encodeURIComponent(selectedTour.tourName)}&price=${selectedTour.estimatedFee}&currency=${currency}`;
                         window.location.href = url;
                       }}
                       className="w-full py-5 bg-[#FF6B00] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-orange-600/30"

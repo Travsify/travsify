@@ -5,6 +5,7 @@ import { ShepperService } from './services/shepper.service';
 import { GetYourGuideService } from './services/getyourguide.service';
 import { MozioService } from './services/mozio.service';
 import { SafetyWingService } from './services/safetywing.service';
+import { SherpaService } from './services/sherpa.service';
 
 @Controller('demo')
 export class DemoController {
@@ -13,7 +14,7 @@ export class DemoController {
   constructor(
     private readonly ndcService: NdcService,
     private readonly liteApiService: LiteApiService,
-    private readonly shepperService: ShepperService,
+    private readonly sherpaService: SherpaService,
     private readonly getYourGuideService: GetYourGuideService,
     private readonly mozioService: MozioService,
     private readonly safetyWingService: SafetyWingService,
@@ -73,14 +74,14 @@ export class DemoController {
     return this.liteApiService.getHotelDetails(hotelId);
   }
 
-  // ─── 🛂 Visa / eVisa (Shepper) ─────────────────────────────
+  // ─── 🛂 Visa / eVisa (Sherpa) ─────────────────────────────
   @Get('visa/requirements')
   async getVisaRequirements(
     @Query('nationality') nationality: string,
     @Query('destination') destination: string,
   ) {
     this.logger.log(`Visa check: ${nationality} → ${destination}`);
-    return this.shepperService.getVisaRequirements({
+    return this.sherpaService.getVisaRequirements({
       nationality: nationality || 'NG',
       destination: destination || 'GB',
     });
@@ -88,7 +89,7 @@ export class DemoController {
 
   @Get('visa/status/:applicationId')
   async getVisaStatus(@Query('applicationId') applicationId: string) {
-    return this.shepperService.getVisaApplicationStatus(applicationId);
+    return this.sherpaService.getVisaApplicationStatus(applicationId);
   }
 
   // ─── 🎭 Experiences & Tours (GetYourGuide) ───────────────

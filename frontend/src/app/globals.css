@@ -44,6 +44,7 @@
     -moz-osx-font-smoothing: grayscale;
     color: var(--color-text-primary);
     background: var(--color-bg);
+    font-size: 14px; /* Default font size as requested */
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -56,6 +57,15 @@
     background: rgba(255, 122, 0, 0.2);
     color: #0A2540;
   }
+}
+
+/* ─── Address Completion Dropdown ─── */
+.autocomplete-dropdown {
+  @apply absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-[24px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] z-[100] overflow-hidden;
+}
+
+.autocomplete-item {
+  @apply w-full px-6 py-4 text-left hover:bg-slate-50 transition-all border-b border-slate-50 last:border-0 flex items-center justify-between group;
 }
 
 /* ═══════════════════════════════════════════════════

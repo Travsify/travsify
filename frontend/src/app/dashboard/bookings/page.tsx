@@ -62,6 +62,7 @@ export default function BookingsPage() {
     switch (vertical?.toLowerCase()) {
       case 'hotel': return <Hotel size={18} className="text-blue-500" />;
       case 'experience': return <Ticket size={18} className="text-orange-500" />;
+      case 'visa': return <FileText size={18} className="text-[#FF6B00]" />;
       case 'transfer': return <Car size={18} className="text-slate-500" />;
       case 'insurance': return <ShieldCheck size={18} className="text-emerald-500" />;
       default: return <Plane size={18} className="text-blue-600" />;
@@ -72,7 +73,7 @@ export default function BookingsPage() {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4 animate-fade-up">
         <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-        <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Accessing Operations...</p>
+        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Accessing Operations...</p>
       </div>
     );
   }
@@ -82,8 +83,8 @@ export default function BookingsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Global Operations</h2>
-          <p className="text-slate-500 font-medium text-sm">Monitor and manage all bookings across your unified travel network.</p>
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 mb-2">Global Operations</h2>
+          <p className="text-slate-500 font-medium text-[13px]">Monitor and manage all bookings across your unified travel network.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative group">

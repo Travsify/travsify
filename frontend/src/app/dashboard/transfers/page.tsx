@@ -67,7 +67,7 @@ export default function TransfersPage() {
             </div>
             Transfers
           </h1>
-          <p className="text-sm text-slate-400 font-medium mt-2">Airport pickups and car rental logistics via Mozio API.</p>
+          <p className="text-sm text-slate-400 font-medium mt-2">Airport pickups and car rental logistics via our Verified Network.</p>
         </div>
         <div className="flex gap-2">
           <span className="px-4 py-2 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-emerald-100 flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function TransfersPage() {
               className="w-full py-5 bg-[#0A1629] text-white rounded-2xl font-black text-sm hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/30 text-center active:scale-95 flex items-center justify-center gap-3 group/btn"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} className="group-hover/btn:rotate-12 transition-transform" />}
-              {loading ? 'Searching Mozio...' : 'Check Availability'}
+              {loading ? 'Searching Verified Network...' : 'Check Availability'}
             </button>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function TransfersPage() {
               <div className="w-full text-center md:text-left space-y-4">
                 <div className="space-y-1">
                    <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{ride.type || 'Standard Executive'}</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Provided by Mozio Direct Connect</p>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Provided by Verified Network</p>
                 </div>
                 
                 <div className="flex flex-wrap justify-center md:justify-start gap-4">
@@ -199,7 +199,7 @@ export default function TransfersPage() {
               </div>
               <h3 className="text-2xl font-black text-slate-900 tracking-tight">Luxury Ground Transport</h3>
               <p className="text-sm text-slate-400 font-medium max-w-md mx-auto mt-4 leading-relaxed px-6">
-                Enter your pickup and drop-off locations to fetch live vehicle availability and dynamic {currency} pricing via Mozio.
+                Enter your pickup and drop-off locations to fetch live vehicle availability and dynamic {currency} pricing via our direct connection.
               </p>
             </div>
           </div>
@@ -218,7 +218,7 @@ export default function TransfersPage() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{selectedRide.type || 'Standard Executive'}</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mozio Direct Connect Partner</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verified Direct Connect Partner</p>
                 </div>
               </div>
               <button 
@@ -302,7 +302,7 @@ export default function TransfersPage() {
                     </div>
                     <button 
                       onClick={() => {
-                        const url = `/dashboard/checkout?vertical=transfer&provider=Mozio&id=${selectedRide.id}&name=${encodeURIComponent(selectedRide.type)}&price=${selectedRide.price?.totalAmount}&currency=${currency}`;
+                        const url = `/dashboard/checkout?vertical=transfer&provider=VerifiedNetwork&id=${selectedRide.id}&name=${encodeURIComponent(selectedRide.type)}&price=${selectedRide.price?.totalAmount}&currency=${currency}`;
                         window.location.href = url;
                       }}
                       className="w-full py-5 bg-[#0A1629] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-[#FF6B00] shadow-xl hover:shadow-orange-600/30 transition-all active:scale-95"
@@ -327,7 +327,7 @@ export default function TransfersPage() {
         <div className="relative z-10 text-center md:text-left flex-1">
           <h4 className="text-2xl font-black text-white mb-3 tracking-tight">Global Logistics Shield</h4>
           <p className="text-slate-400 font-medium leading-relaxed">
-            All rides are comprehensively insured and monitored in real-time for passenger safety via our Mozio integration. 24/7 support available for all active transfers.
+            All rides are comprehensively insured and monitored in real-time for passenger safety via our global network. 24/7 support available for all active transfers.
           </p>
         </div>
         <button className="px-8 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all active:scale-95">

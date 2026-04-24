@@ -44,7 +44,12 @@ export class MozioService {
     return this.getTransferOptions(params, tenantMarkup);
   }
 
-  async getTransferStatus(searchId: string) {
-    return { status: 'completed', searchId };
+  async bookRide(data: any) {
+    this.logger.log(`Mozio: Executing booking for ride ${data.rideId}`);
+    return { 
+      status: 'success', 
+      bookingReference: `RIDE-${Math.random().toString(36).substring(7).toUpperCase()}`,
+      provider: 'Mozio' 
+    };
   }
 }

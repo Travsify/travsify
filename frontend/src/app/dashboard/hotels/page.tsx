@@ -164,7 +164,7 @@ export default function HotelsPage() {
             <div className="absolute top-8 right-8 z-20">
               <div className="px-4 py-2.5 bg-[#0A1629]/80 backdrop-blur-xl rounded-2xl flex items-center gap-2 shadow-xl border border-white/10">
                 <span className="text-[9px] font-black text-white uppercase tracking-widest opacity-80">via</span>
-                <span className="text-[10px] font-black text-[#FF6B00] uppercase tracking-widest">{hotel.provider || 'LiteAPI'}</span>
+                <span className="text-[10px] font-black text-[#FF6B00] uppercase tracking-widest">{hotel.provider || 'Direct Connect'}</span>
               </div>
             </div>
             
@@ -251,7 +251,7 @@ export default function HotelsPage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    const url = `/dashboard/checkout?vertical=hotel&provider=LiteAPI&id=${hotel.id}&name=${encodeURIComponent(hotel.name)}&price=${hotel.price.totalAmount}&currency=${currency}`;
+                    const url = `/dashboard/checkout?vertical=hotel&provider=DirectConnect&id=${hotel.id}&name=${encodeURIComponent(hotel.name)}&price=${hotel.price.totalAmount}&currency=${currency}`;
                     window.location.href = url;
                   }}
                   className="w-14 h-14 bg-[#0A1629] text-white rounded-2xl flex items-center justify-center group-hover:bg-[#FF6B00] transition-all duration-500 shadow-2xl shadow-blue-900/20 active:scale-95"

@@ -12,36 +12,73 @@ export class StripeService {
     this.secretKey = this.configService.get<string>('STRIPE_SECRET_KEY') || '';
   }
 
-  async createPaymentIntent(data: { amount: number, currency: string, description: string }) {
-    this.logger.log(`Stripe: Creating payment intent for ${data.amount} ${data.currency}`);
+  async createCheckoutSession(data: { amount: number, currency: string, description: string, email?: string, metadata?: any }) {
+    this.logger.log(`Stripe: Creating checkout session for ${data.amount} ${data.currency}`);
     try {
-      // We use URLSearchParams because Stripe API uses x-www-form-urlencoded
       const params = new URLSearchParams();
-      params.append('amount', Math.round(data.amount * 100).toString()); // Stripe uses cents
-      params.append('currency', data.currency.toLowerCase());
-      params.append('description', data.description);
+      params.append('payment_method_types[]', 'card');
+      params.append('line_items[0][price_data][currency]', data.currency.toLowerCase());
+      params.append('line_items[0][price_data][product_data][name]', 'Travsify Pay - Flight Booking');
+      params.append('line_items[0][price_data][product_data][description]', data.description);
+      params.append('line_items[0][price_data][unit_amount]', Math.round(data.amount * 100).toString());
+      params.append('line_items[0][quantity]', '1');
+      params.append('mode', 'payment');
+      params.append('success_url', 'https://travsify.com/dashboard/bookings?status=success');
+      params.append('cancel_url', 'https://travsify.com/dashboard/flights?status=cancelled');
+      if (data.email) {
+        params.append('customer_email', data.email);
+      }
+      
+      if (data.metadata) {
+        Object.keys(data.metadata).forEach(key => {
+          params.append(`metadata[${key}]`, data.metadata[key]);
+        });
+      }
 
-      const response = await axios.post(`${this.baseUrl}/payment_intents`, params, {
+      const response = await axios.post(`${this.baseUrl}/checkout/sessions`, params, {
         headers: {
           'Authorization': `Bearer ${this.secretKey}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         }
       });
-      return response.data;
+      return { status: 'success', link: response.data.url, id: response.data.id };
     } catch (error) {
-      this.logger.error(`Stripe error: ${error.message}`);
+      this.logger.error(`Stripe error: ${error.response?.data?.error?.message || error.message}`);
       return { status: 'error', message: 'Stripe payment initiation failed' };
     }
   }
 
-  async verifyPayment(intentId: string) {
+  async verifyPayment(sessionId: string) {
     try {
-      const response = await axios.get(`${this.baseUrl}/payment_intents/${intentId}`, {
+      const response = await axios.get(`${this.baseUrl}/checkout/sessions/${sessionId}`, {
         headers: { 'Authorization': `Bearer ${this.secretKey}` }
       });
       return response.data;
     } catch (error) {
       return { status: 'failed' };
+    }
+  }
+
+  async createSetupSession(email: string) {
+    this.logger.log(`Stripe: Creating setup session for ${email}`);
+    try {
+      const params = new URLSearchParams();
+      params.append('payment_method_types[]', 'card');
+      params.append('mode', 'setup');
+      params.append('customer_email', email);
+      params.append('success_url', 'https://travsify.com/dashboard/wallets?setup=success');
+      params.append('cancel_url', 'https://travsify.com/dashboard/wallets?setup=cancelled');
+
+      const response = await axios.post(`${this.baseUrl}/checkout/sessions`, params, {
+        headers: {
+          'Authorization': `Bearer ${this.secretKey}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }
+      });
+      return { status: 'success', link: response.data.url, id: response.data.id };
+    } catch (error) {
+      this.logger.error(`Stripe Setup error: ${error.response?.data?.error?.message || error.message}`);
+      return { status: 'error', message: 'Stripe setup initiation failed' };
     }
   }
 }

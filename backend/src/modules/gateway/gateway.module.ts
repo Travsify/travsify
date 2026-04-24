@@ -9,9 +9,11 @@ import { ApiKeysModule } from '../api-keys/api-keys.module';
 
 import { UsersModule } from '../users/users.module';
 import { WalletModule } from '../wallet/wallet.module';
+import { NotificationModule } from '../notifications/notification.module';
+import { BookingsModule } from '../bookings/bookings.module';
 
 @Module({
-  imports: [TenantModule, NdcModule, DemoModule, ApiKeysModule, UsersModule, WalletModule],
+  imports: [TenantModule, NdcModule, DemoModule, ApiKeysModule, UsersModule, WalletModule, NotificationModule, BookingsModule],
   controllers: [GatewayController, WebhooksController],
   providers: [CheckoutService],
 })

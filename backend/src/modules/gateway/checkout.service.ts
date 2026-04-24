@@ -6,6 +6,14 @@ import { Tenant } from '../tenant/tenant.entity';
 import { WalletService } from '../wallet/wallet.service';
 import { UsersService } from '../users/users.service';
 import { Currency } from '../wallet/entities/wallet.entity';
+import { LiteApiService } from '../demo/services/liteapi.service';
+import { MozioService } from '../demo/services/mozio.service';
+import { GetYourGuideService } from '../demo/services/getyourguide.service';
+import { SafetyWingService } from '../demo/services/safetywing.service';
+import { SherpaService } from '../demo/services/sherpa.service';
+import { NotificationService } from '../notifications/notification.service';
+import { BookingsService } from '../bookings/bookings.service';
+import { BookingStatus } from '../bookings/entities/booking.entity';
 
 @Injectable()
 export class CheckoutService {
@@ -17,71 +25,60 @@ export class CheckoutService {
     private readonly ndcService: NdcService,
     private readonly walletService: WalletService,
     private readonly usersService: UsersService,
+    private readonly liteApiService: LiteApiService,
+    private readonly mozioService: MozioService,
+    private readonly gygService: GetYourGuideService,
+    private readonly safetyWingService: SafetyWingService,
+    private readonly sherpaService: SherpaService,
+    private readonly notificationService: NotificationService,
+    private readonly bookingsService: BookingsService,
   ) {}
 
   /**
    * Orchestrates the unified booking flow: Wallet/Payment -> Settle -> Book
    */
   async processBooking(tenant: Tenant, bookingDetails: any) {
-    const { amount, currency, email, vertical, providerData } = bookingDetails;
+    const { amount, currency, email, vertical, providerData, itemName, itemId } = bookingDetails;
     
     this.logger.log(`Checkout: Processing ${vertical} booking for tenant ${tenant.name}`);
 
-    // 1. Try to pay via Internal Wallet first
+    // 1. Pay via Internal Wallet
     try {
       const user = await this.usersService.findByEmail(tenant.email);
-      if (user) {
-        this.logger.log(`Wallet: Attempting deduction for ${tenant.email}`);
-        const tx = await this.walletService.debitWallet(
-          user.id,
-          currency as Currency,
-          amount,
-          `pay_${Date.now()}`,
-          { vertical, tenant: tenant.name, type: 'payment' }
-        );
+      if (!user) throw new NotFoundException('User not found');
 
-        // Wallet deduction successful! Finalize booking immediately.
-        const bookingResult = await this.finalizeBooking(tx.reference, vertical, providerData, tenant, currency as Currency);
-        
-        return {
-          status: 'success',
-          message: 'Booking completed successfully using wallet balance',
-          transaction: tx,
-          bookingResult
-        };
-      }
+      // Create Managed Booking Record via BookingsService (Unified)
+      const booking = await this.bookingsService.createManagedBooking(user.id, {
+        vertical,
+        provider: bookingDetails.provider || 'Verified Network',
+        itemId: itemId || 'REF_' + Date.now(),
+        itemName: itemName || vertical + ' Service',
+        pax: providerData?.pax || providerData || {},
+        amount,
+        currency,
+        paymentMethod: 'wallet'
+      });
+
+      // Wallet deduction and record update already handled by bookingsService.createManagedBooking
+      // We just need to finalize the provider call if it's an automated vertical.
+      const bookingResult = await this.finalizeBooking(booking.id, vertical, providerData, tenant, currency as Currency);
+      
+      return {
+        status: 'success',
+        message: 'Booking captured and processed',
+        booking,
+        bookingResult
+      };
     } catch (err) {
       if (err instanceof BadRequestException && err.message.includes('balance')) {
-        this.logger.warn(`Wallet: Insufficient funds for ${tenant.email}. Falling back to external payment.`);
-      } else {
-        this.logger.error(`Wallet Error: ${err.message}`);
-        // If it's a real error (not just balance), we might want to fail, 
-        // but for now, we fallback to external payment.
+        throw new BadRequestException({
+          code: 'INSUFFICIENT_FUNDS',
+          message: 'Insufficient wallet balance. Please fund your account to complete this booking.',
+          currency
+        });
       }
+      throw err;
     }
-
-    // 2. Fallback: Initiate External Payment based on currency
-    let paymentResponse;
-    if (currency === 'NGN') {
-      paymentResponse = await this.fincraService.createPaymentLink({
-        amount,
-        currency,
-        email,
-        reference: `bk_${Date.now()}`,
-      });
-    } else {
-      paymentResponse = await this.stripeService.createPaymentIntent({
-        amount,
-        currency,
-        description: `Travsify ${vertical} booking via ${tenant.name}`,
-      });
-    }
-
-    return {
-      status: 'pending_payment',
-      paymentDetails: paymentResponse,
-      instruction: 'Complete payment to finalize booking',
-    };
   }
 
   /**
@@ -94,8 +91,34 @@ export class CheckoutService {
     let providerResult = null;
 
     // 1. Execute the actual booking with the provider
-    if (vertical === 'flight') {
-       providerResult = await this.ndcService.orderCreate(providerData);
+    try {
+      if (vertical === 'flight') {
+         providerResult = await this.ndcService.orderCreate(providerData);
+      } else if (vertical === 'hotel') {
+         providerResult = await this.liteApiService.bookHotel(providerData);
+      } else if (vertical === 'transfer') {
+         providerResult = await this.mozioService.bookRide(providerData);
+      } else if (vertical === 'tour') {
+         providerResult = await this.gygService['bookTour'] ? await (this.gygService as any).bookTour(providerData) : { status: 'mocked', vertical };
+      } else if (vertical === 'insurance') {
+         providerResult = await this.safetyWingService['bookInsurance'] ? await (this.safetyWingService as any).bookInsurance(providerData) : { status: 'mocked', vertical };
+      } else if (vertical === 'visa') {
+         providerResult = await this.sherpaService.bookVisa(providerData);
+      }
+    } catch (err) {
+      this.logger.error(`Provider Error: ${err.message}`);
+      await this.bookingsService.updateStatus(reference, BookingStatus.FAILED);
+      
+      const user = await this.usersService.findByEmail(tenant?.email);
+      if (user) {
+        await this.notificationService.create({
+          userId: user.id,
+          title: 'Booking Failed',
+          message: `Your ${vertical} booking attempt failed. Please check your transaction history for details.`,
+          type: 'error'
+        });
+      }
+      throw err;
     }
     
     // 2. Logic to credit Tenant markup
@@ -142,6 +165,29 @@ export class CheckoutService {
       }
     } catch (err) {
       this.logger.error(`Ledger Error: Failed to credit markup for ${reference}. ${err.message}`);
+    }
+    // 3. Update Booking Record Status
+    try {
+      const status = (vertical === 'flight' || vertical === 'hotel') ? BookingStatus.CONFIRMED : BookingStatus.FULFILLED;
+      await this.bookingsService.updateStatus(reference, status, { pnr: providerResult?.pnr || providerResult?.bookingReference || '' });
+    } catch (err) {
+      this.logger.error(`Status Update Error: Failed to update status for ${reference}. ${err.message}`);
+    }
+
+    // 4. Create Notification
+    try {
+      const user = await this.usersService.findByEmail(tenant?.email);
+      if (user) {
+        await this.notificationService.create({
+          userId: user.id,
+          title: 'Booking Confirmed',
+          message: `Your ${vertical} booking (${reference.substring(0, 8)}) has been successfully processed and settled.`,
+          type: 'success',
+          actionUrl: '/dashboard/bookings'
+        });
+      }
+    } catch (err) {
+      this.logger.error(`Notification Error: ${err.message}`);
     }
     
     return { status: 'success', message: 'Booking confirmed and settled', providerResult };

@@ -13,6 +13,7 @@ import { ApiKeysModule } from './modules/api-keys/api-keys.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { KycModule } from './modules/kyc/kyc.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { NotificationModule } from './modules/notifications/notification.module';
 import { AdminController } from './modules/admin/admin.controller';
 
 @Module({
@@ -34,6 +35,7 @@ import { AdminController } from './modules/admin/admin.controller';
     BookingsModule,
     KycModule,
     WalletModule,
+    NotificationModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService],

@@ -12,7 +12,7 @@ export class FincraService {
     this.apiKey = this.configService.get<string>('FINCRA_API_KEY') || '';
   }
 
-  async createPaymentLink(data: { amount: number, currency: string, email: string, reference: string }) {
+  async createPaymentLink(data: { amount: number, currency: string, email: string, reference: string, metadata?: any }) {
     this.logger.log(`Fincra: Initiating payment of ${data.amount} ${data.currency} for ${data.email}`);
     try {
       const response = await axios.post(`${this.baseUrl}/checkout/payments`, {
@@ -21,6 +21,7 @@ export class FincraService {
         customer: { email: data.email },
         reference: data.reference,
         payment_methods: ['card', 'bank_transfer', 'mobile_money'],
+        metadata: data.metadata,
       }, {
         headers: { 'api-key': this.apiKey }
       });

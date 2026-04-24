@@ -3,7 +3,7 @@ import { NdcService } from '../ndc/ndc.service';
 import { LiteApiService } from '../demo/services/liteapi.service';
 import { TenantService } from '../tenant/tenant.service';
 import { CheckoutService } from './checkout.service';
-import { ShepperService } from '../demo/services/shepper.service';
+import { SherpaService } from '../demo/services/sherpa.service';
 import { MozioService } from '../demo/services/mozio.service';
 import { GetYourGuideService } from '../demo/services/getyourguide.service';
 import { SafetyWingService } from '../demo/services/safetywing.service';
@@ -17,7 +17,7 @@ export class GatewayController {
     private readonly ndcService: NdcService,
     private readonly liteApiService: LiteApiService,
     private readonly checkoutService: CheckoutService,
-    private readonly shepperService: ShepperService,
+    private readonly sherpaService: SherpaService,
     private readonly mozioService: MozioService,
     private readonly gygService: GetYourGuideService,
     private readonly safetyWingService: SafetyWingService,
@@ -77,7 +77,7 @@ export class GatewayController {
     @Query('currency') currency: string,
   ) {
     const tenant = await this.tenantService.validateApiKey(apiKey);
-    return this.shepperService.getVisaRequirements({ destination, nationality, currency: currency || 'NGN' }, tenant.insuranceMarkup);
+    return this.sherpaService.getVisaRequirements({ destination, nationality, currency: currency || 'NGN' }, tenant.insuranceMarkup);
   }
 
   @Post('search/transfers')

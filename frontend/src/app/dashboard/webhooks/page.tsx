@@ -88,7 +88,7 @@ export default function WebhooksPage() {
             <div className="space-y-3">
               <EventDoc label="booking.confirmed" sub="Triggered when a flight or hotel booking is finalized." />
               <EventDoc label="wallet.funded" sub="Triggered when a settlement top-up is successful." />
-              <EventDoc label="visa.approved" sub="Triggered when an e-visa application is approved by Sherpa." />
+              <EventDoc label="visa.approved" sub="Triggered when an e-visa application is approved by the immigration network." />
             </div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 font-mono text-[11px] text-slate-400 overflow-hidden">

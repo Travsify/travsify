@@ -103,6 +103,68 @@ export class WalletService {
     }
   }
 
+  async convertCurrency(userId: string, from: Currency, to: Currency, amount: number): Promise<{ fromTransaction: Transaction, toTransaction: Transaction }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // 1. Check balances
+      const fromWallet = await queryRunner.manager.findOne(Wallet, { where: { userId, currency: from }, lock: { mode: 'pessimistic_write' } });
+      const toWallet = await queryRunner.manager.findOne(Wallet, { where: { userId, currency: to }, lock: { mode: 'pessimistic_write' } });
+
+      if (!fromWallet || !toWallet) throw new NotFoundException('Wallet not found');
+      if (Number(fromWallet.balance) < Number(amount)) throw new BadRequestException('Insufficient balance for conversion');
+
+      // 2. Calculate conversion (Simulated rate: 1 USD = 1500 NGN)
+      let rate = 1;
+      if (from === Currency.USD && to === Currency.NGN) rate = 1500;
+      if (from === Currency.NGN && to === Currency.USD) rate = 1 / 1500;
+
+      const convertedAmount = amount * rate;
+
+      // 3. Update balances
+      fromWallet.balance = Number(fromWallet.balance) - Number(amount);
+      toWallet.balance = Number(toWallet.balance) + Number(convertedAmount);
+
+      await queryRunner.manager.save(fromWallet);
+      await queryRunner.manager.save(toWallet);
+
+      // 4. Record transactions
+      const ref = `conv_${Date.now()}`;
+      const fromTx = queryRunner.manager.create(Transaction, {
+        walletId: fromWallet.id,
+        amount,
+        type: TransactionType.DEBIT,
+        status: TransactionStatus.SUCCESS,
+        reference: ref,
+        metadata: { type: 'conversion', to: to, rate }
+      });
+
+      const toTx = queryRunner.manager.create(Transaction, {
+        walletId: toWallet.id,
+        amount: convertedAmount,
+        type: TransactionType.CREDIT,
+        status: TransactionStatus.SUCCESS,
+        reference: ref,
+        metadata: { type: 'conversion', from: from, rate }
+      });
+
+      const [savedFrom, savedTo] = await Promise.all([
+        queryRunner.manager.save(fromTx),
+        queryRunner.manager.save(toTx)
+      ]);
+
+      await queryRunner.commitTransaction();
+      return { fromTransaction: savedFrom, toTransaction: savedTo };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async findUserTransactions(userId: string): Promise<Transaction[]> {
     const wallets = await this.walletRepository.find({ where: { userId } });
     const walletIds = wallets.map(w => w.id);

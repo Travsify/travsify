@@ -3,7 +3,7 @@ import { DemoController } from './demo.controller';
 import { LocationController } from './location.controller';
 import { NdcModule } from '../ndc/ndc.module';
 import { LiteApiService } from './services/liteapi.service';
-import { ShepperService } from './services/shepper.service';
+import { SherpaService } from './services/sherpa.service';
 import { GetYourGuideService } from './services/getyourguide.service';
 import { MozioService } from './services/mozio.service';
 import { SafetyWingService } from './services/safetywing.service';
@@ -15,7 +15,7 @@ import { StripeService } from './services/stripe.service';
   controllers: [DemoController, LocationController],
   providers: [
     LiteApiService,
-    ShepperService,
+    SherpaService,
     GetYourGuideService,
     MozioService,
     SafetyWingService,
@@ -24,7 +24,7 @@ import { StripeService } from './services/stripe.service';
   ],
   exports: [
     LiteApiService,
-    ShepperService,
+    SherpaService,
     GetYourGuideService,
     MozioService,
     SafetyWingService,

@@ -30,6 +30,13 @@ export default function WalletPage() {
 
   useEffect(() => {
     fetchData();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('setup') === 'success') {
+      alert('Card linked successfully via Travsify Pay!');
+    }
+    if (params.get('status') === 'success') {
+      alert('Wallet funded successfully!');
+    }
   }, []);
 
   const fetchData = async () => {
@@ -58,6 +65,121 @@ export default function WalletPage() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [showFundModal, setShowFundModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showConvertModal, setShowConvertModal] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [processing, setProcessing] = useState(false);
+
+  const handleFund = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+    setProcessing(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/wallet/fund`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount: parseFloat(amount), currency: activeWallet })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.link) {
+          // Redirect to Stripe/Payment Gateway
+          window.location.href = data.link;
+          return;
+        }
+        setShowFundModal(false);
+        setAmount('');
+        fetchData();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleLinkCard = async () => {
+    setProcessing(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/wallet/link-card`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.link) {
+        window.location.href = data.link;
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+    setProcessing(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/wallet/withdraw`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount: parseFloat(amount), currency: activeWallet })
+      });
+      if (res.ok) {
+        setShowWithdrawModal(false);
+        setAmount('');
+        fetchData();
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Withdrawal failed');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleConvert = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+    setProcessing(true);
+    const token = localStorage.getItem('token');
+    const toCurrency = activeWallet === 'NGN' ? 'USD' : 'NGN';
+    try {
+      const res = await fetch(`${API_URL}/wallet/convert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ from: activeWallet, to: toCurrency, amount: parseFloat(amount) })
+      });
+      if (res.ok) {
+        setShowConvertModal(false);
+        setAmount('');
+        fetchData();
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Conversion failed');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -136,18 +258,25 @@ export default function WalletPage() {
               </div>
               <div className="flex flex-wrap gap-4">
                 <button 
-                  onClick={() => alert('Top-up gateway is being initialized. Please contact your account manager for manual settlement.')}
+                  onClick={() => setShowFundModal(true)}
                   className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
                 >
                   <Plus size={18} />
                   Top Up Wallet
                 </button>
                 <button 
-                  onClick={() => alert('Withdrawal gateway is currently in maintenance. ETA: 2 hours.')}
+                  onClick={() => setShowWithdrawModal(true)}
                   className="flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm border border-white/10 transition-all backdrop-blur-md active:scale-[0.98]"
                 >
                   <ArrowUpRight size={18} />
                   Withdraw
+                </button>
+                <button 
+                  onClick={() => setShowConvertModal(true)}
+                  className="flex items-center gap-2 px-8 py-4 bg-[#FF6B00] text-white rounded-2xl font-black text-sm hover:bg-orange-700 transition-all shadow-lg shadow-orange-600/20 active:scale-[0.98]"
+                >
+                  <History size={18} />
+                  Swap Currency
                 </button>
               </div>
             </div>
@@ -170,7 +299,7 @@ export default function WalletPage() {
                 filteredTransactions.map((tx: any) => (
                   <TransactionRow 
                     key={tx.id}
-                    title={tx.metadata?.description || (tx.type === 'credit' ? 'Wallet Funding' : 'Booking Payment')}
+                    title={tx.metadata?.description || (tx.type === 'credit' ? (tx.metadata?.type === 'conversion' ? 'Currency Conversion' : 'Wallet Funding') : 'Booking Payment')}
                     subtitle={`Ref: ${tx.reference || tx.id.slice(0, 8)}`}
                     date={new Date(tx.createdAt).toLocaleString()}
                     amount={`${tx.type === 'credit' ? '+' : '-'}${formatAmount(tx.amount, activeWallet)}`}
@@ -206,24 +335,32 @@ export default function WalletPage() {
                   <Banknote size={24} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-slate-900 mb-1">Bank Transfer</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed mb-4">Direct funding via our settlement partners. Instant credit.</p>
+                  <h4 className="text-sm font-black text-slate-900 mb-1">Direct Bank Funding (NGN)</h4>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed mb-4">Transfer funds directly to our settlement account. Your wallet will be credited upon verification.</p>
                   
-                  <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-3">
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 space-y-4">
                     <div>
                       <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Bank Name</p>
-                      <p className="text-[13px] font-bold text-slate-900 flex items-center justify-between">
-                        Finca MFB
-                        <Copy size={12} className="text-slate-300 hover:text-blue-600 cursor-pointer" />
-                      </p>
+                      <p className="text-[13px] font-bold text-slate-900">Sterling Bank</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Account Number</p>
                       <p className="text-[13px] font-bold text-slate-900 flex items-center justify-between">
-                        0123456789
+                        9744446383
                         <Copy size={12} className="text-slate-300 hover:text-blue-600 cursor-pointer" />
                       </p>
                     </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Account Name</p>
+                      <p className="text-[13px] font-bold text-slate-900">Ehomes Global Inclusive Limited</p>
+                      <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase italic">* Ehomes Global is a subsidiary & owner of Travsify.</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                    <p className="text-[10px] font-bold text-blue-700 leading-relaxed uppercase tracking-tight">
+                      Note: Kindly send your payment receipt to <span className="underline select-all">Pay@travsify.com</span> for instant settlement.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -235,8 +372,12 @@ export default function WalletPage() {
                 <div>
                   <h4 className="text-sm font-black text-slate-900 mb-1">Card Payment</h4>
                   <p className="text-xs text-slate-500 font-medium leading-relaxed mb-3">Instant top-up via Stripe for global USD accounts.</p>
-                  <button className="text-[12px] font-black text-indigo-600 flex items-center gap-1 hover:gap-2 transition-all">
-                    Link Card <ChevronRight size={14} />
+                  <button 
+                    onClick={handleLinkCard}
+                    disabled={processing}
+                    className="text-[12px] font-black text-indigo-600 flex items-center gap-1 hover:gap-2 transition-all disabled:opacity-50"
+                  >
+                    {processing ? 'Connecting...' : 'Link Card'} <ChevronRight size={14} />
                   </button>
                 </div>
               </div>
@@ -258,7 +399,55 @@ export default function WalletPage() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {(showFundModal || showWithdrawModal || showConvertModal) && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => { setShowFundModal(false); setShowWithdrawModal(false); setShowConvertModal(false); }} />
+          <div className="relative bg-white w-full max-w-md rounded-[40px] p-10 shadow-2xl animate-in zoom-in-95 duration-300">
+            <h3 className="text-2xl font-black text-slate-900 mb-2">
+              {showFundModal ? `Top Up ${activeWallet}` : showWithdrawModal ? `Withdraw ${activeWallet}` : `Convert ${activeWallet}`}
+            </h3>
+            <p className="text-sm text-slate-500 font-medium mb-8">
+              {showFundModal ? 'Add funds to your secure Travsify wallet.' : showWithdrawModal ? 'Transfer funds to your verified bank account.' : `Swap your ${activeWallet} for ${activeWallet === 'NGN' ? 'USD' : 'NGN'}.`}
+            </p>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Amount to {showFundModal ? 'Add' : showWithdrawModal ? 'Withdraw' : 'Swap'}</label>
+                <div className="relative">
+                  <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-400">{activeWallet === 'USD' ? '$' : '₦'}</span>
+                  <input 
+                    type="number" 
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full pl-12 pr-6 py-5 bg-slate-50 border-2 border-transparent rounded-3xl font-black text-slate-900 outline-none focus:border-blue-600/20 focus:bg-white transition-all"
+                    placeholder="0.00"
+                  />
+                </div>
+                {showConvertModal && amount && (
+                  <p className="text-[11px] font-bold text-blue-600 mt-2 px-2 uppercase tracking-wider">
+                    You will receive: {activeWallet === 'NGN' ? '$' : '₦'}{(parseFloat(amount) * (activeWallet === 'NGN' ? 1/1500 : 1500)).toLocaleString()}
+                  </p>
+                )}
+              </div>
+
+              <button 
+                onClick={showFundModal ? handleFund : showWithdrawModal ? handleWithdraw : handleConvert}
+                disabled={processing || !amount}
+                className="w-full py-6 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
+              >
+                {processing ? <Loader2 className="animate-spin" /> : 'Confirm Transaction'}
+                {!processing && <ChevronRight size={18} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+div>
   );
 }
 

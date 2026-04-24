@@ -6,6 +6,7 @@ import { NdcService } from '../ndc/ndc.service';
 import { WalletService } from '../wallet/wallet.service';
 import { Currency } from '../wallet/entities/wallet.entity';
 import { User } from '../users/entities/user.entity';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class BookingsService {
@@ -18,6 +19,7 @@ export class BookingsService {
     private usersRepository: Repository<User>,
     private ndcService: NdcService,
     private walletService: WalletService,
+    private notificationService: NotificationService,
     private dataSource: DataSource,
   ) {}
 
@@ -55,6 +57,18 @@ export class BookingsService {
     const walletCurrency = bookingData.currency.toUpperCase() === 'NGN' ? Currency.NGN : Currency.USD;
     let bookingId: string | undefined;
 
+    // Create Initial Booking Record
+    const booking = this.bookingRepository.create({
+      userId,
+      totalPrice: userTotalPrice,
+      currency: bookingData.currency,
+      status: BookingStatus.PENDING,
+      passengerDetails: bookingData.passengers,
+      flightDetails: prebookResponse.Offers || null,
+    });
+    const savedBooking = await this.bookingRepository.save(booking) as Booking;
+    bookingId = savedBooking.id;
+
     try {
       // 4. Debit User Wallet (Total Price including Markup)
       await this.walletService.debitWallet(
@@ -64,17 +78,9 @@ export class BookingsService {
         `Flight Booking: ${bookingData.offerCode}`,
       );
 
-      // 5. Create Initial Booking Record
-      const booking = this.bookingRepository.create({
-        userId,
-        totalPrice: userTotalPrice,
-        currency: bookingData.currency,
-        status: BookingStatus.PENDING,
-        passengerDetails: bookingData.passengers,
-        flightDetails: prebookResponse.Offers || null,
-      });
-      const savedBooking = await this.bookingRepository.save(booking) as Booking;
-      bookingId = savedBooking.id;
+      // 5. Update Status (Processing)
+      savedBooking.status = BookingStatus.BOOKED;
+      await this.bookingRepository.save(savedBooking);
 
       // 6. AeroBook: Make reservation with provider
       let bookResponse: any;
@@ -94,7 +100,6 @@ export class BookingsService {
       savedBooking.pnr = bookResponse?.Offers?.OfferInfo?.PNR || '';
       savedBooking.providerBookId = bookResponse.BookId;
       savedBooking.providerBookGuid = bookResponse.BookGuid;
-      savedBooking.status = BookingStatus.BOOKED;
       await this.bookingRepository.save(savedBooking);
 
       // 7. ConfirmBook: Final Ticketing
@@ -116,6 +121,15 @@ export class BookingsService {
       savedBooking.status = BookingStatus.TICKETED;
       await this.bookingRepository.save(savedBooking);
 
+      // 9. Notify Success
+      await this.notificationService.create({
+        userId,
+        title: 'Flight Ticketed',
+        message: `Your flight to ${savedBooking.pnr} has been successfully ticketed.`,
+        type: 'success',
+        actionUrl: '/dashboard/bookings'
+      });
+
       this.logger.log(`Booking ${bookingId} successful. PNR: ${savedBooking.pnr}`);
       return savedBooking;
 
@@ -134,6 +148,12 @@ export class BookingsService {
         // Mark the booking as FAILED if it was created
         if (bookingId) {
           await this.bookingRepository.update(bookingId, { status: BookingStatus.FAILED });
+          await this.notificationService.create({
+            userId,
+            title: 'Booking Failed',
+            message: `Your booking attempt failed: ${error.message}. Funds have been refunded.`,
+            type: 'error'
+          });
         }
       } catch (refundError: any) {
         this.logger.error(`CRITICAL: Auto-refund failed for user ${userId}! Manual intervention required. Error: ${refundError.message}`);
@@ -169,38 +189,67 @@ export class BookingsService {
 
     const walletCurrency = data.currency.toUpperCase() === 'NGN' ? Currency.NGN : Currency.USD;
 
+    // 1. Create Initial Booking Record (Pending)
+    const booking = this.bookingRepository.create({
+      userId,
+      totalPrice: data.amount,
+      currency: data.currency,
+      vertical: data.vertical,
+      status: BookingStatus.PENDING,
+      fulfillmentType: 'manual',
+      passengerDetails: data.pax,
+      flightDetails: { 
+        itemName: data.itemName, 
+        provider: data.provider, 
+        itemId: data.itemId,
+        paxDetails: data.pax
+      },
+    });
+
+    const savedBooking = await this.bookingRepository.save(booking);
+
     try {
-      // 1. Debit Wallet
+      // 2. Debit Wallet
       await this.walletService.debitWallet(
         userId,
         walletCurrency,
         data.amount,
-        `Managed Booking Payment: ${data.itemName} (${data.vertical})`,
+        `Booking Payment: ${data.itemName} (${data.vertical})`,
       );
 
-      // 2. Create Managed Booking Record
-      const booking = this.bookingRepository.create({
+      // 3. Update Status to FULFILLMENT_PENDING (Paid)
+      savedBooking.status = BookingStatus.FULFILLMENT_PENDING;
+      await this.bookingRepository.save(savedBooking);
+
+      // 4. Notify User
+      await this.notificationService.create({
         userId,
-        totalPrice: data.amount,
-        currency: data.currency,
-        vertical: data.vertical,
-        status: BookingStatus.FULFILLMENT_PENDING,
-        fulfillmentType: 'manual',
-        passengerDetails: data.pax,
-        flightDetails: { 
-          itemName: data.itemName, 
-          provider: data.provider, 
-          itemId: data.itemId,
-          paxDetails: data.pax
-        },
+        title: 'Booking Received',
+        message: `Your ${data.vertical} booking for ${data.itemName} has been paid and is being processed.`,
+        type: 'info',
+        actionUrl: '/dashboard/bookings'
       });
 
-      return await this.bookingRepository.save(booking);
+      return savedBooking;
 
     } catch (error: any) {
       this.logger.error(`Managed booking failed: ${error.message}`);
+      savedBooking.status = BookingStatus.FAILED;
+      await this.bookingRepository.save(savedBooking);
+      
+      await this.notificationService.create({
+        userId,
+        title: 'Payment Failed',
+        message: `We couldn't process your payment for ${data.itemName}. Please check your balance.`,
+        type: 'error'
+      });
+
       throw new InternalServerErrorException(error.message || 'Payment processing failed');
     }
+  }
+
+  async updateStatus(id: string, status: BookingStatus, metadata?: any): Promise<void> {
+    await this.bookingRepository.update(id, { status, ...metadata });
   }
 
   async getUserBookings(userId: string): Promise<Booking[]> {

@@ -137,6 +137,16 @@ export class LiteApiService {
     }
   }
 
+  async bookHotel(data: any) {
+    this.logger.log(`LiteAPI: Executing booking for hotel ${data.hotelId}`);
+    // In a real scenario, this would call LiteAPI /hotels/book endpoint
+    return { 
+      status: 'success', 
+      bookingReference: `HTL-${Math.random().toString(36).substring(7).toUpperCase()}`,
+      provider: 'LiteAPI' 
+    };
+  }
+
   private mapToUnified(hotel: any, rate: any, tenantMarkup: number, targetCurrency: string): UnifiedHotel {
     // Correctly extract price from v3.0 rate structure
     const basePrice = rate.retailRate?.total?.[0]?.amount || rate.total || 100;
