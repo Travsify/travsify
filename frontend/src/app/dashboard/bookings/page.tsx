@@ -18,9 +18,12 @@ import {
   Car,
   ShieldCheck,
   Ticket,
-  Globe
+  Globe,
+  FileText,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
+import VisaTracker from '@/components/VisaTracker';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -78,8 +81,44 @@ export default function BookingsPage() {
     );
   }
 
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+
   return (
     <div className="space-y-8 animate-fade-up">
+      {/* Detail Modal Overlay */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-4xl relative">
+            <button 
+              onClick={() => setSelectedBooking(null)}
+              className="absolute -top-12 right-0 text-white flex items-center gap-2 font-black uppercase text-[10px] tracking-widest hover:text-[#FF6B00] transition-colors"
+            >
+              Close <X className="w-4 h-4" />
+            </button>
+            
+            {selectedBooking.vertical === 'visa' ? (
+              <VisaTracker 
+                applicationId={selectedBooking.pnr || selectedBooking.id}
+                status={selectedBooking.status}
+                destination={selectedBooking.itemName?.split(' ')[2] || 'Global'}
+                applicantName="Travsify User"
+                submissionDate={new Date(selectedBooking.createdAt).toLocaleDateString()}
+                estimatedCompletion="3-5 Business Days"
+              />
+            ) : (
+              <div className="bg-white p-12 rounded-[40px] text-center">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  {getVerticalIcon(selectedBooking.vertical)}
+                </div>
+                <h3 className="text-2xl font-black text-slate-900">Booking Details</h3>
+                <p className="text-slate-400 mt-2">Extended details for {selectedBooking.vertical} bookings are coming soon.</p>
+                <button onClick={() => setSelectedBooking(null)} className="mt-8 px-10 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest">Return</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -106,7 +145,13 @@ export default function BookingsPage() {
         <div className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-100 rounded-2xl animate-shake">
           <AlertCircle size={18} className="text-orange-600 shrink-0" />
           <p className="text-xs font-bold text-orange-600">{error}</p>
-          <button onClick={fetchBookings} className="ml-auto text-xs font-black uppercase text-blue-600">Retry</button>
+          <button 
+            onClick={fetchBookings} 
+            disabled={loading}
+            className="ml-auto text-[10px] font-black uppercase tracking-widest bg-white px-4 py-2 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-all disabled:opacity-50"
+          >
+            {loading ? 'Refreshing...' : 'Retry Now'}
+          </button>
         </div>
       )}
 
@@ -180,7 +225,10 @@ export default function BookingsPage() {
                       <StatusBadge status={booking.status} />
                     </td>
                     <td className="px-8 py-6 text-right">
-                       <button className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all">
+                       <button 
+                        onClick={() => setSelectedBooking(booking)}
+                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                       >
                           <ChevronRight size={18} />
                        </button>
                     </td>

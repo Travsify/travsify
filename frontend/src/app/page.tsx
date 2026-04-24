@@ -36,7 +36,6 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-[#5B6B7C]">
             <Link href="#products" className="hover:text-[#0A2540] transition-colors">Products</Link>
             <Link href="#developers" className="hover:text-[#0A2540] transition-colors">Developers</Link>
-            <Link href="#pricing" className="hover:text-[#0A2540] transition-colors">Pricing</Link>
             <Link href="#company" className="hover:text-[#0A2540] transition-colors">Company</Link>
           </div>
           <div className="flex items-center gap-4">
@@ -115,7 +114,7 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-full bg-[#FF7A00]/10 text-[#FF7A00] flex items-center justify-center"><Globe size={20} /></div>
                 <h3 className="text-xl font-black text-slate-900">Inventory</h3>
               </div>
-              <p className="text-[#5B6B7C] pl-14 text-sm font-medium">Access 500+ airlines, 1M+ hotels, and more.</p>
+              <p className="text-[#5B6B7C] pl-14 text-sm font-medium">Access 500+ airlines, 1M+ hotels, and automated visa processing.</p>
             </div>
             <div>
               <div className="flex items-center gap-4 mb-2">
@@ -148,6 +147,10 @@ export default function LandingPage() {
             <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
               <div className="w-12 h-12 bg-white shadow-md border border-[#E5EAF0] rounded-xl flex items-center justify-center text-[#16A34A]"><Car size={20}/></div>
               <span className="text-[10px] font-bold text-[#5B6B7C] uppercase tracking-widest">Transfers</span>
+            </div>
+            <div className="absolute top-1/4 right-0 flex flex-col items-center gap-2">
+              <div className="w-10 h-10 bg-white shadow-md border border-[#E5EAF0] rounded-xl flex items-center justify-center text-orange-600"><FileText size={18}/></div>
+              <span className="text-[9px] font-bold text-[#5B6B7C] uppercase tracking-widest">e-Visas</span>
             </div>
           </div>
         </section>
@@ -490,57 +493,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 15. PRICING */}
-        <section className="py-24 max-w-[1200px] mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-black text-[#0A2540] mb-4 tracking-tight">Simple, transparent pricing</h2>
-            <p className="text-lg text-[#5B6B7C] font-medium">— built to scale globally</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-8 border border-[#E5EAF0] rounded-3xl bg-white flex flex-col">
-              <p className="text-sm font-black text-slate-900 mb-2">Starter</p>
-              <p className="text-4xl font-black text-[#0A2540] mb-6 tracking-tight">Free</p>
-              <ul className="space-y-3 text-[13px] font-medium text-[#5B6B7C] mb-8 flex-1">
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Sandbox API</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Limited requests</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Basic support</li>
-              </ul>
-              <Link href="/register" className="block text-center w-full py-3 rounded-xl border border-[#E5EAF0] font-bold text-sm text-slate-600 hover:bg-[#F8FAFC] transition-colors">Get Started</Link>
-            </div>
-            <div className="p-8 border-2 border-[#FF7A00] rounded-3xl bg-white flex flex-col relative shadow-xl shadow-[#FF7A00]/10">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#FF7A00]/100 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</div>
-              <p className="text-sm font-black text-slate-900 mb-2">Growth</p>
-              <p className="text-4xl font-black text-[#0A2540] mb-6 tracking-tight">$49<span className="text-sm font-medium text-slate-400">/mo</span></p>
-              <ul className="space-y-3 text-[13px] font-medium text-[#5B6B7C] mb-8 flex-1">
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#FF7A00]"/> Live API access</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#FF7A00]"/> All travel verticals</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#FF7A00]"/> Webhooks</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[#FF7A00]"/> Wallet access</li>
-              </ul>
-              <Link href="/register" className="block text-center w-full py-3 rounded-xl bg-[#FF7A00] font-bold text-sm text-white hover:bg-[#E86E00] transition-colors shadow-lg shadow-[#FF7A00]/20">Get Started</Link>
-            </div>
-            <div className="p-8 border border-[#E5EAF0] rounded-3xl bg-white flex flex-col">
-              <p className="text-sm font-black text-slate-900 mb-2">Scale</p>
-              <p className="text-4xl font-black text-[#0A2540] mb-6 tracking-tight">$199<span className="text-sm font-medium text-slate-400">/mo</span></p>
-              <ul className="space-y-3 text-[13px] font-medium text-[#5B6B7C] mb-8 flex-1">
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Higher API limits</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Advanced analytics</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-blue-600"/> Priority support</li>
-              </ul>
-              <Link href="/register" className="block text-center w-full py-3 rounded-xl border border-[#E5EAF0] font-bold text-sm text-slate-600 hover:bg-[#F8FAFC] transition-colors">Get Started</Link>
-            </div>
-            <div className="p-8 border border-[#E5EAF0] rounded-3xl bg-white flex flex-col">
-              <p className="text-sm font-black text-slate-900 mb-2">Enterprise</p>
-              <p className="text-4xl font-black text-[#0A2540] mb-6 tracking-tight">Custom</p>
-              <ul className="space-y-3 text-[13px] font-medium text-[#5B6B7C] mb-8 flex-1">
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> Dedicated infra</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> SLA guarantee</li>
-                <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-slate-600"/> Custom integrations</li>
-              </ul>
-              <Link href="/contact" className="block text-center w-full py-3 rounded-xl border border-[#E5EAF0] font-bold text-sm text-slate-600 hover:bg-[#F8FAFC] transition-colors">Contact Sales</Link>
-            </div>
-          </div>
-        </section>
 
         {/* 16. FINAL CTA & FOOTER */}
         <section className="bg-[#0A2540] text-white pt-24">

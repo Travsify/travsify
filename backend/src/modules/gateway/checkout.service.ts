@@ -99,9 +99,9 @@ export class CheckoutService {
       } else if (vertical === 'transfer') {
          providerResult = await this.mozioService.bookRide(providerData);
       } else if (vertical === 'tour') {
-         providerResult = await this.gygService['bookTour'] ? await (this.gygService as any).bookTour(providerData) : { status: 'mocked', vertical };
+         providerResult = (this.gygService as any).bookTour ? await (this.gygService as any).bookTour(providerData) : { status: 'mocked', vertical };
       } else if (vertical === 'insurance') {
-         providerResult = await this.safetyWingService['bookInsurance'] ? await (this.safetyWingService as any).bookInsurance(providerData) : { status: 'mocked', vertical };
+         providerResult = (this.safetyWingService as any).bookInsurance ? await (this.safetyWingService as any).bookInsurance(providerData) : { status: 'mocked', vertical };
       } else if (vertical === 'visa') {
          providerResult = await this.sherpaService.bookVisa(providerData);
       }
@@ -109,14 +109,16 @@ export class CheckoutService {
       this.logger.error(`Provider Error: ${err.message}`);
       await this.bookingsService.updateStatus(reference, BookingStatus.FAILED);
       
-      const user = await this.usersService.findByEmail(tenant?.email);
-      if (user) {
-        await this.notificationService.create({
-          userId: user.id,
-          title: 'Booking Failed',
-          message: `Your ${vertical} booking attempt failed. Please check your transaction history for details.`,
-          type: 'error'
-        });
+      if (tenant?.email) {
+        const user = await this.usersService.findByEmail(tenant.email);
+        if (user) {
+          await this.notificationService.create({
+            userId: user.id,
+            title: 'Booking Failed',
+            message: `Your ${vertical} booking attempt failed. Please check your transaction history for details.`,
+            type: 'error'
+          });
+        }
       }
       throw err;
     }
@@ -176,15 +178,17 @@ export class CheckoutService {
 
     // 4. Create Notification
     try {
-      const user = await this.usersService.findByEmail(tenant?.email);
-      if (user) {
-        await this.notificationService.create({
-          userId: user.id,
-          title: 'Booking Confirmed',
-          message: `Your ${vertical} booking (${reference.substring(0, 8)}) has been successfully processed and settled.`,
-          type: 'success',
-          actionUrl: '/dashboard/bookings'
-        });
+      if (tenant?.email) {
+        const user = await this.usersService.findByEmail(tenant.email);
+        if (user) {
+          await this.notificationService.create({
+            userId: user.id,
+            title: 'Booking Confirmed',
+            message: `Your ${vertical} booking (${reference.substring(0, 8)}) has been successfully processed and settled.`,
+            type: 'success',
+            actionUrl: '/dashboard/bookings'
+          });
+        }
       }
     } catch (err) {
       this.logger.error(`Notification Error: ${err.message}`);

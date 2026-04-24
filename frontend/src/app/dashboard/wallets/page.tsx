@@ -231,7 +231,13 @@ export default function WalletPage() {
         <div className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-100 rounded-2xl animate-shake">
           <AlertCircle size={18} className="text-orange-600 shrink-0" />
           <p className="text-xs font-bold text-orange-600">{error}</p>
-          <button onClick={fetchData} className="ml-auto text-xs font-black uppercase text-blue-600">Retry</button>
+          <button 
+            onClick={fetchData} 
+            disabled={loading}
+            className="ml-auto text-[10px] font-black uppercase tracking-widest bg-white px-4 py-2 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-all disabled:opacity-50"
+          >
+            {loading ? 'Refreshing...' : 'Retry Now'}
+          </button>
         </div>
       )}
 
@@ -445,9 +451,6 @@ export default function WalletPage() {
         </div>
       )}
     </div>
-  );
-}
-div>
   );
 }
 

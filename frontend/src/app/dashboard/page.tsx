@@ -33,10 +33,12 @@ import {
   AlertCircle,
   HelpCircle,
   LayoutDashboard,
-  ScrollText
+  ScrollText,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 import { API_URL } from '@/utils/api';
+import VisaTracker from '@/components/VisaTracker';
 
 export default function OverviewPage() {
   const { user, currency } = useAuth();
@@ -96,8 +98,46 @@ export default function OverviewPage() {
 
   const getPercent = (count: number) => totalBookingsCount > 0 ? `${Math.round((count / totalBookingsCount) * 100)}%` : '0%';
 
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      {/* Detail Modal Overlay */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-4xl relative">
+            <button 
+              onClick={() => setSelectedBooking(null)}
+              className="absolute -top-12 right-0 text-white flex items-center gap-2 font-black uppercase text-[10px] tracking-widest hover:text-[#FF6B00] transition-colors"
+            >
+              Close <X className="w-4 h-4" />
+            </button>
+            
+            {selectedBooking.vertical === 'visa' ? (
+              <VisaTracker 
+                applicationId={selectedBooking.pnr || selectedBooking.id}
+                status={selectedBooking.status}
+                destination={selectedBooking.itemName?.split(' ')[2] || 'Global'}
+                applicantName={user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Travsify User'}
+                submissionDate={new Date(selectedBooking.createdAt).toLocaleDateString()}
+                estimatedCompletion="3-5 Business Days"
+              />
+            ) : (
+              <div className="bg-white p-12 rounded-[40px] text-center shadow-2xl">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  {selectedBooking.vertical === 'flight' ? <Plane className="text-blue-600" /> : <Globe className="text-slate-400" />}
+                </div>
+                <h3 className="text-2xl font-black text-slate-900">Booking Record</h3>
+                <p className="text-slate-400 mt-2 font-medium">Management for {selectedBooking.vertical} operations is active in the main terminal.</p>
+                <div className="mt-8 flex gap-3 justify-center">
+                  <button onClick={() => setSelectedBooking(null)} className="px-8 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all">Dismiss</button>
+                  <Link href="/dashboard/bookings" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-[#FF6B00] transition-all">Go to Terminal</Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       
       {/* ─── ROW 1: TOP STATS ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -296,7 +336,16 @@ export default function OverviewPage() {
             </thead>
             <tbody className="divide-y divide-slate-50">
               {recentBookings.length > 0 ? recentBookings.map((bk: any) => (
-                <TableRow key={bk.id} id={bk.pnr || bk.id.substring(0, 8)} customer={user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Travsify User'} service={bk.vertical || 'Flight'} status={bk.status || 'Confirmed'} amount={`₦${Number(bk.totalAmount || 0).toLocaleString()}`} date={new Date(bk.createdAt).toLocaleDateString()} />
+                <TableRow 
+                  key={bk.id} 
+                  id={bk.pnr || bk.id.substring(0, 8)} 
+                  customer={user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Travsify User'} 
+                  service={bk.vertical || 'Flight'} 
+                  status={bk.status || 'Confirmed'} 
+                  amount={`${bk.currency === 'NGN' ? '₦' : '$'}${Number(bk.totalAmount || 0).toLocaleString()}`} 
+                  date={new Date(bk.createdAt).toLocaleDateString()} 
+                  onClick={() => setSelectedBooking(bk)}
+                />
               )) : (
                 <tr><td colSpan={6} className="px-8 py-4 text-center text-slate-400">No bookings found.</td></tr>
               )}
@@ -308,12 +357,13 @@ export default function OverviewPage() {
       {/* ─── ROW 6: TRAVEL VERTICALS ─── */}
       <div className="space-y-6">
         <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase tracking-widest">Travel Verticals <span className="text-slate-400 font-medium">(Inventory Management)</span></h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights" sub="Direct airline connections, live fares and ticketing." color="blue" /></Link>
-          <Link href="/dashboard/hotels"><VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Global property management and live rate tracking." color="orange" /></Link>
-          <Link href="/dashboard/transfers"><VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Global airport pickup and car rental logistics." color="emerald" /></Link>
-          <Link href="/dashboard/tours"><VerticalCard icon={<Globe className="text-purple-600" />} label="Tours" sub="Global curated experiences and sightseeing tours." color="purple" /></Link>
-          <Link href="/dashboard/insurance"><VerticalCard icon={<ShieldCheck className="text-orange-600" />} label="Insurance" sub="Global travel protection management and quoting." color="orange" /></Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+          <Link href="/dashboard/flights"><VerticalCard icon={<Plane className="text-blue-600" />} label="Flights" sub="Direct airline connections and live fares." color="blue" /></Link>
+          <Link href="/dashboard/hotels"><VerticalCard icon={<Hotel className="text-orange-600" />} label="Hotels" sub="Global property management and live rates." color="orange" /></Link>
+          <Link href="/dashboard/transfers"><VerticalCard icon={<Car className="text-emerald-600" />} label="Transfers" sub="Global airport pickup and rental logistics." color="emerald" /></Link>
+          <Link href="/dashboard/tours"><VerticalCard icon={<Globe className="text-purple-600" />} label="Tours" sub="Global curated experiences and tours." color="purple" /></Link>
+          <Link href="/dashboard/insurance"><VerticalCard icon={<ShieldCheck className="text-indigo-600" />} label="Insurance" sub="Global travel protection and quoting." color="indigo" /></Link>
+          <Link href="/dashboard/visa"><VerticalCard icon={<FileText className="text-[#FF6B00]" />} label="Visa & e-Visa" sub="Automated visa requirements and applications." color="orange" /></Link>
         </div>
       </div>
 
@@ -527,10 +577,13 @@ function TerminalTab({ active, onClick, icon, label }: any) {
   );
 }
 
-function TableRow({ id, customer, service, status, amount, date }: any) {
+function TableRow({ id, customer, service, status, amount, date, onClick }: any) {
   const statusColor = status === 'Confirmed' ? 'emerald' : status === 'Pending' ? 'orange' : 'rose';
   return (
-    <tr className="hover:bg-slate-50 transition-colors group cursor-pointer border-b border-slate-50">
+    <tr 
+      onClick={onClick}
+      className="hover:bg-slate-50 transition-colors group cursor-pointer border-b border-slate-50"
+    >
       <td className="px-8 py-4 text-[12px] font-black text-blue-600 hover:underline">{id}</td>
       <td className="px-8 py-4 text-[12px] font-bold text-slate-600">{customer}</td>
       <td className="px-8 py-4 text-[12px] font-medium text-slate-500">{service}</td>

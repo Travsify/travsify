@@ -30,7 +30,8 @@ import {
   ChevronDown,
   CheckCircle2,
   AlertCircle,
-  FileText
+  FileText,
+  Lock
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -43,48 +44,57 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   const dateRange = `${formatDate(today)} - ${formatDate(nextWeek)}`;
 
+  const isApproved = user?.status === 'approved';
+  const isKycPage = pathname === '/dashboard/kyc';
+
+  useEffect(() => {
+    if (user && !isApproved && !isKycPage && pathname !== '/dashboard' && pathname !== '/dashboard/settings') {
+      // Allow them to see home and settings, but for everything else, redirect to KYC if not approved
+      // window.location.href = '/dashboard/kyc';
+    }
+  }, [user, isApproved, pathname]);
+
   const menuGroups = [
     {
       label: 'OPERATIONS',
       items: [
         { name: 'Control Center', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-        { name: 'Global Terminal', path: '/dashboard/terminal', icon: <Search size={18} /> },
-        { name: 'Orders & Bookings', path: '/dashboard/bookings', icon: <ScrollText size={18} /> },
+        { name: 'Global Terminal', path: '/dashboard/terminal', icon: <Search size={18} />, locked: !isApproved },
+        { name: 'Orders & Bookings', path: '/dashboard/bookings', icon: <ScrollText size={18} />, locked: !isApproved },
       ]
     },
     {
       label: 'TRAVEL VERTICALS',
       items: [
-        { name: 'Flights', path: '/dashboard/flights', icon: <Plane size={18} /> },
-        { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} /> },
-        { name: 'Visa & e-Visa', path: '/dashboard/visa', icon: <FileText size={18} /> },
-        { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} /> },
-        { name: 'Tours', path: '/dashboard/tours', icon: <Globe size={18} /> },
-        { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} /> },
+        { name: 'Flights', path: '/dashboard/flights', icon: <Plane size={18} />, locked: !isApproved },
+        { name: 'Hotels', path: '/dashboard/hotels', icon: <Hotel size={18} />, locked: !isApproved },
+        { name: 'Visa & e-Visa', path: '/dashboard/visa', icon: <FileText size={18} />, locked: !isApproved },
+        { name: 'Transfers', path: '/dashboard/transfers', icon: <Car size={18} />, locked: !isApproved },
+        { name: 'Tours', path: '/dashboard/tours', icon: <Globe size={18} />, locked: !isApproved },
+        { name: 'Insurance', path: '/dashboard/insurance', icon: <ShieldCheck size={18} />, locked: !isApproved },
       ]
     },
     {
       label: 'FINANCE & SETTLEMENT',
       items: [
-        { name: 'Settlement Wallet', path: '/dashboard/wallets', icon: <Wallet size={18} /> },
-        { name: 'Financial Ledger', path: '/dashboard/ledger', icon: <Database size={18} /> },
+        { name: 'Settlement Wallet', path: '/dashboard/wallets', icon: <Wallet size={18} />, locked: !isApproved },
+        { name: 'Financial Ledger', path: '/dashboard/ledger', icon: <Database size={18} />, locked: !isApproved },
       ]
     },
     {
       label: 'DEVELOPER SUITE',
       items: [
-        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} /> },
-        { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Zap size={18} /> },
-        { name: 'API Logs', path: '/dashboard/logs', icon: <Activity size={18} /> },
+        { name: 'API Keys', path: '/dashboard/developers', icon: <Key size={18} />, locked: !isApproved },
+        { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Zap size={18} />, locked: !isApproved },
+        { name: 'API Logs', path: '/dashboard/logs', icon: <Activity size={18} />, locked: !isApproved },
         { name: 'Documentation', path: '/dashboard/docs', icon: <Code2 size={18} /> },
       ]
     },
     {
       label: 'COMPLIANCE & SETTINGS',
       items: [
-        { name: 'KYC Verification', path: '/dashboard/kyc', icon: <ShieldCheck size={18} /> },
-        { name: 'Organization', path: '/dashboard/settings', icon: <Settings size={18} /> },
-        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
+        { name: 'Business Verification', path: '/dashboard/kyc', icon: <ShieldCheck size={18} /> },
+        { name: 'Organization Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     }
   ];
@@ -156,22 +166,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {menuGroups.map((group) => (
             <div key={group.label} className="space-y-1">
               <h3 className="px-3 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">{group.label}</h3>
-              {group.items.map((item) => {
+              {group.items.map((item: any) => {
                 const isActive = pathname === item.path;
+                const isLocked = item.locked;
                 return (
                   <Link 
                     key={item.path} 
-                    href={item.path}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] transition-all group ${
+                    href={isLocked ? '#' : item.path}
+                    onClick={(e) => isLocked && e.preventDefault()}
+                    className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg font-bold text-[13px] transition-all group ${
+                      isLocked ? 'opacity-50 cursor-not-allowed grayscale' :
                       isActive 
                         ? 'bg-[#FF6B00] text-white' 
                         : 'text-slate-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <span className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-white transition-colors'}>
-                      {item.icon}
-                    </span>
-                    {item.name}
+                    <div className="flex items-center gap-3">
+                      <span className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-white transition-colors'}>
+                        {item.icon}
+                      </span>
+                      {item.name}
+                    </div>
+                    {isLocked && <Lock size={12} className="text-slate-600" />}
                   </Link>
                 );
               })}

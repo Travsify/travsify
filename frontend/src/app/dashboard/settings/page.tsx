@@ -192,10 +192,10 @@ export default function SettingsPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 blur-[80px] rounded-full pointer-events-none" />
         <h4 className="font-black mb-4 flex items-center gap-2">
           <AlertCircle size={20} className="text-blue-400" />
-          Pro-Tip: Smart Pricing
+          Pro-Tip: Smart Margins
         </h4>
         <p className="text-slate-400 text-sm leading-relaxed max-w-2xl">
-          We recommend a flight markup of 3-5% for competitive pricing. Our engine automatically combines your markup with the Travsify base fee to provide a seamless checkout for your end-users.
+          Travsify NDC is a free infrastructure. We recommend a flight markup of 3-5% for competitive global pricing. Your markup is added directly to the airline base fare with zero platform fees.
         </p>
       </div>
     </div>

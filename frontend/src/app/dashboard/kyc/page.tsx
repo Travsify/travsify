@@ -20,17 +20,17 @@ export default function KycPage() {
   
   const steps = [
     { label: 'Business Profile', status: 'completed' },
-    { label: 'Document Upload', status: user?.status === 'approved' ? 'completed' : 'active' },
-    { label: 'Identity Verification', status: user?.status === 'approved' ? 'completed' : 'pending' },
-    { label: 'Production Access', status: user?.status === 'approved' ? 'completed' : 'pending' },
+    { label: 'KYB Document Review', status: user?.status === 'approved' ? 'completed' : 'active' },
+    { label: 'Manual Admin Audit', status: user?.status === 'approved' ? 'completed' : 'pending' },
+    { label: 'Full Access Granted', status: user?.status === 'approved' ? 'completed' : 'pending' },
   ];
 
   return (
     <div className="max-w-4xl space-y-10 animate-fade-up">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Business Verification</h2>
-          <p className="text-slate-500 font-medium text-sm">Verify your business to unlock production API keys and live ticketing.</p>
+          <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Thorough Business Verification (KYB)</h2>
+          <p className="text-slate-500 font-medium text-sm">Our compliance team conducts a thorough manual audit before granting dashboard access. Verification is mandatory and free.</p>
         </div>
         {user?.status === 'approved' && (
           <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full">
@@ -123,16 +123,16 @@ export default function KycPage() {
               <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
                 <Info size={24} />
               </div>
-              <h4 className="text-lg font-bold mb-4">Why Verification?</h4>
+              <h4 className="text-lg font-bold mb-4">Manual KYB Process</h4>
               <p className="text-sm font-medium leading-relaxed opacity-90 mb-6">
-                Verification ensures the safety and integrity of the global travel network. It allows us to grant you access to direct NDC pipes from 400+ airlines.
+                Travsify NDC is a secure infrastructure. We conduct a thorough manual verification of all businesses to maintain network integrity. This process is completely free of charge.
               </p>
               <ul className="space-y-3">
                 {[
-                  'Access to Production API Keys',
-                  'Higher Wallet Transaction Limits',
-                  'Direct IATA Ticketing Access',
-                  'Priority Support'
+                  'Free Lifetime Access',
+                  'No Subscription Fees',
+                  'Manual Admin Audit',
+                  'Direct IATA Pipeline Access'
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-2 text-xs font-bold">
                     <CheckCircle2 size={14} className="text-blue-200" />
