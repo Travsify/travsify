@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Stripe } from 'stripe';
+import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
-  private readonly stripe: Stripe;
+  private readonly stripe: InstanceType<typeof Stripe>;
   private readonly frontendUrl: string;
   private readonly webhookSecret: string;
 
