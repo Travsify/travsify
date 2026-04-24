@@ -24,14 +24,16 @@ import {
 
 import { API_URL } from '@/utils/api';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function DevelopersPage() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
   const [tenant, setTenant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [rotating, setRotating] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'keys' | 'logs' | 'webhooks' | 'docs'>('keys');
+  const [activeTab, setActiveTab] = useState<'keys' | 'logs' | 'webhooks' | 'docs'>((searchParams.get('tab') as any) || 'keys');
   const [apiStats, setApiStats] = useState<any>(null);
 
   useEffect(() => {
@@ -128,7 +130,6 @@ export default function DevelopersPage() {
         <TabButton active={activeTab === 'keys'} onClick={() => setActiveTab('keys')} icon={<Zap size={14}/>} label="API Keys" />
         <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity size={14}/>} label="API Logs" />
         <TabButton active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} icon={<Globe size={14}/>} label="Webhooks" />
-        <TabButton active={activeTab === 'docs'} onClick={() => setActiveTab('docs')} icon={<BookOpen size={14}/>} label="Documentation" />
       </div>
       </div>
 
@@ -215,8 +216,8 @@ export default function DevelopersPage() {
             <div className="bg-white rounded-[32px] border border-slate-200 p-10 shadow-sm">
                <h4 className="text-lg font-black text-slate-900 mb-8 tracking-tight">Support Resources</h4>
                <div className="space-y-3">
-                  <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" onClick={() => setActiveTab('docs')} />
-                  <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" onClick={() => setActiveTab('docs')} />
+                  <ResourceItem icon={<BookOpen size={18} />} title="Full API Documentation" desc="Every endpoint explained" path="/dashboard/docs" />
+                  <ResourceItem icon={<Terminal size={18} />} title="How to Connect" desc="Step-by-step security guide" path="/dashboard/docs" />
                   <ResourceItem icon={<ShieldCheck size={18} />} title="Support Center" desc="Get help from engineers" path="/dashboard/support" />
                </div>
             </div>
@@ -238,7 +239,6 @@ export default function DevelopersPage() {
 
       {activeTab === 'logs' && <ApiLogsSection />}
       {activeTab === 'webhooks' && <WebhooksSection />}
-      {activeTab === 'docs' && <DocsSection />}
     </div>
   );
 }
@@ -473,64 +473,6 @@ function WebhooksSection() {
         </div>
       </div>
     </div>
-  );
-}
-
-function DocsSection() {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="lg:col-span-1 space-y-2">
-        <DocNavLink active label="Authentication" />
-        <DocNavLink label="Search Flights" />
-        <DocNavLink label="Book Hotels" />
-        <DocNavLink label="Visa Requirements" />
-        <DocNavLink label="Webhooks Guide" />
-        <DocNavLink label="Error Codes" />
-      </div>
-      
-      <div className="lg:col-span-3 bg-white rounded-[40px] border border-slate-200 p-12 shadow-sm">
-        <div className="prose prose-slate max-w-none">
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-6">Authentication</h2>
-          <p className="text-lg text-slate-500 font-medium leading-relaxed mb-8">
-            The Travsify NDC API uses API Keys to authenticate requests. You can view and manage your API keys in the Integration Terminal.
-          </p>
-          
-          <div className="bg-slate-900 rounded-2xl p-8 mb-10 border border-white/5 shadow-xl">
-            <h4 className="text-orange-500 font-black text-[10px] uppercase tracking-widest mb-4">Header Authorization</h4>
-            <code className="text-blue-400 font-mono text-sm">x-api-key: YOUR_SECRET_KEY</code>
-          </div>
-
-          <h3 className="text-xl font-black text-slate-900 mb-4">Requesting Data</h3>
-          <p className="text-slate-500 font-medium leading-relaxed mb-6">
-            All requests should be made to the following base URL:
-          </p>
-          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 font-mono text-sm text-slate-600 mb-10">
-            {API_URL}/api/v1
-          </div>
-
-          <div className="p-8 bg-blue-50 rounded-3xl border border-blue-100 flex gap-6">
-             <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
-                <BookOpen size={24} />
-             </div>
-             <div>
-                <h4 className="text-sm font-black text-blue-900 uppercase tracking-widest mb-2">Detailed Postman Collection</h4>
-                <p className="text-sm text-blue-700 font-medium mb-4">Download our official Postman collection to start testing all endpoints in minutes.</p>
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg shadow-blue-600/20">Download v1.2.0</button>
-             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DocNavLink({ label, active }: any) {
-  return (
-    <button className={`w-full text-left px-6 py-4 rounded-2xl text-[12px] font-black tracking-tight transition-all ${
-      active ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'text-slate-500 hover:bg-slate-50'
-    }`}>
-      {label}
-    </button>
   );
 }
 

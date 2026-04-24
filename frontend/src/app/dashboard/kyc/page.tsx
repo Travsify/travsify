@@ -75,7 +75,7 @@ export default function KycPage() {
             Your business profile has been fully verified. You can now issue live tickets and access premium global inventory.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/dashboard/api-keys" className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
+            <Link href="/dashboard/developers?tab=keys" className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20">
               Get Production Keys
             </Link>
           </div>

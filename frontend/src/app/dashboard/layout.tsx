@@ -84,9 +84,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     {
       label: 'DEVELOPER SUITE',
       items: [
-        { name: 'API Keys', path: '/dashboard/api-keys', icon: <Key size={18} />, locked: !isApproved },
-        { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Zap size={18} />, locked: !isApproved },
-        { name: 'API Logs', path: '/dashboard/logs', icon: <Activity size={18} />, locked: !isApproved },
+        { name: 'API Keys', path: '/dashboard/developers?tab=keys', icon: <Key size={18} />, locked: !isApproved },
+        { name: 'Webhooks', path: '/dashboard/developers?tab=webhooks', icon: <Zap size={18} />, locked: !isApproved },
+        { name: 'API Logs', path: '/dashboard/developers?tab=logs', icon: <Activity size={18} />, locked: !isApproved },
         { name: 'Documentation', path: '/dashboard/docs', icon: <Code2 size={18} /> },
       ]
     },
