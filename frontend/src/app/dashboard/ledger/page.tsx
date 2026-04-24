@@ -4,9 +4,13 @@ import { useState, useEffect } from 'react';
 import { Database, Filter, Download, ArrowUpRight, ArrowDownCircle, Loader2, Calendar, Search, MoreHorizontal } from 'lucide-react';
 import { API_URL } from '@/utils/api';
 
+import { useAuth } from '@/context/AuthContext';
+
 export default function LedgerPage() {
+  const { currency } = useAuth();
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchTransactions();
@@ -25,6 +29,24 @@ export default function LedgerPage() {
       setLoading(false);
     }
   };
+
+  const totalCredit = transactions
+    .filter(tx => tx.type === 'CREDIT' && tx.status === 'SUCCESS')
+    .reduce((acc, tx) => acc + Number(tx.amount), 0);
+
+  const totalDebit = transactions
+    .filter(tx => tx.type === 'DEBIT' && tx.status === 'SUCCESS')
+    .reduce((acc, tx) => acc + Number(tx.amount), 0);
+
+  const pendingSettlement = transactions
+    .filter(tx => tx.status === 'PENDING')
+    .reduce((acc, tx) => acc + Number(tx.amount), 0);
+
+  const filteredTransactions = transactions.filter(tx => 
+    tx.reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tx.metadata?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tx.metadata?.pnr?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
@@ -45,9 +67,9 @@ export default function LedgerPage() {
 
       {/* Ledger Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <LedgerStat label="TOTAL CREDIT" value="₦4,582,300" color="emerald" icon={<ArrowUpRight />} />
-        <LedgerStat label="TOTAL DEBIT" value="₦2,840,550" color="rose" icon={<ArrowDownCircle />} />
-        <LedgerStat label="PENDING SETTLEMENT" value="₦120,000" color="orange" icon={<Database />} />
+        <LedgerStat label="TOTAL CREDIT" value={`${currency === 'NGN' ? '₦' : '$'}${totalCredit.toLocaleString()}`} color="emerald" icon={<ArrowUpRight />} />
+        <LedgerStat label="TOTAL DEBIT" value={`${currency === 'NGN' ? '₦' : '$'}${totalDebit.toLocaleString()}`} color="rose" icon={<ArrowDownCircle />} />
+        <LedgerStat label="PENDING SETTLEMENT" value={`${currency === 'NGN' ? '₦' : '$'}${pendingSettlement.toLocaleString()}`} color="orange" icon={<Database />} />
       </div>
 
       {/* Transaction Table */}
@@ -58,13 +80,15 @@ export default function LedgerPage() {
             <input 
               type="text" 
               placeholder="Search by ID, customer or PNR..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-orange-500/10 outline-none"
             />
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 border border-slate-100">
               <Calendar size={14} className="text-slate-400" />
-              <span>May 2024</span>
+              <span>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
         </div>
@@ -83,26 +107,32 @@ export default function LedgerPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {transactions.map((tx) => (
+              {filteredTransactions.map((tx) => (
                 <tr key={tx.id} className="hover:bg-slate-50 transition-colors group">
                   <td className="px-8 py-5">
                     <span className="text-[12px] font-black text-blue-600 cursor-pointer hover:underline uppercase tracking-tighter">TX_{tx.id.slice(0, 8)}</span>
                   </td>
                   <td className="px-8 py-5">
                     <p className="text-[13px] font-black text-slate-900 leading-tight">{tx.metadata?.description || 'Inventory Purchase'}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Ref: {tx.metadata?.pnr || 'N/A'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Ref: {tx.reference || 'N/A'}</p>
                   </td>
                   <td className="px-8 py-5">
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${tx.type === 'credit' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${tx.type === 'CREDIT' ? 'text-emerald-500' : 'text-rose-500'}`}>
                       {tx.type}
                     </span>
                   </td>
                   <td className="px-8 py-5">
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded-full uppercase">Success</span>
+                    <span className={`px-3 py-1 text-[9px] font-black rounded-full uppercase ${
+                      tx.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-600' : 
+                      tx.status === 'PENDING' ? 'bg-orange-50 text-orange-600' : 
+                      'bg-rose-50 text-rose-600'
+                    }`}>
+                      {tx.status}
+                    </span>
                   </td>
                   <td className="px-8 py-5">
-                    <p className={`text-[14px] font-black ${tx.type === 'credit' ? 'text-emerald-500' : 'text-slate-900'}`}>
-                      {tx.type === 'credit' ? '+' : '-'}{tx.wallet?.currency || 'NGN'} {tx.amount.toLocaleString()}
+                    <p className={`text-[14px] font-black ${tx.type === 'CREDIT' ? 'text-emerald-500' : 'text-slate-900'}`}>
+                      {tx.type === 'CREDIT' ? '+' : '-'}{currency === 'NGN' ? '₦' : '$'}{Number(tx.amount).toLocaleString()}
                     </p>
                   </td>
                   <td className="px-8 py-5">
@@ -122,7 +152,7 @@ export default function LedgerPage() {
                   </td>
                 </tr>
               )}
-              {!loading && transactions.length === 0 && (
+              {!loading && filteredTransactions.length === 0 && (
                 <tr>
                   <td colSpan={7} className="py-20 text-center">
                     <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No financial events recorded yet.</p>
