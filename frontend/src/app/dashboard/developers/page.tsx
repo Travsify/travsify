@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { 
   Zap, 
@@ -26,7 +26,7 @@ import { API_URL } from '@/utils/api';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export default function DevelopersPage() {
+function DevelopersContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [tenant, setTenant] = useState<any>(null);
@@ -240,6 +240,14 @@ export default function DevelopersPage() {
       {activeTab === 'logs' && <ApiLogsSection />}
       {activeTab === 'webhooks' && <WebhooksSection />}
     </div>
+  );
+}
+
+export default function DevelopersPage() {
+  return (
+    <Suspense fallback={<div className="p-20 text-center"><Loader2 className="w-10 h-10 text-orange-600 animate-spin mx-auto" /></div>}>
+      <DevelopersContent />
+    </Suspense>
   );
 }
 
