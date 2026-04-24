@@ -13,7 +13,7 @@ import {
   Sparkles, Layers, Fingerprint, MapPin, Ticket,
   Waves, Compass, Cpu, Database, Activity
 } from 'lucide-react';
-import { Logo } from '@/components/Logo';
+
 
 // --- ANIMATION VARIANTS ---
 const fadeInUp = {
@@ -140,7 +140,7 @@ const ValuePropHub = () => (
           className="w-60 h-60 rounded-full border border-slate-100 flex items-center justify-center relative p-8 bg-white shadow-2xl"
         >
           <div className="absolute inset-4 rounded-full border border-dashed border-slate-200" />
-          <Logo iconOnly className="w-24 h-24" />
+          <Globe className="w-16 h-16 text-[#FF6B00]" />
         </motion.div>
       </div>
 
@@ -378,8 +378,7 @@ export default function LandingPage() {
       <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${scrolled ? 'bg-white/70 backdrop-blur-2xl border-b border-slate-100 py-3 shadow-sm' : 'bg-transparent py-8'}`}>
         <div className="max-w-[1400px] mx-auto px-8 flex items-center justify-between">
           <Link href="/" className="group flex items-center gap-3">
-            <Logo className="w-10 h-10 md:w-12 md:h-12" />
-            <span className="text-xl font-black tracking-tighter text-[#0A2540] group-hover:text-[#FF6B00] transition-colors">TRAVSIFY</span>
+            <span className="text-xl font-black tracking-tighter text-[#0A2540] group-hover:text-[#FF6B00] transition-colors uppercase">TRAVSIFY</span>
           </Link>
 
           <div className="hidden lg:flex items-center gap-2 bg-slate-100/50 p-1.5 rounded-[22px] border border-slate-200/50">
@@ -895,8 +894,7 @@ export default function LandingPage() {
              <div className="grid grid-cols-2 md:grid-cols-6 gap-20 mb-32">
                 <div className="col-span-2 space-y-8">
                    <Link href="/" className="group flex items-center gap-3">
-                      <Logo className="w-14 h-14" />
-                      <span className="text-3xl font-black tracking-tighter">TRAVSIFY</span>
+                      <span className="text-3xl font-black tracking-tighter uppercase">TRAVSIFY</span>
                    </Link>
                    <p className="text-white/40 font-medium text-lg leading-relaxed max-w-sm">
                       The unified travel infrastructure for the next generation of global platforms. 

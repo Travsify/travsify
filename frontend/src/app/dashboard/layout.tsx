@@ -155,15 +155,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900 overflow-hidden">
       {/* Sidebar - Elite Glassmorphism */}
       <aside className="w-[300px] bg-[#0A1629]/95 backdrop-blur-2xl flex flex-col fixed h-full z-50 border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.1)]">
-        <div className="p-10 flex items-center gap-4 group cursor-pointer">
-          <div className="w-14 h-14 bg-gradient-to-br from-[#FF6B00] to-[#FF8A00] rounded-2xl flex items-center justify-center text-white shadow-[0_10px_30px_rgba(255,107,0,0.3)] group-hover:rotate-6 transition-transform duration-500">
-            <Globe size={28} />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-3xl font-black tracking-tighter text-white leading-none">Travsify</span>
-            <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">Node Orchestration</span>
-          </div>
-        </div>
+        <div className="p-10" />
         
         <nav className="flex-1 px-4 py-2 space-y-8 overflow-y-auto custom-scrollbar">
           {menuGroups.map((group) => (
