@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Request, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Post, Body, Query } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Currency } from './entities/wallet.entity';
@@ -25,6 +25,11 @@ export class WalletController {
   @Get('transactions')
   async getTransactions(@Request() req: any) {
     return this.walletService.findUserTransactions(req.user.id);
+  }
+
+  @Get('revenue-stats')
+  async getRevenueStats(@Request() req: any, @Query('period') period: string = 'daily') {
+    return this.walletService.getRevenueStats(req.user.id, period);
   }
 
   @Post('fund')

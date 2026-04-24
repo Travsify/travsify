@@ -48,13 +48,27 @@ export default function OverviewPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('flights');
-
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [revenuePeriod, setRevenuePeriod] = useState('daily');
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+    fetchRevenueStats();
+  }, [revenuePeriod]);
+
+  const fetchRevenueStats = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/wallet/revenue-stats?period=${revenuePeriod}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) setRevenueData(await res.json());
+    } catch (err) {
+      console.error('Failed to fetch revenue stats:', err);
+    }
+  };
 
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -208,29 +222,61 @@ export default function OverviewPage() {
               <HelpCircle size={14} className="text-slate-300" />
             </div>
             <div className="flex bg-slate-100 p-1 rounded-lg">
-              <button className="px-4 py-1.5 text-[10px] font-black text-slate-400">Daily</button>
-              <button className="px-4 py-1.5 text-[10px] font-black text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20">Weekly</button>
-              <button className="px-4 py-1.5 text-[10px] font-black text-slate-400">Monthly</button>
+              <button onClick={() => setRevenuePeriod('daily')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'daily' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Daily</button>
+              <button onClick={() => setRevenuePeriod('weekly')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'weekly' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Weekly</button>
+              <button onClick={() => setRevenuePeriod('monthly')} className={`px-4 py-1.5 text-[10px] font-black ${revenuePeriod === 'monthly' ? 'text-white bg-blue-600 rounded-md shadow-lg shadow-blue-600/20' : 'text-slate-400'}`}>Monthly</button>
             </div>
           </div>
           <div className="h-64 relative flex items-end justify-between px-2">
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 200">
-              <path d="M0 150 Q 150 80, 300 120 T 600 60 T 800 50" fill="none" stroke="#2563eb" strokeWidth="3" />
-              <path d="M0 150 Q 150 80, 300 120 T 600 60 T 800 50 V 200 H 0 Z" fill="url(#blue-grad)" opacity="0.1" />
-              <defs>
-                <linearGradient id="blue-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2563eb" />
-                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <circle cx="300" cy="120" r="4" fill="#2563eb" />
-              <circle cx="600" cy="60" r="4" fill="#2563eb" />
-              <circle cx="800" cy="50" r="4" fill="#2563eb" />
-            </svg>
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="text-[10px] font-bold text-slate-300 uppercase tracking-tighter">May {20 + i}</div>
-            ))}
-            <div className="absolute top-[40px] right-[20px] bg-blue-600 text-white px-3 py-1 rounded-md text-[10px] font-black">N24.58M</div>
+            {revenueData.length > 0 ? (
+              <>
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 200">
+                  <path 
+                    d={(() => {
+                      const max = Math.max(...revenueData.map(d => d.amount), 1);
+                      const points = revenueData.map((d, i) => {
+                        const x = (i / (revenueData.length - 1)) * 800;
+                        const y = 200 - (d.amount / max) * 150;
+                        return `${x},${y}`;
+                      });
+                      return points.length > 1 ? `M ${points.join(' L ')}` : '';
+                    })()} 
+                    fill="none" 
+                    stroke="#2563eb" 
+                    strokeWidth="3" 
+                  />
+                  <path 
+                    d={(() => {
+                      const max = Math.max(...revenueData.map(d => d.amount), 1);
+                      const points = revenueData.map((d, i) => {
+                        const x = (i / (revenueData.length - 1)) * 800;
+                        const y = 200 - (d.amount / max) * 150;
+                        return `${x},${y}`;
+                      });
+                      return points.length > 1 ? `M ${points.join(' L ')} V 200 H 0 Z` : '';
+                    })()} 
+                    fill="url(#blue-grad)" 
+                    opacity="0.1" 
+                  />
+                  <defs>
+                    <linearGradient id="blue-grad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2563eb" />
+                      <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                {revenueData.map((d, i) => (
+                  <div key={i} className="text-[10px] font-bold text-slate-300 uppercase tracking-tighter whitespace-nowrap overflow-hidden text-ellipsis max-w-[50px]">{d.date}</div>
+                ))}
+                <div className="absolute top-[40px] right-[20px] bg-blue-600 text-white px-3 py-1 rounded-md text-[10px] font-black">
+                  {currency === 'NGN' ? '₦' : '$'}{(revenueData[revenueData.length - 1]?.amount || 0).toLocaleString()}
+                </div>
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-slate-400 font-bold text-xs uppercase tracking-widest">
+                No revenue data for this period
+              </div>
+            )}
           </div>
         </div>
 

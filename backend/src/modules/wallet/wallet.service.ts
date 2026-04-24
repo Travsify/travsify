@@ -177,4 +177,39 @@ export class WalletService {
       relations: ['wallet']
     });
   }
+
+  async getRevenueStats(userId: string, period: 'daily' | 'weekly' | 'monthly' = 'daily'): Promise<any[]> {
+    const wallets = await this.walletRepository.find({ where: { userId } });
+    const walletIds = wallets.map(w => w.id);
+    if (walletIds.length === 0) return [];
+
+    const transactions = await this.transactionRepository.find({
+      where: { 
+        walletId: In(walletIds),
+        type: TransactionType.CREDIT,
+        status: TransactionStatus.SUCCESS
+      },
+      order: { createdAt: 'ASC' }
+    });
+
+    const stats: Record<string, number> = {};
+    
+    transactions.forEach(tx => {
+      const date = new Date(tx.createdAt);
+      let key = '';
+      
+      if (period === 'daily') {
+        key = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      } else if (period === 'weekly') {
+        const firstDay = new Date(date.setDate(date.getDate() - date.getDay()));
+        key = `Week of ${firstDay.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+      } else {
+        key = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      }
+
+      stats[key] = (stats[key] || 0) + Number(tx.amount);
+    });
+
+    return Object.entries(stats).map(([date, amount]) => ({ date, amount }));
+  }
 }
