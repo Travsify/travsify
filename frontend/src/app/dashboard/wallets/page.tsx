@@ -17,7 +17,8 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
