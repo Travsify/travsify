@@ -12,6 +12,12 @@ export class ApiKey {
   @Column({ unique: true, select: false })
   secretKey: string;
 
+  @Column({ default: 'Default Key' })
+  name: string;
+
+  @Column({ default: 'live' }) // 'live' or 'sandbox'
+  environment: string;
+
   @Column({ default: true })
   isActive: boolean;
 

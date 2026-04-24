@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { UserStatus } from '../users/entities/user.entity';
+import { UserStatus } from '../../users/entities/user.entity';
 
 @Injectable()
 export class KybGuard implements CanActivate {

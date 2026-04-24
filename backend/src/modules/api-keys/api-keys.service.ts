@@ -12,12 +12,14 @@ export class ApiKeysService {
     private apiKeyRepository: Repository<ApiKey>,
   ) {}
 
-  async createKey(userId: string): Promise<ApiKey> {
-    const publicKey = 'pk_' + crypto.randomBytes(16).toString('hex');
-    const secretKey = 'sk_' + crypto.randomBytes(32).toString('hex');
+  async createKey(userId: string, name: string = 'Default Key', environment: string = 'live'): Promise<ApiKey> {
+    const publicKey = (environment === 'live' ? 'pk_live_' : 'pk_test_') + crypto.randomBytes(16).toString('hex');
+    const secretKey = (environment === 'live' ? 'sk_live_' : 'sk_test_') + crypto.randomBytes(32).toString('hex');
 
     const apiKey = this.apiKeyRepository.create({
       userId,
+      name,
+      environment,
       publicKey,
       secretKey,
     });

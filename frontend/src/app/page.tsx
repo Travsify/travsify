@@ -7,7 +7,7 @@ import {
   Code2, Wallet, Search, PieChart, Lock, 
   Key, Zap, Play, CheckCircle2, ArrowRight,
   CreditCard, BarChart3, Settings, Users,
-  Briefcase, Rocket, Smartphone, Building2
+  Briefcase, Rocket, Smartphone, Building2, FileText
 } from 'lucide-react';
 
 export default function LandingPage() {
