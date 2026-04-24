@@ -101,7 +101,6 @@ function DevelopersContent() {
   }
 
   return (
-    <div className="space-y-10 pb-20">
     <div className="space-y-12 pb-40">
       {/* ─── ELITE ECOSYSTEM HEADER ─── */}
       <div className="bg-[#0A1629] rounded-[48px] border border-white/5 p-16 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(10,22,41,0.5)] group">
