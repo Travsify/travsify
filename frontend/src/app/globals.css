@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ═══════════════════════════════════════════════════
    TRAVSIFY NDC — Design System v1.1 (Premium)
    Colors, Typography, Animations, Utilities
@@ -42,8 +44,6 @@
     color: var(--color-text-primary);
     background: var(--color-bg);
     font-size: 14px;
-    selection-background: rgba(255, 122, 0, 0.2);
-    selection-color: #0A2540;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -58,25 +58,37 @@
    ═══════════════════════════════════════════════════ */
 
 .glass-morphism {
-  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .dark-glass {
-  @apply bg-[#0A2540]/80 backdrop-blur-2xl border border-white/5 shadow-2xl;
+  background-color: rgba(10, 37, 64, 0.8);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
 .glow-card {
-  @apply relative overflow-hidden transition-all duration-500;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
 }
 
 .glow-card::after {
   content: '';
-  @apply absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
   background: radial-gradient(600px circle at var(--x) var(--y), rgba(255, 122, 0, 0.1), transparent 40%);
 }
 
 .glow-card:hover::after {
-  @apply opacity-100;
+  opacity: 1;
 }
 
 .mesh-bg {
@@ -132,10 +144,10 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-700/50 rounded-full;
+  background-color: rgba(71, 85, 105, 0.5);
+  border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-600;
+  background-color: rgba(71, 85, 105, 1);
 }
-
